@@ -51,9 +51,9 @@ def main() -> None:
                 continue
 
             display = frame.copy()
-            hands = detector.detect(display)
-            for hand in hands:
-                detector.draw(display, hands)
+            detected_hands, mp_results = detector.detect(display)
+            if detected_hands:
+                detector.draw(display, mp_results)
 
             cv2.putText(display, f"Gesture: {args.gesture} | Collected: {collected}/{args.samples}",
                         (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 0), 2)
@@ -62,8 +62,8 @@ def main() -> None:
             key = cv2.waitKey(1) & 0xFF
             if key == ord("q"):
                 break
-            if key == ord(" ") and hands:
-                row = [v for lm in hands[0].landmarks for v in lm] + [args.gesture]
+            if key == ord(" ") and detected_hands:
+                row = [v for lm in detected_hands[0].landmarks for v in lm] + [args.gesture]
                 writer.writerow(row)
                 collected += 1
                 logger.info(f"Captured sample {collected}/{args.samples}")

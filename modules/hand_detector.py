@@ -19,12 +19,49 @@ overlays), detect() alone is sufficient.
 
 from __future__ import annotations
 
+import os
+import sys
+import io
+import time
+from contextlib import contextmanager
+
+# Suppress third-party logging / console spam (MediaPipe, TensorFlow, OpenCV)
+os.environ['GLOG_minloglevel'] = '2'
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
+os.environ['OPENCV_LOG_LEVEL'] = 'ERROR'
+os.environ['OPENCV_FFMPEG_LOGLEVEL'] = '-8'
+
 from dataclasses import dataclass
 from typing import Any
 
 import cv2
 import mediapipe as mp
 import numpy as np
+
+
+@contextmanager
+def silence_stderr():
+    """Temporarily redirect stderr to devnull to silence C++ library spam."""
+    try:
+        stderr_fd = sys.stderr.fileno()
+    except (AttributeError, io.UnsupportedOperation):
+        yield
+        return
+
+    try:
+        dup_stderr = os.dup(stderr_fd)
+        devnull = os.open(os.devnull, os.O_WRONLY)
+        os.dup2(devnull, stderr_fd)
+        try:
+            yield
+        finally:
+            # Sleep briefly while stderr is still redirected to capture trailing async logs
+            time.sleep(0.2)
+            os.dup2(dup_stderr, stderr_fd)
+            os.close(dup_stderr)
+            os.close(devnull)
+    except Exception:
+        yield
 
 
 @dataclass
@@ -55,15 +92,18 @@ class HandDetector:
         tracking_confidence:  float = 0.7,
     ) -> None:
         self._mp_hands = mp.solutions.hands
-        self._hands    = self._mp_hands.Hands(
-            static_image_mode          = False,
-            max_num_hands              = max_hands,
-            min_detection_confidence   = detection_confidence,
-            min_tracking_confidence    = tracking_confidence,
-        )
+        with silence_stderr():
+            self._hands    = self._mp_hands.Hands(
+                static_image_mode          = False,
+                max_num_hands              = max_hands,
+                model_complexity           = 0,
+                min_detection_confidence   = detection_confidence,
+                min_tracking_confidence    = tracking_confidence,
+            )
         self._mp_draw  = mp.solutions.drawing_utils
         # Cache the last raw MediaPipe result for draw() to consume
         self._last_results: Any = None
+        self._first_detect = True
 
     # ------------------------------------------------------------------ #
     def detect(self, frame: np.ndarray) -> tuple[list[HandLandmarks], Any]:
@@ -79,7 +119,12 @@ class HandDetector:
             pass it directly to draw() without a second inference.
         """
         rgb     = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-        results = self._hands.process(rgb)
+        if self._first_detect:
+            with silence_stderr():
+                results = self._hands.process(rgb)
+            self._first_detect = False
+        else:
+            results = self._hands.process(rgb)
         self._last_results = results          # cache for draw()
 
         detected: list[HandLandmarks] = []

@@ -34,3 +34,10 @@ ui:
 logging:
   level: "INFO"
   dir: "logs"
+
+virtual_mouse:
+  enabled: false
+  sensitivity: 1.5
+  dead_zone: 0.15
+  smoothing: 0.20
+  click_threshold: 0.05

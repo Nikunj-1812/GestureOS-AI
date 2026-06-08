@@ -16,8 +16,15 @@ FIX ARCH-001 / BUG-001:
   now starts the same GestureOSApp window.
 """
 
+import os
 import sys
 from pathlib import Path
+
+# Suppress third-party logging / console spam (MediaPipe, TensorFlow, OpenCV)
+os.environ['GLOG_minloglevel'] = '2'
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
+os.environ['OPENCV_LOG_LEVEL'] = 'ERROR'
+os.environ['OPENCV_FFMPEG_LOGLEVEL'] = '-8'
 
 # Ensure the project root is always on sys.path regardless of where
 # the interpreter is launched from.

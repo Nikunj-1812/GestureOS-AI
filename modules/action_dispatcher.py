@@ -12,7 +12,6 @@ from loguru import logger
 
 # Gesture label → callable action
 ACTION_MAP: dict[str, callable] = {
-    "open_palm":    lambda: pyautogui.hotkey("win", "shift", "s"),      # Screenshot
     "fist":         lambda: pyautogui.hotkey("win", "l"),               # Lock screen
     "thumbs_up":    lambda: pyautogui.hotkey("volumeup"),               # Volume up
     "thumbs_down":  lambda: pyautogui.hotkey("volumedown"),             # Volume down

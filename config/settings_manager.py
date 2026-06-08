@@ -18,6 +18,18 @@ class SettingsState:
     camera_index: int = 0
     theme: str = "dark"
     fps_limit: int = 30
+    show_landmarks: bool = True
+    show_connections: bool = True
+    show_bounding_box: bool = True
+    show_finger_states: bool = True
+    show_distance_meter: bool = True
+    show_debug_panel: bool = True
+    show_hud: bool = True
+    virtual_mouse_enabled: bool = False
+    virtual_mouse_sensitivity: float = 1.5
+    virtual_mouse_dead_zone: float = 0.15
+    virtual_mouse_smoothing: float = 0.20
+    virtual_mouse_click_threshold: float = 0.05
 
 
 class SettingsManager:
@@ -58,15 +70,40 @@ class SettingsManager:
                 camera_index=int(raw.get("camera_index", 0)),
                 theme=self._normalize_theme(str(raw.get("theme", "dark"))),
                 fps_limit=max(1, int(raw.get("fps_limit", 30))),
+                show_landmarks=bool(raw.get("show_landmarks", True)),
+                show_connections=bool(raw.get("show_connections", True)),
+                show_bounding_box=bool(raw.get("show_bounding_box", True)),
+                show_finger_states=bool(raw.get("show_finger_states", True)),
+                show_distance_meter=bool(raw.get("show_distance_meter", True)),
+                show_debug_panel=bool(raw.get("show_debug_panel", True)),
+                show_hud=bool(raw.get("show_hud", True)),
+                virtual_mouse_enabled=bool(raw.get("virtual_mouse_enabled", False)),
+                virtual_mouse_sensitivity=float(raw.get("virtual_mouse_sensitivity", 1.5)),
+                virtual_mouse_dead_zone=float(raw.get("virtual_mouse_dead_zone", 0.15)),
+                virtual_mouse_smoothing=float(raw.get("virtual_mouse_smoothing", 0.20)),
+                virtual_mouse_click_threshold=float(raw.get("virtual_mouse_click_threshold", 0.05)),
             )
 
         camera = raw.get("camera", {}) if isinstance(raw, dict) else {}
         ui = raw.get("ui", {}) if isinstance(raw, dict) else {}
+        vm = raw.get("virtual_mouse", {}) if isinstance(raw, dict) else {}
 
         return SettingsState(
             camera_index=int(camera.get("index", 0)),
             theme=self._normalize_theme(str(ui.get("theme", "dark"))),
             fps_limit=max(1, int(camera.get("fps", 30))),
+            show_landmarks=bool(ui.get("show_landmarks", True)),
+            show_connections=bool(ui.get("show_connections", True)),
+            show_bounding_box=bool(ui.get("show_bounding_box", True)),
+            show_finger_states=bool(ui.get("show_finger_states", True)),
+            show_distance_meter=bool(ui.get("show_distance_meter", True)),
+            show_debug_panel=bool(ui.get("show_debug_panel", True)),
+            show_hud=bool(ui.get("show_hud", True)),
+            virtual_mouse_enabled=bool(vm.get("enabled", False)),
+            virtual_mouse_sensitivity=float(vm.get("sensitivity", 1.5)),
+            virtual_mouse_dead_zone=float(vm.get("dead_zone", 0.15)),
+            virtual_mouse_smoothing=float(vm.get("smoothing", 0.20)),
+            virtual_mouse_click_threshold=float(vm.get("click_threshold", 0.05)),
         )
 
     def save(self) -> None:
@@ -75,6 +112,18 @@ class SettingsManager:
             "camera_index": self._state.camera_index,
             "theme": self._state.theme,
             "fps_limit": self._state.fps_limit,
+            "show_landmarks": self._state.show_landmarks,
+            "show_connections": self._state.show_connections,
+            "show_bounding_box": self._state.show_bounding_box,
+            "show_finger_states": self._state.show_finger_states,
+            "show_distance_meter": self._state.show_distance_meter,
+            "show_debug_panel": self._state.show_debug_panel,
+            "show_hud": self._state.show_hud,
+            "virtual_mouse_enabled": self._state.virtual_mouse_enabled,
+            "virtual_mouse_sensitivity": self._state.virtual_mouse_sensitivity,
+            "virtual_mouse_dead_zone": self._state.virtual_mouse_dead_zone,
+            "virtual_mouse_smoothing": self._state.virtual_mouse_smoothing,
+            "virtual_mouse_click_threshold": self._state.virtual_mouse_click_threshold,
         }
         with self.path.open("w", encoding="utf-8") as file:
             json.dump(payload, file, indent=2)
@@ -86,6 +135,18 @@ class SettingsManager:
         camera_index: int | None = None,
         theme: str | None = None,
         fps_limit: int | None = None,
+        show_landmarks: bool | None = None,
+        show_connections: bool | None = None,
+        show_bounding_box: bool | None = None,
+        show_finger_states: bool | None = None,
+        show_distance_meter: bool | None = None,
+        show_debug_panel: bool | None = None,
+        show_hud: bool | None = None,
+        virtual_mouse_enabled: bool | None = None,
+        virtual_mouse_sensitivity: float | None = None,
+        virtual_mouse_dead_zone: float | None = None,
+        virtual_mouse_smoothing: float | None = None,
+        virtual_mouse_click_threshold: float | None = None,
         save: bool = True,
     ) -> bool:
         changed = False
@@ -108,6 +169,26 @@ class SettingsManager:
                 self._state.fps_limit = normalized_fps
                 changed = True
 
+        for key, val in [
+            ("show_landmarks", show_landmarks),
+            ("show_connections", show_connections),
+            ("show_bounding_box", show_bounding_box),
+            ("show_finger_states", show_finger_states),
+            ("show_distance_meter", show_distance_meter),
+            ("show_debug_panel", show_debug_panel),
+            ("show_hud", show_hud),
+            ("virtual_mouse_enabled", virtual_mouse_enabled),
+            ("virtual_mouse_sensitivity", virtual_mouse_sensitivity),
+            ("virtual_mouse_dead_zone", virtual_mouse_dead_zone),
+            ("virtual_mouse_smoothing", virtual_mouse_smoothing),
+            ("virtual_mouse_click_threshold", virtual_mouse_click_threshold),
+        ]:
+            if val is not None:
+                current_val = getattr(self._state, key)
+                if val != current_val:
+                    setattr(self._state, key, val)
+                    changed = True
+
         if changed and save:
             self.save()
 
@@ -126,6 +207,18 @@ class SettingsManager:
         config.camera_index = self._state.camera_index
         config.camera_fps = self._state.fps_limit
         config.theme = self._state.theme
+        config.show_landmarks = self._state.show_landmarks
+        config.show_connections = self._state.show_connections
+        config.show_bounding_box = self._state.show_bounding_box
+        config.show_finger_states = self._state.show_finger_states
+        config.show_distance_meter = self._state.show_distance_meter
+        config.show_debug_panel = self._state.show_debug_panel
+        config.show_hud = self._state.show_hud
+        config.virtual_mouse_enabled = self._state.virtual_mouse_enabled
+        config.virtual_mouse_sensitivity = self._state.virtual_mouse_sensitivity
+        config.virtual_mouse_dead_zone = self._state.virtual_mouse_dead_zone
+        config.virtual_mouse_smoothing = self._state.virtual_mouse_smoothing
+        config.virtual_mouse_click_threshold = self._state.virtual_mouse_click_threshold
         return config
 
     def snapshot(self) -> SettingsState:
@@ -133,6 +226,18 @@ class SettingsManager:
             camera_index=self._state.camera_index,
             theme=self._state.theme,
             fps_limit=self._state.fps_limit,
+            show_landmarks=self._state.show_landmarks,
+            show_connections=self._state.show_connections,
+            show_bounding_box=self._state.show_bounding_box,
+            show_finger_states=self._state.show_finger_states,
+            show_distance_meter=self._state.show_distance_meter,
+            show_debug_panel=self._state.show_debug_panel,
+            show_hud=self._state.show_hud,
+            virtual_mouse_enabled=self._state.virtual_mouse_enabled,
+            virtual_mouse_sensitivity=self._state.virtual_mouse_sensitivity,
+            virtual_mouse_dead_zone=self._state.virtual_mouse_dead_zone,
+            virtual_mouse_smoothing=self._state.virtual_mouse_smoothing,
+            virtual_mouse_click_threshold=self._state.virtual_mouse_click_threshold,
         )
 
     def _normalize_theme(self, theme: str) -> str:

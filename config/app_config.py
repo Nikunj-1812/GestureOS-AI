@@ -37,8 +37,21 @@ class AppConfig:
     theme: str = "dark"
     overlay_opacity: float = 0.85
     show_landmarks: bool = True
+    show_connections: bool = True
+    show_bounding_box: bool = True
+    show_finger_states: bool = True
+    show_distance_meter: bool = True
+    show_debug_panel: bool = True
+    show_hud: bool = True
     show_fps: bool = True
     window_title: str = "GestureOS AI"
+
+    # Virtual Mouse
+    virtual_mouse_enabled: bool = False
+    virtual_mouse_sensitivity: float = 1.5
+    virtual_mouse_dead_zone: float = 0.15
+    virtual_mouse_smoothing: float = 0.20
+    virtual_mouse_click_threshold: float = 0.05
 
     # Logging
     log_level: str = "INFO"
@@ -59,6 +72,7 @@ class AppConfig:
         ges = raw.get("gestures", {})
         ui = raw.get("ui", {})
         log = raw.get("logging", {})
+        vm = raw.get("virtual_mouse", {})
 
         return cls(
             app_name=app.get("name", cls.app_name),
@@ -78,8 +92,19 @@ class AppConfig:
             theme=ui.get("theme", cls.theme),
             overlay_opacity=ui.get("overlay_opacity", cls.overlay_opacity),
             show_landmarks=ui.get("show_landmarks", cls.show_landmarks),
+            show_connections=ui.get("show_connections", cls.show_connections),
+            show_bounding_box=ui.get("show_bounding_box", cls.show_bounding_box),
+            show_finger_states=ui.get("show_finger_states", cls.show_finger_states),
+            show_distance_meter=ui.get("show_distance_meter", cls.show_distance_meter),
+            show_debug_panel=ui.get("show_debug_panel", cls.show_debug_panel),
+            show_hud=ui.get("show_hud", cls.show_hud),
             show_fps=ui.get("show_fps", cls.show_fps),
             window_title=ui.get("window_title", cls.window_title),
+            virtual_mouse_enabled=bool(vm.get("enabled", cls.virtual_mouse_enabled)),
+            virtual_mouse_sensitivity=float(vm.get("sensitivity", cls.virtual_mouse_sensitivity)),
+            virtual_mouse_dead_zone=float(vm.get("dead_zone", cls.virtual_mouse_dead_zone)),
+            virtual_mouse_smoothing=float(vm.get("smoothing", cls.virtual_mouse_smoothing)),
+            virtual_mouse_click_threshold=float(vm.get("click_threshold", cls.virtual_mouse_click_threshold)),
             log_level=log.get("level", cls.log_level),
             log_dir=log.get("dir", cls.log_dir),
         )

@@ -141,16 +141,9 @@ class SidebarNav(ctk.CTkFrame):
                 )
 
             # ── Nav button ─────────────────────────────────────────
-            icon_box = ctk.CTkFrame(
-                scroll_frame,
-                width=28,
-                height=28,
-                corner_radius=10,
-                fg_color=COLORS["surface0"],
-            )
             btn = ctk.CTkButton(
                 scroll_frame,
-                text=f"  {page['icon']}   {page['label']}",
+                text=f"      {page['label']}",
                 font=ctk.CTkFont(*FONTS["nav_item"]),
                 anchor="w",
                 height=SIZES["nav_item_h"],
@@ -166,8 +159,18 @@ class SidebarNav(ctk.CTkFrame):
                 column=0,
                 sticky="ew",
                 padx=12,
-                pady=3,
+                pady=10,  # Spacing between menu items increased to 10px
             )
+
+            icon_lbl = ctk.CTkLabel(
+                btn,
+                text=page["icon"],
+                font=ctk.CTkFont("Segoe UI", 16, "bold"),  # Icon size slightly increased to 16px
+                text_color=COLORS["subtext1"],
+                fg_color="transparent",
+            )
+            icon_lbl.place(x=16, rely=0.5, anchor="w")
+
             self._nav_buttons[page["key"]] = btn
 
         # Set initial active item
@@ -234,6 +237,10 @@ class SidebarNav(ctk.CTkFrame):
                 text_color=COLORS["subtext1"],
                 font=ctk.CTkFont(*FONTS["nav_item"]),
             )
+            # Reset previous icon label color
+            for child in prev.winfo_children():
+                if isinstance(child, ctk.CTkLabel):
+                    child.configure(text_color=COLORS["subtext1"])
 
         # Highlight new
         self._active_key = key
@@ -244,6 +251,10 @@ class SidebarNav(ctk.CTkFrame):
                 text_color=COLORS["nav_active"],
                 font=ctk.CTkFont(*FONTS["nav_active"]),
             )
+            # Highlight active icon label color
+            for child in btn.winfo_children():
+                if isinstance(child, ctk.CTkLabel):
+                    child.configure(text_color=COLORS["nav_active"])
 
     # ──────────────────────────────────────────────────────────────
     # Responsive sizing
@@ -264,4 +275,7 @@ class SidebarNav(ctk.CTkFrame):
             if not btn:
                 continue
             label = page["label"] if not compact else page["label"].split()[0]
-            btn.configure(text=f"  {page['icon']}   {label}")
+            btn.configure(text=f"      {label}")
+            for child in btn.winfo_children():
+                if isinstance(child, ctk.CTkLabel):
+                    child.place(x=12 if compact else 16, rely=0.5, anchor="w")

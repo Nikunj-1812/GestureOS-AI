@@ -27,7 +27,7 @@ class FooterBar(ctk.CTkFrame):
             **kwargs,
         )
         self.grid_propagate(False)
-        self.grid_columnconfigure((0, 1, 2, 3), weight=1)
+        self.grid_columnconfigure((0, 1, 2, 3, 4), weight=1)
 
         self._build()
 
@@ -38,19 +38,22 @@ class FooterBar(ctk.CTkFrame):
             fg_color=COLORS["divider"],
             corner_radius=0,
         )
-        border.grid(row=0, column=0, columnspan=4, sticky="ew")
+        border.grid(row=0, column=0, columnspan=5, sticky="ew")
 
         self._fps_tile = _MetricTile(self, "FPS", "--", COLORS["blue"])
-        self._fps_tile.grid(row=1, column=0, sticky="ew", padx=(12, 6), pady=8)
+        self._fps_tile.grid(row=1, column=0, sticky="ew", padx=(12, 4), pady=6)
 
         self._camera_tile = _MetricTile(self, "Camera", "Disconnected", COLORS["red"])
-        self._camera_tile.grid(row=1, column=1, sticky="ew", padx=6, pady=8)
-
-        self._hand_tile = _MetricTile(self, "Hand", "Not Detected", COLORS["yellow"])
-        self._hand_tile.grid(row=1, column=2, sticky="ew", padx=6, pady=8)
+        self._camera_tile.grid(row=1, column=1, sticky="ew", padx=4, pady=6)
 
         self._model_tile = _MetricTile(self, "Model", "Not Loaded", COLORS["overlay0"])
-        self._model_tile.grid(row=1, column=3, sticky="ew", padx=(6, 12), pady=8)
+        self._model_tile.grid(row=1, column=2, sticky="ew", padx=4, pady=6)
+
+        self._gesture_tile = _MetricTile(self, "Gesture", "None", COLORS["overlay1"])
+        self._gesture_tile.grid(row=1, column=3, sticky="ew", padx=4, pady=6)
+
+        self._system_tile = _MetricTile(self, "System Status", "Ready", COLORS["green"])
+        self._system_tile.grid(row=1, column=4, sticky="ew", padx=(4, 12), pady=6)
 
     def set_fps(self, fps: float) -> None:
         """Updates the FPS metric."""
@@ -61,53 +64,37 @@ class FooterBar(ctk.CTkFrame):
 
     def set_camera_status(self, status: str) -> None:
         """Updates the camera status metric."""
-        self._set_metric(
-            self._camera_tile,
-            status,
-            {
-                "Connected": COLORS["green"],
-                "Disconnected": COLORS["red"],
-                "Starting": COLORS["yellow"],
-                "Error": COLORS["red"],
-            },
-            default_color=COLORS["overlay0"],
-        )
+        color = COLORS["green"] if "Connected" in status else COLORS["yellow"] if "Starting" in status else COLORS["red"]
+        self._camera_tile.set_value(status)
+        self._camera_tile.set_accent(color)
 
     def set_hand_status(self, status: str) -> None:
-        """Updates the hand detection status metric."""
-        self._set_metric(
-            self._hand_tile,
-            status,
-            {
-                "Detected": COLORS["green"],
-                "Searching": COLORS["yellow"],
-                "Not Detected": COLORS["overlay0"],
-            },
-            default_color=COLORS["overlay0"],
-        )
+        """Updates the hand detection status metric in the System Status tile."""
+        color = COLORS["green"] if "Detected" in status else COLORS["overlay0"]
+        self._system_tile.set_value(status)
+        self._system_tile.set_accent(color)
 
     def set_model_status(self, status: str) -> None:
         """Updates the model status metric."""
-        self._set_metric(
-            self._model_tile,
-            status,
-            {
-                "Loaded": COLORS["green"],
-                "Loading": COLORS["yellow"],
-                "Not Loaded": COLORS["overlay0"],
-                "Error": COLORS["red"],
-            },
-            default_color=COLORS["overlay0"],
-        )
+        color = COLORS["green"] if "Loaded" in status else COLORS["red"]
+        self._model_tile.set_value(status)
+        self._model_tile.set_accent(color)
+
+    def set_gesture(self, gesture: str, confidence: float) -> None:
+        """Updates the current gesture metric."""
+        if gesture in ("None", "unknown", "No Model"):
+            self._gesture_tile.set_value(gesture)
+            self._gesture_tile.set_accent(COLORS["overlay1"])
+        else:
+            display_text = f"{gesture.replace('_', ' ').title()} ({confidence * 100:.0f}%)"
+            self._gesture_tile.set_value(display_text)
+            self._gesture_tile.set_accent(COLORS["green"])
 
     def set_status(self, message: str, level: str = "ok") -> None:
         """Compatibility helper for older callers."""
-        self.set_camera_status(message)
-
-    def _set_metric(self, tile: "_MetricTile", value: str, palette: dict[str, str], default_color: str) -> None:
-        normalized = value.strip()
-        tile.set_value(normalized)
-        tile.set_accent(palette.get(normalized, default_color))
+        self._system_tile.set_value(message)
+        color = COLORS["status_ok"] if level == "ok" else COLORS["status_warn"] if level == "warn" else COLORS["status_err"] if level == "err" else COLORS["overlay0"]
+        self._system_tile.set_accent(color)
 
 
 class _MetricTile(ctk.CTkFrame):
@@ -136,7 +123,7 @@ class _MetricTile(ctk.CTkFrame):
         self._value = ctk.CTkLabel(
             self,
             text=value,
-            font=ctk.CTkFont(*FONTS["footer"]),
+            font=ctk.CTkFont(*FONTS["body_bold"]),
             text_color=accent,
             anchor="w",
         )

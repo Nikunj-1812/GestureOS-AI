@@ -53,7 +53,7 @@ class TopHeader(ctk.CTkFrame):
             border_width=1,
             border_color=COLORS["divider"],
         )
-        logo_box.grid(row=0, column=0, rowspan=2, sticky="w", padx=(0, 14), pady=15)
+        logo_box.grid(row=0, column=0, rowspan=2, sticky="w", padx=(0, 14), pady=10)
         logo_box.grid_propagate(False)
 
         ctk.CTkLabel(
@@ -64,7 +64,7 @@ class TopHeader(ctk.CTkFrame):
         ).place(relx=0.5, rely=0.5, anchor="center")
 
         title_row = ctk.CTkFrame(left, fg_color="transparent")
-        title_row.grid(row=0, column=1, sticky="w", pady=(14, 0))
+        title_row.grid(row=0, column=1, sticky="w", pady=(10, 0))
 
         ctk.CTkLabel(
             title_row,
@@ -90,7 +90,7 @@ class TopHeader(ctk.CTkFrame):
             value=self._profile_name,
             accent=COLORS["blue"],
         )
-        self._profile_chip.grid(row=0, column=1, sticky="e", padx=8, pady=16)
+        self._profile_chip.grid(row=0, column=1, sticky="e", padx=8, pady=12)
 
         self._mode_chip = _InfoChip(
             self,
@@ -99,16 +99,16 @@ class TopHeader(ctk.CTkFrame):
             value=self._mode_name,
             accent=COLORS["green"],
         )
-        self._mode_chip.grid(row=0, column=2, sticky="e", padx=(0, 8), pady=16)
+        self._mode_chip.grid(row=0, column=2, sticky="e", padx=(0, 8), pady=12)
 
         right = ctk.CTkFrame(self, fg_color="transparent")
         right.grid(row=0, column=3, sticky="e", padx=(0, 20), pady=0)
 
         self._notifications_btn = _ActionButton(right, text="🔔")
-        self._notifications_btn.grid(row=0, column=0, padx=(0, 8), pady=20)
+        self._notifications_btn.grid(row=0, column=0, padx=(0, 8), pady=12)
 
         self._settings_btn = _ActionButton(right, text="⚙")
-        self._settings_btn.grid(row=0, column=1, padx=(0, 10), pady=20)
+        self._settings_btn.grid(row=0, column=1, padx=(0, 10), pady=12)
 
         self._exit_btn = ctk.CTkButton(
             right,
@@ -122,7 +122,7 @@ class TopHeader(ctk.CTkFrame):
             text_color=COLORS["rosewater"],
             command=self._exit_app,
         )
-        self._exit_btn.grid(row=0, column=2, pady=20)
+        self._exit_btn.grid(row=0, column=2, pady=12)
 
         border = ctk.CTkFrame(
             self,

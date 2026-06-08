@@ -5,8 +5,8 @@
 
 gestures:
   open_palm:
-    action: "screenshot"
-    description: "Take a screenshot"
+    action: "none"
+    description: "None / Disabled"
 
   fist:
     action: "lock_screen"

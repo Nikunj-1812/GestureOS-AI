@@ -91,9 +91,9 @@ FONTS = {
 SIZES = {
     "window_w":      1920,
     "window_h":      1080,
-    "sidebar_w":     240,
-    "header_h":      76,
-    "footer_h":      32,
+    "sidebar_w":     280,
+    "header_h":      80,
+    "footer_h":      60,
     "nav_item_h":    44,
     "nav_icon_w":    32,
     "card_radius":   12,

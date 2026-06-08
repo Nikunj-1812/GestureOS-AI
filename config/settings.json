@@ -1,5 +1,17 @@
 {
   "camera_index": 0,
   "theme": "dark",
-  "fps_limit": 30
+  "fps_limit": 30,
+  "show_landmarks": false,
+  "show_connections": false,
+  "show_bounding_box": false,
+  "show_finger_states": false,
+  "show_distance_meter": false,
+  "show_debug_panel": false,
+  "show_hud": false,
+  "virtual_mouse_enabled": false,
+  "virtual_mouse_sensitivity": 1.8,
+  "virtual_mouse_dead_zone": 0.16,
+  "virtual_mouse_smoothing": 0.31,
+  "virtual_mouse_click_threshold": 0.04
 }

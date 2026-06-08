@@ -15,14 +15,44 @@ softmax is implemented inline with numpy in two lines.
 
 from __future__ import annotations
 
+import os
+import sys
+import io
+import time
 from collections import deque
 from pathlib import Path
+from contextlib import contextmanager
 
 import numpy as np
 import onnxruntime as ort
 from loguru import logger
 
 from modules.hand_detector import HandLandmarks
+
+
+@contextmanager
+def silence_stderr():
+    """Temporarily redirect stderr to devnull to silence C++ library spam."""
+    try:
+        stderr_fd = sys.stderr.fileno()
+    except (AttributeError, io.UnsupportedOperation):
+        yield
+        return
+
+    try:
+        dup_stderr = os.dup(stderr_fd)
+        devnull = os.open(os.devnull, os.O_WRONLY)
+        os.dup2(devnull, stderr_fd)
+        try:
+            yield
+        finally:
+            # Sleep briefly while stderr is still redirected to capture trailing async logs
+            time.sleep(0.2)
+            os.dup2(dup_stderr, stderr_fd)
+            os.close(dup_stderr)
+            os.close(devnull)
+    except Exception:
+        yield
 
 
 def _softmax(logits: np.ndarray) -> np.ndarray:
@@ -71,7 +101,8 @@ class GestureEngine:
             )
             return
 
-        self._session = ort.InferenceSession(str(path))
+        with silence_stderr():
+            self._session = ort.InferenceSession(str(path))
         logger.info(f"Loaded gesture model: {self.model_path}")
 
         # Load companion label file produced by train_model.py

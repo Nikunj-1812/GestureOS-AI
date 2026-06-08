@@ -57,6 +57,7 @@ class CameraStream:
 
         self._cap:    cv2.VideoCapture | None = None
         self._frame:  np.ndarray | None = None
+        self._frame_id: int = 0
         self._lock    = threading.Lock()
         self._running = False
         self._thread: threading.Thread | None = None
@@ -100,6 +101,7 @@ class CameraStream:
             if ret:
                 with self._lock:
                     self._frame = frame
+                    self._frame_id += 1
             else:
                 # Failed read — back off briefly to avoid CPU spin
                 time.sleep(0.05)
@@ -109,6 +111,12 @@ class CameraStream:
         """Return a copy of the most recent captured frame, or None."""
         with self._lock:
             return self._frame.copy() if self._frame is not None else None
+
+    @property
+    def frame_id(self) -> int:
+        """Return the monotonic ID of the current frame."""
+        with self._lock:
+            return self._frame_id
 
     # ------------------------------------------------------------------ #
     def stop(self) -> None:
