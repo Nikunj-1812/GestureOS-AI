@@ -1,0 +1,36 @@
+# ──────────────────────────────────────────
+# GestureOS AI — Application Settings
+# ──────────────────────────────────────────
+
+app:
+  name: "GestureOS AI"
+  version: "1.0.0"
+  debug: false
+
+camera:
+  index: 0          # 0 = laptop built-in | 1 = external webcam | 2 = other external
+  width: 1280
+  height: 720
+  fps: 30
+  flip_horizontal: true
+
+model:
+  dir: "models/weights"
+  default: "gesture_classifier_v1.onnx"
+  confidence_threshold: 0.75
+  device: "cpu"          # cpu | cuda | mps
+
+gestures:
+  smoothing_frames: 5    # Temporal smoothing window
+  hold_duration_ms: 400  # ms to hold a gesture before triggering
+
+ui:
+  theme: "dark"          # dark | light
+  overlay_opacity: 0.85
+  show_landmarks: true
+  show_fps: true
+  window_title: "GestureOS AI"
+
+logging:
+  level: "INFO"
+  dir: "logs"

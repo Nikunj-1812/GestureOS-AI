@@ -1,0 +1,2 @@
+# Processed, feature-extracted data ready for training.
+# Typical format: landmarks_dataset.csv with columns [x0,y0,z0,...,x20,y20,z20, label]

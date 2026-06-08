@@ -1,0 +1,62 @@
+# ──────────────────────────────────────────────────────────────────
+# GestureOS AI — Python Dependencies
+# Target: Python 3.14 / Windows / .venv
+#
+# Install order:
+#   1. pip install -r requirements.txt          (core + dashboard)
+#   2. pip install torch torchvision torchaudio \
+#        --index-url https://download.pytorch.org/whl/cpu  (training only)
+# ──────────────────────────────────────────────────────────────────
+
+# ── UI Framework ──────────────────────────────────────────────────
+# Pure Python — Python 3.14 compatible
+customtkinter==5.2.2
+
+# ── Computer Vision & Image Processing ───────────────────────────
+# NOTE: pinned versions pre-date cp314 wheels.
+# The .venv already has opencv-contrib-python 4.13 & mediapipe 0.10.35
+# which ARE compatible. Let pip resolve to the already-installed versions.
+# Use >= so existing newer installs are accepted without re-download.
+opencv-python>=4.10.0
+mediapipe>=0.10.21
+Pillow>=10.3.0
+
+# ── ONNX Runtime (inference) ─────────────────────────────────────
+# onnxruntime 1.24.1+ ships cp314 wheels for Windows.
+# Use >= so the resolver picks the latest compatible wheel.
+onnxruntime>=1.24.1
+
+# ── Data & Numerics ───────────────────────────────────────────────
+numpy>=1.26.4
+pandas>=2.2.0                # training / dataset_loader.py only
+
+# ── OS Control & Automation ───────────────────────────────────────
+# Pure Python — Python 3.14 compatible
+pyautogui==0.9.54
+
+# ── Configuration ─────────────────────────────────────────────────
+PyYAML==6.0.1
+python-dotenv==1.0.1
+
+# ── Logging & Utilities ───────────────────────────────────────────
+# Pure Python — Python 3.14 compatible
+loguru==0.7.2
+tqdm==4.66.4
+rich==13.7.1
+
+# ── Testing ───────────────────────────────────────────────────────
+pytest==8.2.2
+pytest-cov==5.0.0
+
+# ──────────────────────────────────────────────────────────────────
+# NOT included here — install separately (large, optional):
+#
+#   torch / torchvision / torchaudio  (training scripts only)
+#   Install via:
+#     pip install torch torchvision torchaudio \
+#       --index-url https://download.pytorch.org/whl/cpu
+#
+# NOT included — confirmed unused in source code:
+#   PyQt6, pyqtgraph, pynput, keyboard, scipy, seaborn, matplotlib
+#   scikit-learn  (listed but zero imports found)
+# ──────────────────────────────────────────────────────────────────

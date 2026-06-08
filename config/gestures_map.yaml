@@ -1,0 +1,41 @@
+# ──────────────────────────────────────────
+# GestureOS AI — Gesture-to-Action Mapping
+# Each gesture label maps to an OS action
+# ──────────────────────────────────────────
+
+gestures:
+  open_palm:
+    action: "screenshot"
+    description: "Take a screenshot"
+
+  fist:
+    action: "lock_screen"
+    description: "Lock the screen"
+
+  thumbs_up:
+    action: "volume_up"
+    description: "Increase system volume"
+
+  thumbs_down:
+    action: "volume_down"
+    description: "Decrease system volume"
+
+  peace_sign:
+    action: "switch_window"
+    description: "Alt+Tab window switch"
+
+  point_up:
+    action: "scroll_up"
+    description: "Scroll up"
+
+  point_down:
+    action: "scroll_down"
+    description: "Scroll down"
+
+  swipe_left:
+    action: "prev_workspace"
+    description: "Move to previous virtual desktop"
+
+  swipe_right:
+    action: "next_workspace"
+    description: "Move to next virtual desktop"

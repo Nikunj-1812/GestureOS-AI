@@ -1,0 +1,4 @@
+# Place trained model weights here.
+# Expected files:
+#   gesture_classifier_v1.onnx
+#   gesture_classifier_v1.txt   (one label per line)
