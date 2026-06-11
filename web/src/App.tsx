@@ -30,6 +30,20 @@ interface TelemetryData {
   cursor_x?: number;
   cursor_y?: number;
   tracking_state?: string;
+  pinch_distance?: number;
+  click_status?: string;
+  click_counter?: number;
+  current_action?: string;
+  right_click_status?: string;
+  right_click_counter?: number;
+  right_pinch_distance?: number;
+  scroll_mode?: boolean;
+  scroll_direction?: string;
+  scroll_speed?: number;
+  scroll_counter?: number;
+  volume_mode?: boolean;
+  volume_level?: number;
+  volume_distance?: number;
 }
 
 interface EventLog {
@@ -64,6 +78,11 @@ export default function App() {
   const [cursorY, setCursorY] = useState<number>(0);
   const [trackingState, setTrackingState] = useState<string>('Disabled');
 
+  // Volume Control States
+  const [volumeMode, setVolumeMode] = useState<boolean>(false);
+  const [volumeLevel, setVolumeLevel] = useState<number>(0);
+  const [volumeDistance, setVolumeDistance] = useState<number>(0.0);
+
   // Switches State
   const [showLandmarks, setShowLandmarks] = useState<boolean>(true);
   const [showConnections, setShowConnections] = useState<boolean>(true);
@@ -74,6 +93,7 @@ export default function App() {
   const [showHud, setShowHud] = useState<boolean>(true);
 
   const prevGestureRef = useRef<string>('None');
+  const prevVolumeLevelRef = useRef<number>(-1);
   const socketRef = useRef<WebSocket | null>(null);
   const eventIdCounterRef = useRef<number>(0);
 
@@ -104,6 +124,28 @@ export default function App() {
           setCursorX(data.cursor_x || 0);
           setCursorY(data.cursor_y || 0);
           setTrackingState(data.tracking_state || 'Disabled');
+          setVolumeMode(data.volume_mode || false);
+          setVolumeLevel(data.volume_level || 0);
+          setVolumeDistance(data.volume_distance || 0.0);
+
+          // Log volume changes
+          if (data.volume_mode && data.volume_level !== prevVolumeLevelRef.current) {
+            if (data.volume_level !== undefined) {
+              const timeString = new Date().toLocaleTimeString();
+              eventIdCounterRef.current += 1;
+              const newEvent: EventLog = {
+                id: `${Date.now()}-${eventIdCounterRef.current}`,
+                timestamp: timeString,
+                gesture: 'Volume',
+                confidence: 1.0,
+                action: `[VOLUME] ${data.volume_level}% (Distance: ${data.volume_distance?.toFixed(1)}px)`
+              };
+              setEvents(prev => [newEvent, ...prev].slice(0, 50));
+              prevVolumeLevelRef.current = data.volume_level;
+            }
+          } else if (!data.volume_mode) {
+            prevVolumeLevelRef.current = -1;
+          }
 
           // If gesture changed and is not None or unknown, add to recent events
           if (data.gesture !== prevGestureRef.current) {
@@ -724,10 +766,28 @@ export default function App() {
                             {trackingState}
                           </span>
                         </div>
-                        <div className="flex justify-between items-center text-sm">
+                        <div className="flex justify-between items-center text-sm border-b border-glass-border pb-2">
                           <span className="text-gray-400">Stream FPS</span>
                           <span className="font-mono font-bold text-white">
                             {fps > 0 ? `${fps.toFixed(1)} FPS` : '-- FPS'}
+                          </span>
+                        </div>
+                        <div className="flex justify-between items-center text-sm border-b border-glass-border pb-2">
+                          <span className="text-gray-400">Volume Mode Status</span>
+                          <span className={`font-semibold ${volumeMode ? 'text-purple-400 animate-pulse' : 'text-gray-400'}`}>
+                            {volumeMode ? 'ACTIVE' : 'INACTIVE'}
+                          </span>
+                        </div>
+                        <div className="flex justify-between items-center text-sm border-b border-glass-border pb-2">
+                          <span className="text-gray-400">Current Volume Level</span>
+                          <span className="font-mono font-bold text-purple-400">
+                            {volumeLevel}%
+                          </span>
+                        </div>
+                        <div className="flex justify-between items-center text-sm">
+                          <span className="text-gray-400">Hand Distance (Thumb-Pinky)</span>
+                          <span className="font-mono font-bold text-white">
+                            {volumeMode ? `${volumeDistance.toFixed(1)} px` : '-- px'}
                           </span>
                         </div>
                       </div>

@@ -52,6 +52,16 @@ class AppConfig:
     virtual_mouse_dead_zone: float = 0.15
     virtual_mouse_smoothing: float = 0.20
     virtual_mouse_click_threshold: float = 0.05
+    virtual_mouse_right_click_threshold: float = 0.05  # Phase 3.3: thumb-middle pinch
+    virtual_mouse_scroll_sensitivity: float = 5.0      # Phase 3.4: scroll speed multiplier
+    virtual_mouse_scroll_dead_zone: float = 0.04       # Phase 3.4: min Y-delta to scroll
+    virtual_mouse_scroll_smoothing: float = 0.25       # Phase 3.4: EMA alpha for scroll vel
+    virtual_mouse_volume_min_distance_px: float = 30.0 # Phase 3.4: distance for 0% volume
+    virtual_mouse_volume_max_distance_px: float = 250.0 # Phase 3.4: distance for 100% volume
+    virtual_mouse_volume_smoothing: float = 0.15       # Phase 3.4: EMA alpha for volume smoothing
+    virtual_mouse_brightness_min_distance_px: float = 30.0 # Phase 3.5: distance for 0% brightness
+    virtual_mouse_brightness_max_distance_px: float = 250.0 # Phase 3.5: distance for 100% brightness
+    virtual_mouse_brightness_smoothing: float = 0.15       # Phase 3.5: EMA alpha for brightness smoothing
 
     # Logging
     log_level: str = "INFO"
@@ -105,6 +115,16 @@ class AppConfig:
             virtual_mouse_dead_zone=float(vm.get("dead_zone", cls.virtual_mouse_dead_zone)),
             virtual_mouse_smoothing=float(vm.get("smoothing", cls.virtual_mouse_smoothing)),
             virtual_mouse_click_threshold=float(vm.get("click_threshold", cls.virtual_mouse_click_threshold)),
+            virtual_mouse_right_click_threshold=float(vm.get("right_click_threshold", cls.virtual_mouse_right_click_threshold)),
+            virtual_mouse_scroll_sensitivity=float(vm.get("scroll_sensitivity", cls.virtual_mouse_scroll_sensitivity)),
+            virtual_mouse_scroll_dead_zone=float(vm.get("scroll_dead_zone", cls.virtual_mouse_scroll_dead_zone)),
+            virtual_mouse_scroll_smoothing=float(vm.get("scroll_smoothing", cls.virtual_mouse_scroll_smoothing)),
+            virtual_mouse_volume_min_distance_px=float(vm.get("volume_min_distance_px", cls.virtual_mouse_volume_min_distance_px)),
+            virtual_mouse_volume_max_distance_px=float(vm.get("volume_max_distance_px", cls.virtual_mouse_volume_max_distance_px)),
+            virtual_mouse_volume_smoothing=float(vm.get("volume_smoothing", cls.virtual_mouse_volume_smoothing)),
+            virtual_mouse_brightness_min_distance_px=float(vm.get("brightness_min_distance_px", cls.virtual_mouse_brightness_min_distance_px)),
+            virtual_mouse_brightness_max_distance_px=float(vm.get("brightness_max_distance_px", cls.virtual_mouse_brightness_max_distance_px)),
+            virtual_mouse_brightness_smoothing=float(vm.get("brightness_smoothing", cls.virtual_mouse_brightness_smoothing)),
             log_level=log.get("level", cls.log_level),
             log_dir=log.get("dir", cls.log_dir),
         )

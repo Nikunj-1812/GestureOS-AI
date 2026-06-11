@@ -301,6 +301,102 @@ def test_return_dict_structure():
     result = vm.process_hand(None)
     expected_keys = {
         "cursor_x", "cursor_y", "tracking_state",
-        "pinch_distance", "click_status", "click_counter", "current_action"
+        "pinch_distance", "click_status", "click_counter", "current_action",
+        "right_click_status", "right_click_counter", "right_pinch_distance",
+        "scroll_mode", "scroll_direction", "scroll_speed", "scroll_counter",
+        "volume_mode", "volume_level", "volume_distance",
+        "active_mode", "brightness_mode", "brightness_level", "brightness_distance"
     }
     assert set(result.keys()) == expected_keys
+
+
+def test_volume_gesture_activation():
+    """Verify that volume mode is activated when only thumb and pinky are extended."""
+    vm = VirtualMouse(enabled=True)
+    # Set all fingers folded (Y coordinates below PIP joints)
+    lm = [(0.5, 0.5, 0.0) for _ in range(21)]
+    # Set PIP joints Y
+    lm[3] = (0.5, 0.5, 0.0) # thumb IP
+    lm[6] = (0.5, 0.5, 0.0) # index PIP
+    lm[10] = (0.5, 0.5, 0.0) # middle PIP
+    lm[14] = (0.5, 0.5, 0.0) # ring PIP
+    lm[18] = (0.5, 0.5, 0.0) # pinky PIP
+
+    # Fold Index, Middle, Ring
+    lm[8] = (0.5, 0.6, 0.0)   # Index tip below PIP
+    lm[12] = (0.5, 0.6, 0.0)  # Middle tip below PIP
+    lm[16] = (0.5, 0.6, 0.0)  # Ring tip below PIP
+
+    # Extend Pinky (tip Y < PIP Y)
+    lm[20] = (0.5, 0.4, 0.0)
+
+    # Extend Thumb (distance tip-wrist > IP-wrist + 0.04)
+    # Wrist is at 0: (0.5, 0.9, 0.0)
+    lm[0] = (0.5, 0.9, 0.0)   # Wrist
+    lm[3] = (0.5, 0.7, 0.0)   # IP
+    lm[4] = (0.5, 0.6, 0.0)   # Tip
+
+    hand = _make_hand(lm)
+    result = vm.process_hand(hand, frame_w=1000, frame_h=1000)
+    assert result["volume_mode"] is True
+    assert result["current_action"].startswith("Volume")
+
+
+def test_mode_manager_priority_and_cooldown():
+    from modules.mode_manager import ModeManager
+    mm = ModeManager(cooldown_ms=300.0)
+    assert mm.current_mode == "CURSOR"
+
+    # Priority Test: If multiple gestures are active, higher priority wins
+    # BRIGHTNESS > VOLUME > SCROLL > CLICK > CURSOR
+    mode = mm.update_mode(brightness_gesture=True, volume_gesture=True, scroll_gesture=True, click_gesture=True)
+    assert mode == "BRIGHTNESS"
+    assert mm.current_mode == "BRIGHTNESS"
+
+    # Cooldown Test: Try to switch immediately to VOLUME (should be blocked by 300ms cooldown)
+    mode2 = mm.update_mode(brightness_gesture=False, volume_gesture=True, scroll_gesture=False, click_gesture=False)
+    assert mode2 == "BRIGHTNESS"
+
+    # Advance time by resetting last_mode_change_time
+    mm.last_mode_change_time = 0.0
+    mode3 = mm.update_mode(brightness_gesture=False, volume_gesture=True, scroll_gesture=False, click_gesture=False)
+    assert mode3 == "VOLUME"
+    assert mm.current_mode == "VOLUME"
+
+
+def test_brightness_gesture_activation():
+    vm = VirtualMouse(enabled=True)
+    # Set all fingers folded (Y coordinates below PIP joints)
+    lm = [(0.5, 0.5, 0.0) for _ in range(21)]
+    # Set PIP joints Y
+    lm[3] = (0.5, 0.5, 0.0) # thumb IP
+    lm[6] = (0.5, 0.5, 0.0) # index PIP
+    lm[10] = (0.5, 0.5, 0.0) # middle PIP
+    lm[14] = (0.5, 0.5, 0.0) # ring PIP
+    lm[18] = (0.5, 0.5, 0.0) # pinky PIP
+
+    # Fold Middle, Ring
+    lm[12] = (0.5, 0.6, 0.0)  # Middle tip Y below PIP Y
+    lm[16] = (0.5, 0.6, 0.0)  # Ring tip Y below PIP Y
+
+    # Extend Index (tip Y < PIP Y)
+    lm[8] = (0.5, 0.4, 0.0)
+
+    # Extend Pinky (tip Y < PIP Y)
+    lm[20] = (0.5, 0.4, 0.0)
+
+    # Extend Thumb (distance tip-wrist > IP-wrist + 0.04)
+    lm[0] = (0.5, 0.9, 0.0)   # Wrist Y
+    lm[3] = (0.5, 0.7, 0.0)   # IP Y
+    lm[4] = (0.5, 0.6, 0.0)   # Tip Y
+
+    hand = _make_hand(lm)
+    # Bypass WMI setting/getting by forcing a mock sbc
+    with patch("screen_brightness_control.get_brightness", return_value=[50]) as mock_get, \
+         patch("screen_brightness_control.set_brightness") as mock_set:
+        # Re-initialize sbc inside controller to bind mock
+        vm._brightness_controller._initialize_sbc()
+        result = vm.process_hand(hand, frame_w=1000, frame_h=1000)
+        assert result["brightness_mode"] is True
+        assert result["current_action"].startswith("Brightness")
+

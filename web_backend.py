@@ -66,6 +66,13 @@ virtual_mouse = VirtualMouse(
     dead_zone=config.virtual_mouse_dead_zone,
     smoothing=config.virtual_mouse_smoothing,
     click_threshold=getattr(config, 'virtual_mouse_click_threshold', 0.05),
+    right_click_threshold=getattr(config, 'virtual_mouse_right_click_threshold', 0.05),
+    scroll_sensitivity=getattr(config, 'virtual_mouse_scroll_sensitivity', 5.0),
+    scroll_dead_zone=getattr(config, 'virtual_mouse_scroll_dead_zone', 0.04),
+    scroll_smoothing=getattr(config, 'virtual_mouse_scroll_smoothing', 0.25),
+    volume_min_distance_px=getattr(config, 'virtual_mouse_volume_min_distance_px', 30.0),
+    volume_max_distance_px=getattr(config, 'virtual_mouse_volume_max_distance_px', 250.0),
+    volume_smoothing=getattr(config, 'virtual_mouse_volume_smoothing', 0.15),
 )
 
 camera_running = False
@@ -158,6 +165,16 @@ def api_get_settings():
         "virtual_mouse_dead_zone": state.virtual_mouse_dead_zone,
         "virtual_mouse_smoothing": state.virtual_mouse_smoothing,
         "virtual_mouse_click_threshold": getattr(state, 'virtual_mouse_click_threshold', 0.05),
+        "virtual_mouse_right_click_threshold": getattr(state, 'virtual_mouse_right_click_threshold', 0.05),
+        "virtual_mouse_scroll_sensitivity": getattr(state, 'virtual_mouse_scroll_sensitivity', 5.0),
+        "virtual_mouse_scroll_dead_zone": getattr(state, 'virtual_mouse_scroll_dead_zone', 0.04),
+        "virtual_mouse_scroll_smoothing": getattr(state, 'virtual_mouse_scroll_smoothing', 0.25),
+        "virtual_mouse_volume_min_distance_px": getattr(state, 'virtual_mouse_volume_min_distance_px', 30.0),
+        "virtual_mouse_volume_max_distance_px": getattr(state, 'virtual_mouse_volume_max_distance_px', 250.0),
+        "virtual_mouse_volume_smoothing": getattr(state, 'virtual_mouse_volume_smoothing', 0.15),
+        "virtual_mouse_brightness_min_distance_px": getattr(state, 'virtual_mouse_brightness_min_distance_px', 30.0),
+        "virtual_mouse_brightness_max_distance_px": getattr(state, 'virtual_mouse_brightness_max_distance_px', 250.0),
+        "virtual_mouse_brightness_smoothing": getattr(state, 'virtual_mouse_brightness_smoothing', 0.15),
     }
 
 @app.post("/api/settings/update")
@@ -170,7 +187,10 @@ def api_update_settings(updates: dict):
     ]
     float_keys = [
         "virtual_mouse_sensitivity", "virtual_mouse_dead_zone", "virtual_mouse_smoothing",
-        "virtual_mouse_click_threshold"
+        "virtual_mouse_click_threshold", "virtual_mouse_right_click_threshold",
+        "virtual_mouse_scroll_sensitivity", "virtual_mouse_scroll_dead_zone", "virtual_mouse_scroll_smoothing",
+        "virtual_mouse_volume_min_distance_px", "virtual_mouse_volume_max_distance_px", "virtual_mouse_volume_smoothing",
+        "virtual_mouse_brightness_min_distance_px", "virtual_mouse_brightness_max_distance_px", "virtual_mouse_brightness_smoothing"
     ]
     for key in bool_keys:
         if key in updates:
@@ -190,6 +210,26 @@ def api_update_settings(updates: dict):
         virtual_mouse.smoothing = config.virtual_mouse_smoothing
         if hasattr(config, 'virtual_mouse_click_threshold'):
             virtual_mouse.click_threshold = config.virtual_mouse_click_threshold
+        if hasattr(config, 'virtual_mouse_right_click_threshold'):
+            virtual_mouse.right_click_threshold = config.virtual_mouse_right_click_threshold
+        if hasattr(config, 'virtual_mouse_scroll_sensitivity'):
+            virtual_mouse.scroll_sensitivity = config.virtual_mouse_scroll_sensitivity
+        if hasattr(config, 'virtual_mouse_scroll_dead_zone'):
+            virtual_mouse.scroll_dead_zone = config.virtual_mouse_scroll_dead_zone
+        if hasattr(config, 'virtual_mouse_scroll_smoothing'):
+            virtual_mouse.scroll_smoothing = config.virtual_mouse_scroll_smoothing
+        if hasattr(config, 'virtual_mouse_volume_min_distance_px') and virtual_mouse._volume_controller:
+            virtual_mouse._volume_controller.min_distance = config.virtual_mouse_volume_min_distance_px
+        if hasattr(config, 'virtual_mouse_volume_max_distance_px') and virtual_mouse._volume_controller:
+            virtual_mouse._volume_controller.max_distance = config.virtual_mouse_volume_max_distance_px
+        if hasattr(config, 'virtual_mouse_volume_smoothing') and virtual_mouse._volume_controller:
+            virtual_mouse._volume_controller.smoothing = config.virtual_mouse_volume_smoothing
+        if hasattr(config, 'virtual_mouse_brightness_min_distance_px') and virtual_mouse._brightness_controller:
+            virtual_mouse._brightness_controller.min_distance = config.virtual_mouse_brightness_min_distance_px
+        if hasattr(config, 'virtual_mouse_brightness_max_distance_px') and virtual_mouse._brightness_controller:
+            virtual_mouse._brightness_controller.max_distance = config.virtual_mouse_brightness_max_distance_px
+        if hasattr(config, 'virtual_mouse_brightness_smoothing') and virtual_mouse._brightness_controller:
+            virtual_mouse._brightness_controller.smoothing = config.virtual_mouse_brightness_smoothing
     return {"status": "success"}
 
 @app.websocket("/ws")
@@ -253,6 +293,7 @@ async def websocket_endpoint(websocket: WebSocket):
             if config.flip_horizontal:
                 frame = cv2.flip(frame, 1)
                 
+            h, w = frame.shape[:2]
             t_resize = time.perf_counter() - t0
 
             # Run MediaPipe hand detection
@@ -269,7 +310,7 @@ async def websocket_endpoint(websocket: WebSocket):
                 if gesture_engine.is_loaded:
                     gesture_label, gesture_confidence = gesture_engine.predict(primary_hand)
                     if gesture_label != "unknown":
-                        action_dispatcher.dispatch(gesture_label)
+                        action_dispatcher.dispatch(gesture_label, virtual_mouse_active=virtual_mouse.enabled)
                 else:
                     gesture_label = "No Model"
             else:
@@ -285,9 +326,9 @@ async def websocket_endpoint(websocket: WebSocket):
             vm_result = None
             if virtual_mouse.enabled:
                 if detected_hands:
-                    vm_result = virtual_mouse.process_hand(detected_hands[0])
+                    vm_result = virtual_mouse.process_hand(detected_hands[0], frame_w=w, frame_h=h)
                 else:
-                    vm_result = virtual_mouse.process_hand(None)
+                    vm_result = virtual_mouse.process_hand(None, frame_w=w, frame_h=h)
             else:
                 virtual_mouse.reset()
 
@@ -338,6 +379,24 @@ async def websocket_endpoint(websocket: WebSocket):
                 "click_status": vm_result.get("click_status", "OPEN") if vm_result else "OPEN",
                 "click_counter": vm_result.get("click_counter", 0) if vm_result else 0,
                 "current_action": vm_result.get("current_action", "None") if vm_result else "None",
+                # Phase 3.3 — Right Click telemetry
+                "right_click_status": vm_result.get("right_click_status", "OPEN") if vm_result else "OPEN",
+                "right_click_counter": vm_result.get("right_click_counter", 0) if vm_result else 0,
+                "right_pinch_distance": vm_result.get("right_pinch_distance", 0.0) if vm_result else 0.0,
+                # Phase 3.4 — Scroll telemetry
+                "scroll_mode": vm_result.get("scroll_mode", False) if vm_result else False,
+                "scroll_direction": vm_result.get("scroll_direction", "NONE") if vm_result else "NONE",
+                "scroll_speed": vm_result.get("scroll_speed", 0.0) if vm_result else 0.0,
+                "scroll_counter": vm_result.get("scroll_counter", 0) if vm_result else 0,
+                # Phase 3.4 — Volume telemetry
+                "volume_mode": vm_result.get("volume_mode", False) if vm_result else False,
+                "volume_level": vm_result.get("volume_level", 0) if vm_result else 0,
+                "volume_distance": vm_result.get("volume_distance", 0.0) if vm_result else 0.0,
+                # Phase 3.5 — Mode Manager & Brightness telemetry
+                "active_mode": vm_result.get("active_mode", "CURSOR") if vm_result else "CURSOR",
+                "brightness_mode": vm_result.get("brightness_mode", False) if vm_result else False,
+                "brightness_level": vm_result.get("brightness_level", 0) if vm_result else 0,
+                "brightness_distance": vm_result.get("brightness_distance", 0.0) if vm_result else 0.0,
             }
             
             t_send_start = time.perf_counter()
@@ -575,6 +634,28 @@ HTML_CONTENT = """<!DOCTYPE html>
             </svg>
         );
 
+        const SunIcon = (props) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+                <circle cx="12" cy="12" r="4" />
+                <path d="M12 2v2" />
+                <path d="M12 20v2" />
+                <path d="m4.93 4.93 1.41 1.41" />
+                <path d="m17.66 17.66 1.41 1.41" />
+                <path d="M2 12h2" />
+                <path d="M20 12h2" />
+                <path d="m6.34 17.66-1.41 1.41" />
+                <path d="m19.07 4.93-1.41 1.41" />
+            </svg>
+        );
+
+        const Volume2Icon = (props) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+                <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
+                <path d="M15.54 8.46a5 5 0 0 1 0 7.07" />
+                <path d="M19.07 4.93a10 10 0 0 1 0 14.14" />
+            </svg>
+        );
+
         function App() {
             const [fps, setFps] = useState(0);
             const [hands, setHands] = useState(0);
@@ -595,6 +676,7 @@ HTML_CONTENT = """<!DOCTYPE html>
             const [virtualMouseDeadZone, setVirtualMouseDeadZone] = useState(0.15);
             const [virtualMouseSmoothing, setVirtualMouseSmoothing] = useState(0.20);
             const [virtualMouseClickThreshold, setVirtualMouseClickThreshold] = useState(0.05);
+            const [virtualMouseRightClickThreshold, setVirtualMouseRightClickThreshold] = useState(0.05);
             
             const [cursorX, setCursorX] = useState(0);
             const [cursorY, setCursorY] = useState(0);
@@ -603,6 +685,39 @@ HTML_CONTENT = """<!DOCTYPE html>
             const [clickStatus, setClickStatus] = useState('OPEN');
             const [clickCounter, setClickCounter] = useState(0);
             const [currentAction, setCurrentAction] = useState('None');
+            // Phase 3.3 — Right Click
+            const [rightClickStatus, setRightClickStatus] = useState('OPEN');
+            const [rightClickCounter, setRightClickCounter] = useState(0);
+            const [rightPinchDistance, setRightPinchDistance] = useState(0.0);
+            const prevRightClickStatusRef = useRef('OPEN');
+            // Phase 3.4 — Scroll Control
+            const [scrollMode, setScrollMode] = useState(false);
+            const [scrollDirection, setScrollDirection] = useState('NONE');
+            const [scrollSpeed, setScrollSpeed] = useState(0.0);
+            const [scrollCounter, setScrollCounter] = useState(0);
+            const [virtualMouseScrollSensitivity, setVirtualMouseScrollSensitivity] = useState(5.0);
+            const [virtualMouseScrollDeadZone, setVirtualMouseScrollDeadZone] = useState(0.04);
+            const [virtualMouseScrollSmoothing, setVirtualMouseScrollSmoothing] = useState(0.25);
+            const prevScrollModeRef = useRef(false);
+            // Phase 3.4 — Volume Control
+            const [volumeMode, setVolumeMode] = useState(false);
+            const [volumeLevel, setVolumeLevel] = useState(0);
+            const [volumeDistance, setVolumeDistance] = useState(0.0);
+            const [virtualMouseVolumeMinDistancePx, setVirtualMouseVolumeMinDistancePx] = useState(30.0);
+            const [virtualMouseVolumeMaxDistancePx, setVirtualMouseVolumeMaxDistancePx] = useState(250.0);
+            const [virtualMouseVolumeSmoothing, setVirtualMouseVolumeSmoothing] = useState(0.15);
+            const prevVolumeLevelRef = useRef(-1);
+
+            // Phase 3.5 — Mode Manager & Brightness Control
+            const [activeMode, setActiveMode] = useState('CURSOR');
+            const [brightnessMode, setBrightnessMode] = useState(false);
+            const [brightnessLevel, setBrightnessLevel] = useState(0);
+            const [brightnessDistance, setBrightnessDistance] = useState(0.0);
+            const [virtualMouseBrightnessMinDistancePx, setVirtualMouseBrightnessMinDistancePx] = useState(30.0);
+            const [virtualMouseBrightnessMaxDistancePx, setVirtualMouseBrightnessMaxDistancePx] = useState(250.0);
+            const [virtualMouseBrightnessSmoothing, setVirtualMouseBrightnessSmoothing] = useState(0.15);
+            const prevBrightnessLevelRef = useRef(-1);
+            const prevActiveModeRef = useRef('CURSOR');
 
             // Switches State
             const [showLandmarks, setShowLandmarks] = useState(true);
@@ -649,6 +764,121 @@ HTML_CONTENT = """<!DOCTYPE html>
                             setClickStatus(data.click_status || 'OPEN');
                             setClickCounter(data.click_counter || 0);
                             setCurrentAction(data.current_action || 'None');
+                            // Phase 3.3 — Right Click
+                            const prevRC = prevRightClickStatusRef.current;
+                            const newRC = data.right_click_status || 'OPEN';
+                            setRightClickStatus(newRC);
+                            setRightClickCounter(data.right_click_counter || 0);
+                            setRightPinchDistance(data.right_pinch_distance || 0.0);
+                            // Log right-click event on transition into RIGHT_CLICK
+                            if (newRC === 'RIGHT_CLICK' && prevRC !== 'RIGHT_CLICK') {
+                                const timeString = new Date().toLocaleTimeString();
+                                eventIdCounterRef.current += 1;
+                                const rcEvent = {
+                                    id: `${Date.now()}-${eventIdCounterRef.current}`,
+                                    timestamp: timeString,
+                                    gesture: 'Right Click',
+                                    confidence: 1.0,
+                                    action: `Right Click triggered | gesture=thumb_middle_pinch | dist=${(data.right_pinch_distance || 0).toFixed(4)}`
+                                };
+                                setEvents(prev => [rcEvent, ...prev].slice(0, 50));
+                            }
+                            prevRightClickStatusRef.current = newRC;
+                            // Phase 3.4 — Scroll
+                            const prevSM = prevScrollModeRef.current;
+                            const newSM = data.scroll_mode || false;
+                            setScrollMode(newSM);
+                            setScrollDirection(data.scroll_direction || 'NONE');
+                            setScrollSpeed(data.scroll_speed || 0.0);
+                            setScrollCounter(data.scroll_counter || 0);
+                            // Log scroll start/stop transitions
+                            if (newSM && !prevSM) {
+                                const timeString = new Date().toLocaleTimeString();
+                                eventIdCounterRef.current += 1;
+                                setEvents(prev => [{
+                                    id: `${Date.now()}-${eventIdCounterRef.current}`,
+                                    timestamp: timeString,
+                                    gesture: 'Scroll Start',
+                                    confidence: 1.0,
+                                    action: 'Scroll Mode activated | gesture=index_middle_up'
+                                }, ...prev].slice(0, 50));
+                            } else if (!newSM && prevSM) {
+                                const timeString = new Date().toLocaleTimeString();
+                                eventIdCounterRef.current += 1;
+                                setEvents(prev => [{
+                                    id: `${Date.now()}-${eventIdCounterRef.current}`,
+                                    timestamp: timeString,
+                                    gesture: 'Scroll Stop',
+                                    confidence: 1.0,
+                                    action: `Scroll Mode deactivated | total events=${data.scroll_counter || 0}`
+                                }, ...prev].slice(0, 50));
+                            }
+                            prevScrollModeRef.current = newSM;
+
+                            // Phase 3.4 — Volume
+                            const newVM = data.volume_mode || false;
+                            setVolumeMode(newVM);
+                            setVolumeLevel(data.volume_level || 0);
+                            setVolumeDistance(data.volume_distance || 0.0);
+                            // Log volume changes on integer level change
+                            if (newVM && data.volume_level !== prevVolumeLevelRef.current) {
+                                if (data.volume_level !== undefined) {
+                                    const timeString = new Date().toLocaleTimeString();
+                                    eventIdCounterRef.current += 1;
+                                    const volumeEvent = {
+                                        id: `${Date.now()}-${eventIdCounterRef.current}`,
+                                        timestamp: timeString,
+                                        gesture: 'Volume',
+                                        confidence: 1.0,
+                                        action: `[VOLUME] ${data.volume_level}% (Distance: ${(data.volume_distance || 0).toFixed(1)}px)`
+                                    };
+                                    setEvents(prev => [volumeEvent, ...prev].slice(0, 50));
+                                    prevVolumeLevelRef.current = data.volume_level;
+                                }
+                            } else if (!newVM) {
+                                prevVolumeLevelRef.current = -1;
+                            }
+
+                            // Phase 3.5 — Brightness
+                            const newBM = data.brightness_mode || false;
+                            setBrightnessMode(newBM);
+                            setBrightnessLevel(data.brightness_level || 0);
+                            setBrightnessDistance(data.brightness_distance || 0.0);
+                            // Log brightness changes on integer level change
+                            if (newBM && data.brightness_level !== prevBrightnessLevelRef.current) {
+                                if (data.brightness_level !== undefined) {
+                                    const timeString = new Date().toLocaleTimeString();
+                                    eventIdCounterRef.current += 1;
+                                    const brightnessEvent = {
+                                        id: `${Date.now()}-${eventIdCounterRef.current}`,
+                                        timestamp: timeString,
+                                        gesture: 'Brightness',
+                                        confidence: 1.0,
+                                        action: `[BRIGHTNESS] ${data.brightness_level}% (Distance: ${(data.brightness_distance || 0).toFixed(1)}px)`
+                                    };
+                                    setEvents(prev => [brightnessEvent, ...prev].slice(0, 50));
+                                    prevBrightnessLevelRef.current = data.brightness_level;
+                                }
+                            } else if (!newBM) {
+                                prevBrightnessLevelRef.current = -1;
+                            }
+
+                            // Phase 3.5 — Mode Manager
+                            const newAM = data.active_mode || 'CURSOR';
+                            setActiveMode(newAM);
+                            if (newAM !== prevActiveModeRef.current) {
+                                const timeString = new Date().toLocaleTimeString();
+                                eventIdCounterRef.current += 1;
+                                const modeEvent = {
+                                    id: `${Date.now()}-${eventIdCounterRef.current}`,
+                                    timestamp: timeString,
+                                    gesture: 'Mode Switch',
+                                    confidence: 1.0,
+                                    action: `[MODE] ${newAM}`
+                                };
+                                setEvents(prev => [modeEvent, ...prev].slice(0, 50));
+                                prevActiveModeRef.current = newAM;
+                            }
 
                             // Trigger logs on gesture change (ignoring empty/None/unknown)
                             if (data.gesture !== prevGestureRef.current) {
@@ -703,6 +933,36 @@ HTML_CONTENT = """<!DOCTYPE html>
                         if (data.virtual_mouse_click_threshold !== undefined) {
                             setVirtualMouseClickThreshold(data.virtual_mouse_click_threshold);
                         }
+                        if (data.virtual_mouse_right_click_threshold !== undefined) {
+                            setVirtualMouseRightClickThreshold(data.virtual_mouse_right_click_threshold);
+                        }
+                        if (data.virtual_mouse_scroll_sensitivity !== undefined) {
+                            setVirtualMouseScrollSensitivity(data.virtual_mouse_scroll_sensitivity);
+                        }
+                        if (data.virtual_mouse_scroll_dead_zone !== undefined) {
+                            setVirtualMouseScrollDeadZone(data.virtual_mouse_scroll_dead_zone);
+                        }
+                        if (data.virtual_mouse_scroll_smoothing !== undefined) {
+                            setVirtualMouseScrollSmoothing(data.virtual_mouse_scroll_smoothing);
+                        }
+                        if (data.virtual_mouse_volume_min_distance_px !== undefined) {
+                            setVirtualMouseVolumeMinDistancePx(data.virtual_mouse_volume_min_distance_px);
+                        }
+                        if (data.virtual_mouse_volume_max_distance_px !== undefined) {
+                            setVirtualMouseVolumeMaxDistancePx(data.virtual_mouse_volume_max_distance_px);
+                        }
+                        if (data.virtual_mouse_volume_smoothing !== undefined) {
+                            setVirtualMouseVolumeSmoothing(data.virtual_mouse_volume_smoothing);
+                        }
+                        if (data.virtual_mouse_brightness_min_distance_px !== undefined) {
+                            setVirtualMouseBrightnessMinDistancePx(data.virtual_mouse_brightness_min_distance_px);
+                        }
+                        if (data.virtual_mouse_brightness_max_distance_px !== undefined) {
+                            setVirtualMouseBrightnessMaxDistancePx(data.virtual_mouse_brightness_max_distance_px);
+                        }
+                        if (data.virtual_mouse_brightness_smoothing !== undefined) {
+                            setVirtualMouseBrightnessSmoothing(data.virtual_mouse_brightness_smoothing);
+                        }
                     })
                     .catch(err => console.error('Error loading config settings:', err));
 
@@ -711,6 +971,9 @@ HTML_CONTENT = """<!DOCTYPE html>
                     if (e.key === 'Escape') {
                         setVirtualMouseEnabled(false);
                         updateSetting('virtual_mouse_enabled', false);
+                        setRightClickStatus('OPEN');
+                        setScrollMode(false);
+                        setScrollDirection('NONE');
                         logSystemEvent('\u26a0 EMERGENCY STOP: Virtual mouse disabled via ESC key.');
                     }
                 };
@@ -957,7 +1220,7 @@ HTML_CONTENT = """<!DOCTYPE html>
                                 {activeMenu === 'dashboard' ? (
                                     <>
                                         {/* Status Cards Grid */}
-                                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+                                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-5">
                                             {/* FPS Card */}
                                             <div className="glass-card p-5 rounded-2xl flex items-center gap-4 relative overflow-hidden group">
                                                 <div className="p-3 bg-blue-500/10 rounded-xl border border-blue-500/20 text-accent-blue">
@@ -1000,21 +1263,51 @@ HTML_CONTENT = """<!DOCTYPE html>
                                                 </div>
                                             </div>
 
-                                            {/* Camera Status Card */}
+                                            {/* Active Mode Card */}
                                             <div className="glass-card p-5 rounded-2xl flex items-center gap-4 relative overflow-hidden group">
                                                 <div className={`p-3 rounded-xl border transition-colors ${
-                                                    cameraStatus === 'Connected' 
-                                                        ? 'bg-emerald-500/10 border-emerald-500/20 text-accent-green' 
-                                                        : 'bg-zinc-500/10 border-zinc-500/20 text-gray-400'
+                                                    activeMode === 'CURSOR' ? 'bg-blue-500/10 border-blue-500/20 text-accent-blue' :
+                                                    activeMode === 'CLICK' ? 'bg-emerald-500/10 border-emerald-500/20 text-accent-green' :
+                                                    activeMode === 'SCROLL' ? 'bg-teal-500/10 border-teal-500/20 text-teal-400' :
+                                                    activeMode === 'VOLUME' ? 'bg-purple-500/10 border-purple-500/20 text-purple-400' :
+                                                    'bg-cyan-500/10 border-cyan-500/20 text-cyan-400'
                                                 }`}>
-                                                    {cameraStatus === 'Connected' ? <CameraIcon className="w-6 h-6" /> : <VideoOffIcon className="w-6 h-6" />}
+                                                    <MousePointerIcon className="w-6 h-6" />
                                                 </div>
                                                 <div>
-                                                    <p className="text-xs font-semibold uppercase tracking-wider text-gray-400">Camera State</p>
-                                                    <p className={`text-2xl font-bold mt-1 tracking-tight ${
-                                                        cameraStatus === 'Connected' ? 'text-accent-green' : 'text-gray-400'
-                                                    }`}>
-                                                        {cameraStatus}
+                                                    <p className="text-xs font-semibold uppercase tracking-wider text-gray-400">Active Mode</p>
+                                                    <p className="text-2xl font-bold text-white mt-1 tracking-tight">
+                                                        {activeMode}
+                                                    </p>
+                                                </div>
+                                            </div>
+
+                                            {/* Volume Card */}
+                                            <div className="glass-card p-5 rounded-2xl flex items-center gap-4 relative overflow-hidden group">
+                                                <div className={`p-3 rounded-xl border transition-colors ${
+                                                    volumeMode ? 'bg-purple-500/10 border-purple-500/20 text-purple-400 animate-pulse' : 'bg-zinc-500/10 border-zinc-500/20 text-gray-400'
+                                                }`}>
+                                                    <Volume2Icon className="w-6 h-6" />
+                                                </div>
+                                                <div>
+                                                    <p className="text-xs font-semibold uppercase tracking-wider text-gray-400">Volume Level</p>
+                                                    <p className="text-2xl font-bold text-white mt-1 font-mono tracking-tight">
+                                                        {volumeMode ? `${volumeLevel}%` : 'IDLE'}
+                                                    </p>
+                                                </div>
+                                            </div>
+
+                                            {/* Brightness Card */}
+                                            <div className="glass-card p-5 rounded-2xl flex items-center gap-4 relative overflow-hidden group">
+                                                <div className={`p-3 rounded-xl border transition-colors ${
+                                                    brightnessMode ? 'bg-cyan-500/10 border-cyan-500/20 text-cyan-400 animate-pulse' : 'bg-zinc-500/10 border-zinc-500/20 text-gray-400'
+                                                }`}>
+                                                    <SunIcon className="w-6 h-6" />
+                                                </div>
+                                                <div>
+                                                    <p className="text-xs font-semibold uppercase tracking-wider text-gray-400">Brightness</p>
+                                                    <p className="text-2xl font-bold text-white mt-1 font-mono tracking-tight">
+                                                        {brightnessMode ? `${brightnessLevel}%` : 'IDLE'}
                                                     </p>
                                                 </div>
                                             </div>
@@ -1285,9 +1578,22 @@ HTML_CONTENT = """<!DOCTYPE html>
                                                         <div className="flex justify-between items-center text-sm border-b border-glass-border pb-2">
                                                             <span className="text-gray-400">Current Action</span>
                                                             <span className={`font-semibold ${
-                                                                currentAction === 'Left Click' ? 'text-accent-green' : 'text-white'
+                                                                currentAction === 'Left Click' ? 'text-accent-green' :
+                                                                currentAction === 'Right Click' ? 'text-orange-400' : 'text-white'
                                                             }`}>
                                                                 {currentAction}
+                                                            </span>
+                                                        </div>
+
+                                                        {/* Separator */}
+                                                        <div className="text-[10px] uppercase tracking-widest text-gray-600 font-semibold pt-1">Left Click (Index + Thumb)</div>
+
+                                                        <div className="flex justify-between items-center text-sm border-b border-glass-border pb-2">
+                                                            <span className="text-gray-400">Click Status</span>
+                                                            <span className={`font-semibold ${
+                                                                clickStatus === 'LEFT_CLICK' || clickStatus === 'PINCH' ? 'text-accent-green' : clickStatus === 'RELEASE' ? 'text-accent-blue' : 'text-white'
+                                                            }`}>
+                                                                {clickStatus}
                                                             </span>
                                                         </div>
                                                         <div className="flex justify-between items-center text-sm border-b border-glass-border pb-2">
@@ -1297,17 +1603,116 @@ HTML_CONTENT = """<!DOCTYPE html>
                                                             </span>
                                                         </div>
                                                         <div className="flex justify-between items-center text-sm border-b border-glass-border pb-2">
-                                                            <span className="text-gray-400">Click Status</span>
-                                                            <span className={`font-semibold ${
-                                                                clickStatus === 'LEFT_CLICK' || clickStatus === 'PINCH' ? 'text-accent-green' : clickStatus === 'RELEASE' ? 'text-accent-blue' : 'text-white'
-                                                            }`}>
-                                                                {clickStatus}
-                                                            </span>
-                                                        </div>
-                                                        <div className="flex justify-between items-center text-sm">
                                                             <span className="text-gray-400">Click Counter</span>
                                                             <span className="font-mono font-bold text-accent-blue">
                                                                 {clickCounter}
+                                                            </span>
+                                                        </div>
+
+                                                        {/* Phase 3.3 Right-Click Section */}
+                                                        <div className="text-[10px] uppercase tracking-widest text-gray-600 font-semibold pt-1">Right Click (Middle + Thumb)</div>
+
+                                                        <div className="flex justify-between items-center text-sm border-b border-glass-border pb-2">
+                                                            <span className="text-gray-400">Right Click Status</span>
+                                                            <span className={`font-semibold ${
+                                                                rightClickStatus === 'RIGHT_CLICK' ? 'text-orange-400' :
+                                                                rightClickStatus === 'PINCH' ? 'text-amber-300' :
+                                                                rightClickStatus === 'RELEASE' ? 'text-accent-blue' : 'text-white'
+                                                            }`}>
+                                                                {rightClickStatus}
+                                                            </span>
+                                                        </div>
+                                                        <div className="flex justify-between items-center text-sm border-b border-glass-border pb-2">
+                                                            <span className="text-gray-400">Right Pinch Distance</span>
+                                                            <span className="font-mono font-bold text-white">
+                                                                {rightPinchDistance.toFixed(4)}
+                                                            </span>
+                                                        </div>
+                                                        <div className="flex justify-between items-center text-sm border-b border-glass-border pb-2">
+                                                            <span className="text-gray-400">Right Click Counter</span>
+                                                            <span className="font-mono font-bold text-orange-400">
+                                                                {rightClickCounter}
+                                                            </span>
+                                                        </div>
+
+                                                        {/* Phase 3.4 Scroll Section */}
+                                                        <div className="text-[10px] uppercase tracking-widest text-gray-600 font-semibold pt-1">Scroll Mode (Index + Middle Up)</div>
+
+                                                        <div className="flex justify-between items-center text-sm border-b border-glass-border pb-2">
+                                                            <span className="text-gray-400">Scroll Mode Status</span>
+                                                            <span className={`font-semibold ${
+                                                                scrollMode ? 'text-teal-400' : 'text-white'
+                                                            }`}>
+                                                                {scrollMode ? 'ACTIVE' : 'IDLE'}
+                                                            </span>
+                                                        </div>
+                                                        <div className="flex justify-between items-center text-sm border-b border-glass-border pb-2">
+                                                            <span className="text-gray-400">Scroll Direction</span>
+                                                            <span className={`font-semibold ${
+                                                                scrollDirection === 'UP' ? 'text-teal-400' :
+                                                                scrollDirection === 'DOWN' ? 'text-amber-400' : 'text-gray-500'
+                                                            }`}>
+                                                                {scrollDirection === 'UP' ? '▲ UP' : scrollDirection === 'DOWN' ? '▼ DOWN' : '—'}
+                                                            </span>
+                                                        </div>
+                                                        <div className="flex justify-between items-center text-sm border-b border-glass-border pb-2">
+                                                            <span className="text-gray-400">Scroll Speed</span>
+                                                            <span className="font-mono font-bold text-white">
+                                                                {scrollSpeed.toFixed(2)}
+                                                            </span>
+                                                        </div>
+                                                        <div className="flex justify-between items-center text-sm border-b border-glass-border pb-2">
+                                                            <span className="text-gray-400">Scroll Counter</span>
+                                                            <span className="font-mono font-bold text-teal-400">
+                                                                {scrollCounter}
+                                                            </span>
+                                                        </div>
+
+                                                        {/* Phase 3.4 Volume Section */}
+                                                        <div className="text-[10px] uppercase tracking-widest text-gray-600 font-semibold pt-1">Volume Control (Thumb + Pinky Up)</div>
+
+                                                        <div className="flex justify-between items-center text-sm border-b border-glass-border pb-2">
+                                                            <span className="text-gray-400">Volume Mode Status</span>
+                                                            <span className={`font-semibold ${
+                                                                volumeMode ? 'text-purple-400 animate-pulse' : 'text-gray-400'
+                                                            }`}>
+                                                                {volumeMode ? 'ACTIVE' : 'INACTIVE'}
+                                                            </span>
+                                                        </div>
+                                                        <div className="flex justify-between items-center text-sm border-b border-glass-border pb-2">
+                                                            <span className="text-gray-400">Current Volume Level</span>
+                                                            <span className="font-mono font-bold text-purple-400">
+                                                                {volumeLevel}%
+                                                            </span>
+                                                        </div>
+                                                        <div className="flex justify-between items-center text-sm border-b border-glass-border pb-2">
+                                                            <span className="text-gray-400">Hand Distance</span>
+                                                            <span className="font-mono font-bold text-white">
+                                                                {volumeMode ? `${volumeDistance.toFixed(1)} px` : '-- px'}
+                                                            </span>
+                                                        </div>
+
+                                                        {/* Phase 3.5 Brightness Section */}
+                                                        <div className="text-[10px] uppercase tracking-widest text-gray-600 font-semibold pt-1">Brightness Control (Thumb+Index+Pinky Up)</div>
+
+                                                        <div className="flex justify-between items-center text-sm border-b border-glass-border pb-2">
+                                                            <span className="text-gray-400">Brightness Mode Status</span>
+                                                            <span className={`font-semibold ${
+                                                                brightnessMode ? 'text-cyan-400 animate-pulse' : 'text-gray-400'
+                                                            }`}>
+                                                                {brightnessMode ? 'ACTIVE' : 'INACTIVE'}
+                                                            </span>
+                                                        </div>
+                                                        <div className="flex justify-between items-center text-sm border-b border-glass-border pb-2">
+                                                            <span className="text-gray-400">Current Brightness</span>
+                                                            <span className="font-mono font-bold text-cyan-400">
+                                                                {brightnessLevel}%
+                                                            </span>
+                                                        </div>
+                                                        <div className="flex justify-between items-center text-sm">
+                                                            <span className="text-gray-400">Hand Distance</span>
+                                                            <span className="font-mono font-bold text-white">
+                                                                {brightnessMode ? `${brightnessDistance.toFixed(1)} px` : '-- px'}
                                                             </span>
                                                         </div>
                                                     </div>
@@ -1420,6 +1825,132 @@ HTML_CONTENT = """<!DOCTYPE html>
                                                                     const val = parseFloat(e.target.value);
                                                                     setVirtualMouseClickThreshold(val);
                                                                     updateSetting('virtual_mouse_click_threshold', val);
+                                                                }}
+                                                                className="w-full h-1.5 bg-zinc-700 rounded-lg appearance-none cursor-pointer accent-blue-500" 
+                                                            />
+                                                        </div>
+
+                                                        {/* Volume Min Distance Slider */}
+                                                        <div className="space-y-2">
+                                                            <div className="flex justify-between text-xs">
+                                                                <span className="text-gray-400">Volume Min Distance</span>
+                                                                <span className="text-white font-mono">{virtualMouseVolumeMinDistancePx.toFixed(0)} px</span>
+                                                            </div>
+                                                            <input 
+                                                                type="range" 
+                                                                min="10" 
+                                                                max="100" 
+                                                                step="5"
+                                                                value={virtualMouseVolumeMinDistancePx} 
+                                                                onChange={(e) => {
+                                                                    const val = parseFloat(e.target.value);
+                                                                    setVirtualMouseVolumeMinDistancePx(val);
+                                                                    updateSetting('virtual_mouse_volume_min_distance_px', val);
+                                                                }}
+                                                                className="w-full h-1.5 bg-zinc-700 rounded-lg appearance-none cursor-pointer accent-blue-500" 
+                                                            />
+                                                        </div>
+
+                                                        {/* Volume Max Distance Slider */}
+                                                        <div className="space-y-2">
+                                                            <div className="flex justify-between text-xs">
+                                                                <span className="text-gray-400">Volume Max Distance</span>
+                                                                <span className="text-white font-mono">{virtualMouseVolumeMaxDistancePx.toFixed(0)} px</span>
+                                                            </div>
+                                                            <input 
+                                                                type="range" 
+                                                                min="150" 
+                                                                max="400" 
+                                                                step="10"
+                                                                value={virtualMouseVolumeMaxDistancePx} 
+                                                                onChange={(e) => {
+                                                                    const val = parseFloat(e.target.value);
+                                                                    setVirtualMouseVolumeMaxDistancePx(val);
+                                                                    updateSetting('virtual_mouse_volume_max_distance_px', val);
+                                                                }}
+                                                                className="w-full h-1.5 bg-zinc-700 rounded-lg appearance-none cursor-pointer accent-blue-500" 
+                                                            />
+                                                        </div>
+
+                                                        {/* Volume Smoothing Slider */}
+                                                        <div className="space-y-2">
+                                                            <div className="flex justify-between text-xs">
+                                                                <span className="text-gray-400">Volume Smoothing</span>
+                                                                <span className="text-white font-mono">{virtualMouseVolumeSmoothing.toFixed(2)}</span>
+                                                            </div>
+                                                            <input 
+                                                                type="range" 
+                                                                min="0.05" 
+                                                                max="0.50" 
+                                                                step="0.01"
+                                                                value={virtualMouseVolumeSmoothing} 
+                                                                onChange={(e) => {
+                                                                    const val = parseFloat(e.target.value);
+                                                                    setVirtualMouseVolumeSmoothing(val);
+                                                                    updateSetting('virtual_mouse_volume_smoothing', val);
+                                                                }}
+                                                                className="w-full h-1.5 bg-zinc-700 rounded-lg appearance-none cursor-pointer accent-blue-500" 
+                                                            />
+                                                        </div>
+
+                                                        {/* Brightness Min Distance Slider */}
+                                                        <div className="space-y-2">
+                                                            <div className="flex justify-between text-xs">
+                                                                <span className="text-gray-400">Brightness Min Distance</span>
+                                                                <span className="text-white font-mono">{virtualMouseBrightnessMinDistancePx.toFixed(0)} px</span>
+                                                            </div>
+                                                            <input 
+                                                                type="range" 
+                                                                min="10" 
+                                                                max="100" 
+                                                                step="5"
+                                                                value={virtualMouseBrightnessMinDistancePx} 
+                                                                onChange={(e) => {
+                                                                    const val = parseFloat(e.target.value);
+                                                                    setVirtualMouseBrightnessMinDistancePx(val);
+                                                                    updateSetting('virtual_mouse_brightness_min_distance_px', val);
+                                                                }}
+                                                                className="w-full h-1.5 bg-zinc-700 rounded-lg appearance-none cursor-pointer accent-blue-500" 
+                                                            />
+                                                        </div>
+
+                                                        {/* Brightness Max Distance Slider */}
+                                                        <div className="space-y-2">
+                                                            <div className="flex justify-between text-xs">
+                                                                <span className="text-gray-400">Brightness Max Distance</span>
+                                                                <span className="text-white font-mono">{virtualMouseBrightnessMaxDistancePx.toFixed(0)} px</span>
+                                                            </div>
+                                                            <input 
+                                                                type="range" 
+                                                                min="150" 
+                                                                max="400" 
+                                                                step="10"
+                                                                value={virtualMouseBrightnessMaxDistancePx} 
+                                                                onChange={(e) => {
+                                                                    const val = parseFloat(e.target.value);
+                                                                    setVirtualMouseBrightnessMaxDistancePx(val);
+                                                                    updateSetting('virtual_mouse_brightness_max_distance_px', val);
+                                                                }}
+                                                                className="w-full h-1.5 bg-zinc-700 rounded-lg appearance-none cursor-pointer accent-blue-500" 
+                                                            />
+                                                        </div>
+
+                                                        {/* Brightness Smoothing Slider */}
+                                                        <div className="space-y-2">
+                                                            <div className="flex justify-between text-xs">
+                                                                <span className="text-gray-400">Brightness Smoothing</span>
+                                                                <span className="text-white font-mono">{virtualMouseBrightnessSmoothing.toFixed(2)}</span>
+                                                            </div>
+                                                            <input 
+                                                                type="range" 
+                                                                min="0.05" 
+                                                                max="0.50" 
+                                                                step="0.01"
+                                                                value={virtualMouseBrightnessSmoothing} 
+                                                                onChange={(e) => {
+                                                                    const val = parseFloat(e.target.value);
+                                                                    setVirtualMouseBrightnessSmoothing(val);
+                                                                    updateSetting('virtual_mouse_brightness_smoothing', val);
                                                                 }}
                                                                 className="w-full h-1.5 bg-zinc-700 rounded-lg appearance-none cursor-pointer accent-blue-500" 
                                                             />

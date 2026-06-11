@@ -33,6 +33,8 @@ pandas>=2.2.0                # training / dataset_loader.py only
 # ── OS Control & Automation ───────────────────────────────────────
 # Pure Python — Python 3.14 compatible
 pyautogui==0.9.54
+pycaw>=2.0.8
+screen-brightness-control>=0.2.1
 
 # ── Configuration ─────────────────────────────────────────────────
 PyYAML==6.0.1

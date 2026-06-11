@@ -22,19 +22,42 @@ ACTION_MAP: dict[str, callable] = {
     "swipe_right":  lambda: pyautogui.hotkey("ctrl", "win", "right"),   # Next desktop
 }
 
+# How long (seconds) after startup before any action can be dispatched.
+# This prevents stray gesture detections during camera/model warmup from
+# firing hotkeys (the source of the '|' ghost-keystroke bug).
+_STARTUP_WARMUP_S = 3.0
+
 
 class ActionDispatcher:
     """Dispatches OS actions from gesture labels with cooldown protection."""
 
-    def __init__(self, cooldown_ms: int = 800) -> None:
+    def __init__(self, cooldown_ms: int = 1500) -> None:
         self._cooldown_ms = cooldown_ms
         self._last_dispatch: float = 0.0
+        self._start_time: float = time.monotonic()   # track process start
 
-    def dispatch(self, gesture: str) -> bool:
+    def dispatch(self, gesture: str, virtual_mouse_active: bool = False) -> bool:
         """
         Executes the OS action for the given gesture label.
-        Returns True if action was fired, False if on cooldown or unknown.
+
+        Parameters:
+            gesture: Recognized gesture label.
+            virtual_mouse_active: When True, action dispatch is suppressed
+                so VM hand gestures don't accidentally trigger global hotkeys.
+
+        Returns:
+            True if action was fired, False otherwise.
         """
+        # ── Safety guard 1: startup warmup ──────────────────────────────
+        elapsed = time.monotonic() - self._start_time
+        if elapsed < _STARTUP_WARMUP_S:
+            return False   # silently ignore during warmup
+
+        # ── Safety guard 2: virtual mouse is active ──────────────────────
+        if virtual_mouse_active:
+            return False   # VM gestures must not fire global hotkeys
+
+        # ── Cooldown check ───────────────────────────────────────────────
         now = time.monotonic() * 1000
         if now - self._last_dispatch < self._cooldown_ms:
             return False

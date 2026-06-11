@@ -130,6 +130,17 @@ class VirtualMousePage(BasePage):
         self._lbl_click_status = self._create_data_label(telemetry_card, "Click Status", "OPEN", 6)
         self._lbl_click_counter = self._create_data_label(telemetry_card, "Click Counter", "0", 7)
 
+        # Volume telemetry fields (Phase 3.4)
+        self._lbl_volume_mode = self._create_data_label(telemetry_card, "Volume Mode", "INACTIVE", 8)
+        self._lbl_volume_level = self._create_data_label(telemetry_card, "Volume Level", "0%", 9)
+        self._lbl_volume_distance = self._create_data_label(telemetry_card, "Volume Distance", "-- px", 10)
+
+        # Brightness & Active Mode telemetry fields (Phase 3.5)
+        self._lbl_active_mode = self._create_data_label(telemetry_card, "Active Mode", "CURSOR", 11)
+        self._lbl_brightness_mode = self._create_data_label(telemetry_card, "Brightness Mode", "INACTIVE", 12)
+        self._lbl_brightness_level = self._create_data_label(telemetry_card, "Brightness Level", "0%", 13)
+        self._lbl_brightness_distance = self._create_data_label(telemetry_card, "Brightness Distance", "-- px", 14)
+
         # 2. Settings Controls Card
         settings_card = ctk.CTkFrame(
             right_panel,
@@ -304,6 +315,13 @@ class VirtualMousePage(BasePage):
         click_counter=0,
         pinch_distance=0.0,
         current_action="None",
+        volume_mode=False,
+        volume_level=0,
+        volume_distance=0.0,
+        active_mode="CURSOR",
+        brightness_mode=False,
+        brightness_level=0,
+        brightness_distance=0.0,
     ) -> None:
         """Receives live camera frame and telemetry from the central window loop."""
         self._camera_feed.set_frame(
@@ -341,6 +359,39 @@ class VirtualMousePage(BasePage):
 
         self._lbl_click_counter.configure(text=str(click_counter))
 
+        # Update volume telemetry labels
+        self._lbl_volume_mode.configure(text="ACTIVE" if volume_mode else "INACTIVE")
+        if volume_mode:
+            self._lbl_volume_mode.configure(text_color=COLORS["mauve"])
+            self._lbl_current_action.configure(text_color=COLORS["mauve"])
+        else:
+            self._lbl_volume_mode.configure(text_color=COLORS["overlay1"])
+
+        self._lbl_volume_level.configure(text=f"{volume_level}%")
+        self._lbl_volume_distance.configure(text=f"{volume_distance:.1f} px" if volume_mode else "-- px")
+
+        # Update active mode & brightness telemetry labels
+        self._lbl_active_mode.configure(text=active_mode)
+        if active_mode == "CURSOR":
+            self._lbl_active_mode.configure(text_color=COLORS["blue"])
+        elif active_mode == "CLICK":
+            self._lbl_active_mode.configure(text_color=COLORS["green"])
+        elif active_mode == "SCROLL":
+            self._lbl_active_mode.configure(text_color=COLORS["teal"])
+        elif active_mode == "VOLUME":
+            self._lbl_active_mode.configure(text_color=COLORS["mauve"])
+        elif active_mode == "BRIGHTNESS":
+            self._lbl_active_mode.configure(text_color=COLORS["sky"])
+
+        self._lbl_brightness_mode.configure(text="ACTIVE" if brightness_mode else "INACTIVE")
+        if brightness_mode:
+            self._lbl_brightness_mode.configure(text_color=COLORS["sky"])
+        else:
+            self._lbl_brightness_mode.configure(text_color=COLORS["overlay1"])
+
+        self._lbl_brightness_level.configure(text=f"{brightness_level}%")
+        self._lbl_brightness_distance.configure(text=f"{brightness_distance:.1f} px" if brightness_mode else "-- px")
+
     def clear_camera_frame(self) -> None:
         self._camera_feed.clear()
         self._lbl_fps.configure(text="-- FPS")
@@ -350,6 +401,13 @@ class VirtualMousePage(BasePage):
         self._lbl_pinch_distance.configure(text="0.0000")
         self._lbl_click_status.configure(text="OPEN", text_color=COLORS["text"])
         self._lbl_click_counter.configure(text="0")
+        self._lbl_volume_mode.configure(text="INACTIVE", text_color=COLORS["overlay1"])
+        self._lbl_volume_level.configure(text="0%")
+        self._lbl_volume_distance.configure(text="-- px")
+        self._lbl_active_mode.configure(text="CURSOR", text_color=COLORS["blue"])
+        self._lbl_brightness_mode.configure(text="INACTIVE", text_color=COLORS["overlay1"])
+        self._lbl_brightness_level.configure(text="0%")
+        self._lbl_brightness_distance.configure(text="-- px")
 
     def _navigate(self, key: str) -> None:
         if self._on_navigate is not None:

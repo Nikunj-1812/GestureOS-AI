@@ -135,6 +135,13 @@ class GestureOSApp(ctk.CTk):
             dead_zone=self._config.virtual_mouse_dead_zone,
             smoothing=self._config.virtual_mouse_smoothing,
             click_threshold=getattr(self._config, 'virtual_mouse_click_threshold', 0.05),
+            right_click_threshold=getattr(self._config, 'virtual_mouse_right_click_threshold', 0.05),
+            scroll_sensitivity=getattr(self._config, 'virtual_mouse_scroll_sensitivity', 5.0),
+            scroll_dead_zone=getattr(self._config, 'virtual_mouse_scroll_dead_zone', 0.003),
+            scroll_smoothing=getattr(self._config, 'virtual_mouse_scroll_smoothing', 0.30),
+            volume_min_distance_px=getattr(self._config, 'virtual_mouse_volume_min_distance_px', 30.0),
+            volume_max_distance_px=getattr(self._config, 'virtual_mouse_volume_max_distance_px', 250.0),
+            volume_smoothing=getattr(self._config, 'virtual_mouse_volume_smoothing', 0.15),
         )
 
         # ActionDispatcher fires OS-level actions.
@@ -348,9 +355,9 @@ class GestureOSApp(ctk.CTk):
         vm_result = None
         if self._virtual_mouse.enabled:
             if detected_hands:
-                vm_result = self._virtual_mouse.process_hand(detected_hands[0])
+                vm_result = self._virtual_mouse.process_hand(detected_hands[0], frame_w=w, frame_h=h)
             else:
-                vm_result = self._virtual_mouse.process_hand(None)
+                vm_result = self._virtual_mouse.process_hand(None, frame_w=w, frame_h=h)
         else:
             self._virtual_mouse.reset()
 
@@ -393,6 +400,13 @@ class GestureOSApp(ctk.CTk):
                     click_counter=vm_result.get("click_counter", 0) if vm_result else 0,
                     pinch_distance=vm_result.get("pinch_distance", 0.0) if vm_result else 0.0,
                     current_action=vm_result.get("current_action", "None") if vm_result else "None",
+                    volume_mode=vm_result.get("volume_mode", False) if vm_result else False,
+                    volume_level=vm_result.get("volume_level", 0) if vm_result else 0,
+                    volume_distance=vm_result.get("volume_distance", 0.0) if vm_result else 0.0,
+                    active_mode=vm_result.get("active_mode", "CURSOR") if vm_result else "CURSOR",
+                    brightness_mode=vm_result.get("brightness_mode", False) if vm_result else False,
+                    brightness_level=vm_result.get("brightness_level", 0) if vm_result else 0,
+                    brightness_distance=vm_result.get("brightness_distance", 0.0) if vm_result else 0.0,
                 )
 
         # Schedule next poll
@@ -431,6 +445,12 @@ class GestureOSApp(ctk.CTk):
         self._virtual_mouse.smoothing = settings.virtual_mouse_smoothing
         if hasattr(settings, 'virtual_mouse_click_threshold'):
             self._virtual_mouse.click_threshold = settings.virtual_mouse_click_threshold
+        if hasattr(settings, 'virtual_mouse_volume_min_distance_px') and self._virtual_mouse._volume_controller:
+            self._virtual_mouse._volume_controller.min_distance = settings.virtual_mouse_volume_min_distance_px
+        if hasattr(settings, 'virtual_mouse_volume_max_distance_px') and self._virtual_mouse._volume_controller:
+            self._virtual_mouse._volume_controller.max_distance = settings.virtual_mouse_volume_max_distance_px
+        if hasattr(settings, 'virtual_mouse_volume_smoothing') and self._virtual_mouse._volume_controller:
+            self._virtual_mouse._volume_controller.smoothing = settings.virtual_mouse_volume_smoothing
 
         ctk.set_appearance_mode(settings.theme)
 

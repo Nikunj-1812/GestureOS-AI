@@ -1,0 +1,1684 @@
+﻿diff --git a/web_backend.py b/web_backend.py
+index 4a6100d..a32aa90 100644
+--- a/web_backend.py
++++ b/web_backend.py
+@@ -1,5 +1,6 @@
+ import os
+ import sys
++import psutil
+ 
+ # Suppress third-party logging / console spam (MediaPipe, TensorFlow, OpenCV)
+ os.environ['GLOG_minloglevel'] = '2'          # Suppress MediaPipe info logs
+@@ -66,6 +67,13 @@ virtual_mouse = VirtualMouse(
+     dead_zone=config.virtual_mouse_dead_zone,
+     smoothing=config.virtual_mouse_smoothing,
+     click_threshold=getattr(config, 'virtual_mouse_click_threshold', 0.05),
++    right_click_threshold=getattr(config, 'virtual_mouse_right_click_threshold', 0.05),
++    scroll_sensitivity=getattr(config, 'virtual_mouse_scroll_sensitivity', 5.0),
++    scroll_dead_zone=getattr(config, 'virtual_mouse_scroll_dead_zone', 0.04),
++    scroll_smoothing=getattr(config, 'virtual_mouse_scroll_smoothing', 0.25),
++    volume_min_distance_px=getattr(config, 'virtual_mouse_volume_min_distance_px', 30.0),
++    volume_max_distance_px=getattr(config, 'virtual_mouse_volume_max_distance_px', 250.0),
++    volume_smoothing=getattr(config, 'virtual_mouse_volume_smoothing', 0.15),
+ )
+ 
+ camera_running = False
+@@ -158,19 +166,59 @@ def api_get_settings():
+         "virtual_mouse_dead_zone": state.virtual_mouse_dead_zone,
+         "virtual_mouse_smoothing": state.virtual_mouse_smoothing,
+         "virtual_mouse_click_threshold": getattr(state, 'virtual_mouse_click_threshold', 0.05),
++        "virtual_mouse_right_click_threshold": getattr(state, 'virtual_mouse_right_click_threshold', 0.05),
++        "virtual_mouse_scroll_sensitivity": getattr(state, 'virtual_mouse_scroll_sensitivity', 5.0),
++        "virtual_mouse_scroll_dead_zone": getattr(state, 'virtual_mouse_scroll_dead_zone', 0.04),
++        "virtual_mouse_scroll_smoothing": getattr(state, 'virtual_mouse_scroll_smoothing', 0.25),
++        "virtual_mouse_volume_min_distance_px": getattr(state, 'virtual_mouse_volume_min_distance_px', 30.0),
++        "virtual_mouse_volume_max_distance_px": getattr(state, 'virtual_mouse_volume_max_distance_px', 250.0),
++        "virtual_mouse_volume_smoothing": getattr(state, 'virtual_mouse_volume_smoothing', 0.15),
++        "virtual_mouse_brightness_min_distance_px": getattr(state, 'virtual_mouse_brightness_min_distance_px', 30.0),
++        "virtual_mouse_brightness_max_distance_px": getattr(state, 'virtual_mouse_brightness_max_distance_px', 250.0),
++        "virtual_mouse_brightness_smoothing": getattr(state, 'virtual_mouse_brightness_smoothing', 0.15),
++        # Phase 3.6 additions
++        "mode_cursor_enabled": getattr(state, 'mode_cursor_enabled', True),
++        "mode_click_enabled": getattr(state, 'mode_click_enabled', True),
++        "mode_scroll_enabled": getattr(state, 'mode_scroll_enabled', True),
++        "mode_volume_enabled": getattr(state, 'mode_volume_enabled', True),
++        "mode_brightness_enabled": getattr(state, 'mode_brightness_enabled', True),
++        "mode_drag_enabled": getattr(state, 'mode_drag_enabled', True),
++        "drag_hold_threshold_ms": getattr(state, 'drag_hold_threshold_ms', 300.0),
++        "cursor_acceleration_enabled": getattr(state, 'cursor_acceleration_enabled', True),
++        "click_cooldown_ms": getattr(state, 'click_cooldown_ms', 300.0),
++        "volume_cooldown_ms": getattr(state, 'volume_cooldown_ms', 100.0),
++        "brightness_cooldown_ms": getattr(state, 'brightness_cooldown_ms', 100.0),
++        "show_overlays": getattr(state, 'show_overlays', True),
++        "show_event_logs": getattr(state, 'show_event_logs', True),
++        "enable_sounds": getattr(state, 'enable_sounds', True),
++        "enable_telemetry": getattr(state, 'enable_telemetry', True),
+     }
+ 
++
+ @app.post("/api/settings/update")
+ def api_update_settings(updates: dict):
+     params = {}
+     bool_keys = [
+         "show_landmarks", "show_connections", "show_bounding_box",
+         "show_finger_states", "show_distance_meter", "show_debug_panel",
+-        "show_hud", "virtual_mouse_enabled"
++        "show_hud", "virtual_mouse_enabled",
++        # Phase 3.6 Settings
++        "mode_cursor_enabled", "mode_click_enabled", "mode_scroll_enabled",
++        "mode_volume_enabled", "mode_brightness_enabled", "mode_drag_enabled",
++        "cursor_acceleration_enabled", "show_overlays", "show_event_logs",
++        "enable_sounds", "enable_telemetry"
+     ]
+     float_keys = [
+         "virtual_mouse_sensitivity", "virtual_mouse_dead_zone", "virtual_mouse_smoothing",
+-        "virtual_mouse_click_threshold"
++        "virtual_mouse_click_threshold", "virtual_mouse_right_click_threshold",
++        "virtual_mouse_scroll_sensitivity", "virtual_mouse_scroll_dead_zone", "virtual_mouse_scroll_smoothing",
++        "virtual_mouse_volume_min_distance_px", "virtual_mouse_volume_max_distance_px", "virtual_mouse_volume_smoothing",
++        "virtual_mouse_brightness_min_distance_px", "virtual_mouse_brightness_max_distance_px", "virtual_mouse_brightness_smoothing",
++        # Phase 3.6 Settings
++        "drag_hold_threshold_ms", "click_cooldown_ms", "volume_cooldown_ms", "brightness_cooldown_ms"
++    ]
++    int_keys = [
++        "camera_index", "fps_limit"
+     ]
+     for key in bool_keys:
+         if key in updates:
+@@ -178,6 +226,9 @@ def api_update_settings(updates: dict):
+     for key in float_keys:
+         if key in updates:
+             params[key] = float(updates[key])
++    for key in int_keys:
++        if key in updates:
++            params[key] = int(updates[key])
+     
+     changed = settings_manager.update(**params)
+     if changed:
+@@ -190,6 +241,47 @@ def api_update_settings(updates: dict):
+         virtual_mouse.smoothing = config.virtual_mouse_smoothing
+         if hasattr(config, 'virtual_mouse_click_threshold'):
+             virtual_mouse.click_threshold = config.virtual_mouse_click_threshold
++        if hasattr(config, 'virtual_mouse_right_click_threshold'):
++            virtual_mouse.right_click_threshold = config.virtual_mouse_right_click_threshold
++        if hasattr(config, 'virtual_mouse_scroll_sensitivity'):
++            virtual_mouse.scroll_sensitivity = config.virtual_mouse_scroll_sensitivity
++        if hasattr(config, 'virtual_mouse_scroll_dead_zone'):
++            virtual_mouse.scroll_dead_zone = config.virtual_mouse_scroll_dead_zone
++        if hasattr(config, 'virtual_mouse_scroll_smoothing'):
++            virtual_mouse.scroll_smoothing = config.virtual_mouse_scroll_smoothing
++        if hasattr(config, 'virtual_mouse_volume_min_distance_px') and virtual_mouse._volume_controller:
++            virtual_mouse._volume_controller.min_distance = config.virtual_mouse_volume_min_distance_px
++        if hasattr(config, 'virtual_mouse_volume_max_distance_px') and virtual_mouse._volume_controller:
++            virtual_mouse._volume_controller.max_distance = config.virtual_mouse_volume_max_distance_px
++        if hasattr(config, 'virtual_mouse_volume_smoothing') and virtual_mouse._volume_controller:
++            virtual_mouse._volume_controller.smoothing = config.virtual_mouse_volume_smoothing
++        if hasattr(config, 'virtual_mouse_brightness_min_distance_px') and virtual_mouse._brightness_controller:
++            virtual_mouse._brightness_controller.min_distance = config.virtual_mouse_brightness_min_distance_px
++        if hasattr(config, 'virtual_mouse_brightness_max_distance_px') and virtual_mouse._brightness_controller:
++            virtual_mouse._brightness_controller.max_distance = config.virtual_mouse_brightness_max_distance_px
++        if hasattr(config, 'virtual_mouse_brightness_smoothing') and virtual_mouse._brightness_controller:
++            virtual_mouse._brightness_controller.smoothing = config.virtual_mouse_brightness_smoothing
++        
++        # Apply Phase 3.6 Settings to live instance
++        virtual_mouse.mode_cursor_enabled = getattr(config, 'mode_cursor_enabled', True)
++        virtual_mouse.mode_click_enabled = getattr(config, 'mode_click_enabled', True)
++        virtual_mouse.mode_scroll_enabled = getattr(config, 'mode_scroll_enabled', True)
++        virtual_mouse.mode_volume_enabled = getattr(config, 'mode_volume_enabled', True)
++        virtual_mouse.mode_brightness_enabled = getattr(config, 'mode_brightness_enabled', True)
++        virtual_mouse.mode_drag_enabled = getattr(config, 'mode_drag_enabled', True)
++        virtual_mouse.drag_hold_threshold_ms = getattr(config, 'drag_hold_threshold_ms', 300.0)
++        virtual_mouse.cursor_acceleration_enabled = getattr(config, 'cursor_acceleration_enabled', True)
++        virtual_mouse.click_cooldown_ms = getattr(config, 'click_cooldown_ms', 300.0)
++        virtual_mouse.debounce_ms = getattr(config, 'click_cooldown_ms', 300.0)
++        virtual_mouse.right_debounce_ms = getattr(config, 'click_cooldown_ms', 300.0)
++        virtual_mouse.volume_cooldown_ms = getattr(config, 'volume_cooldown_ms', 100.0)
++        virtual_mouse.brightness_cooldown_ms = getattr(config, 'brightness_cooldown_ms', 100.0)
++        if virtual_mouse._brightness_controller:
++            virtual_mouse._brightness_controller.cooldown_ms = getattr(config, 'brightness_cooldown_ms', 100.0)
++        virtual_mouse.show_overlays = getattr(config, 'show_overlays', True)
++        virtual_mouse.show_event_logs = getattr(config, 'show_event_logs', True)
++        virtual_mouse.enable_sounds = getattr(config, 'enable_sounds', True)
++        virtual_mouse.enable_telemetry = getattr(config, 'enable_telemetry', True)
+     return {"status": "success"}
+ 
+ @app.websocket("/ws")
+@@ -202,8 +294,22 @@ async def websocket_endpoint(websocket: WebSocket):
+     last_frame_id = -1
+     last_gesture = "unknown"
+     
++    last_resource_tick = 0.0
++    cpu_usage = 0.0
++    ram_usage = 0.0
++    
+     try:
+         while True:
++            # Update resources rate-limited to 500ms
++            now_perf = time.perf_counter()
++            if now_perf - last_resource_tick >= 0.5:
++                try:
++                    cpu_usage = psutil.cpu_percent()
++                    ram_usage = psutil.virtual_memory().percent
++                except Exception:
++                    pass
++                last_resource_tick = now_perf
++
+             # Capture frame & run pipeline if running
+             if not camera_running or camera_stream is None:
+                 # Send empty / disconnected state
+@@ -213,7 +319,12 @@ async def websocket_endpoint(websocket: WebSocket):
+                     "gesture": "None",
+                     "confidence": 0.0,
+                     "camera_status": "Disconnected",
+-                    "frame": None
++                    "frame": None,
++                    "cpu_usage": float(cpu_usage),
++                    "ram_usage": float(ram_usage),
++                    "drag_status": "INACTIVE",
++                    "drag_counter": 0,
++                    "drag_duration": 0.0,
+                 })
+                 await asyncio.sleep(0.1)
+                 continue
+@@ -226,7 +337,12 @@ async def websocket_endpoint(websocket: WebSocket):
+                     "gesture": "None",
+                     "confidence": 0.0,
+                     "camera_status": "Starting",
+-                    "frame": None
++                    "frame": None,
++                    "cpu_usage": float(cpu_usage),
++                    "ram_usage": float(ram_usage),
++                    "drag_status": "INACTIVE",
++                    "drag_counter": 0,
++                    "drag_duration": 0.0,
+                 })
+                 await asyncio.sleep(0.05)
+                 continue
+@@ -253,6 +369,7 @@ async def websocket_endpoint(websocket: WebSocket):
+             if config.flip_horizontal:
+                 frame = cv2.flip(frame, 1)
+                 
++            h, w = frame.shape[:2]
+             t_resize = time.perf_counter() - t0
+ 
+             # Run MediaPipe hand detection
+@@ -269,7 +386,7 @@ async def websocket_endpoint(websocket: WebSocket):
+                 if gesture_engine.is_loaded:
+                     gesture_label, gesture_confidence = gesture_engine.predict(primary_hand)
+                     if gesture_label != "unknown":
+-                        action_dispatcher.dispatch(gesture_label)
++                        action_dispatcher.dispatch(gesture_label, virtual_mouse_active=virtual_mouse.enabled)
+                 else:
+                     gesture_label = "No Model"
+             else:
+@@ -285,9 +402,9 @@ async def websocket_endpoint(websocket: WebSocket):
+             vm_result = None
+             if virtual_mouse.enabled:
+                 if detected_hands:
+-                    vm_result = virtual_mouse.process_hand(detected_hands[0])
++                    vm_result = virtual_mouse.process_hand(detected_hands[0], frame_w=w, frame_h=h)
+                 else:
+-                    vm_result = virtual_mouse.process_hand(None)
++                    vm_result = virtual_mouse.process_hand(None, frame_w=w, frame_h=h)
+             else:
+                 virtual_mouse.reset()
+ 
+@@ -338,6 +455,31 @@ async def websocket_endpoint(websocket: WebSocket):
+                 "click_status": vm_result.get("click_status", "OPEN") if vm_result else "OPEN",
+                 "click_counter": vm_result.get("click_counter", 0) if vm_result else 0,
+                 "current_action": vm_result.get("current_action", "None") if vm_result else "None",
++                # Phase 3.3 ΓÇö Right Click telemetry
++                "right_click_status": vm_result.get("right_click_status", "OPEN") if vm_result else "OPEN",
++                "right_click_counter": vm_result.get("right_click_counter", 0) if vm_result else 0,
++                "right_pinch_distance": vm_result.get("right_pinch_distance", 0.0) if vm_result else 0.0,
++                # Phase 3.4 ΓÇö Scroll telemetry
++                "scroll_mode": vm_result.get("scroll_mode", False) if vm_result else False,
++                "scroll_direction": vm_result.get("scroll_direction", "NONE") if vm_result else "NONE",
++                "scroll_speed": vm_result.get("scroll_speed", 0.0) if vm_result else 0.0,
++                "scroll_counter": vm_result.get("scroll_counter", 0) if vm_result else 0,
++                # Phase 3.4 ΓÇö Volume telemetry
++                "volume_mode": vm_result.get("volume_mode", False) if vm_result else False,
++                "volume_level": vm_result.get("volume_level", 0) if vm_result else 0,
++                "volume_distance": vm_result.get("volume_distance", 0.0) if vm_result else 0.0,
++                # Phase 3.5 ΓÇö Mode Manager & Brightness telemetry
++                "active_mode": vm_result.get("active_mode", "CURSOR") if vm_result else "CURSOR",
++                "brightness_mode": vm_result.get("brightness_mode", False) if vm_result else False,
++                "brightness_level": vm_result.get("brightness_level", 0) if vm_result else 0,
++                "brightness_distance": vm_result.get("brightness_distance", 0.0) if vm_result else 0.0,
++                # Phase 3.6 ΓÇö Drag & Drop telemetry
++                "drag_status": vm_result.get("drag_status", "INACTIVE") if vm_result else "INACTIVE",
++                "drag_counter": vm_result.get("drag_counter", 0) if vm_result else 0,
++                "drag_duration": vm_result.get("drag_duration", 0.0) if vm_result else 0.0,
++                # Resource metrics
++                "cpu_usage": float(cpu_usage),
++                "ram_usage": float(ram_usage),
+             }
+             
+             t_send_start = time.perf_counter()
+@@ -400,43 +542,23 @@ HTML_CONTENT = """<!DOCTYPE html>
+     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+ 
+     <style>
+-        body {
+-            background-color: #080710;
+-            color: #e2e8f0;
+-            font-family: 'Outfit', 'Inter', sans-serif;
+-        }
+-        .glass-panel {
+-            background: rgba(255, 255, 255, 0.03);
+-            backdrop-filter: blur(16px);
+-            -webkit-backdrop-filter: blur(16px);
+-            border: 1px solid rgba(255, 255, 255, 0.06);
+-        }
+-        .glass-card {
+-            background: rgba(255, 255, 255, 0.04);
+-            backdrop-filter: blur(12px);
+-            -webkit-backdrop-filter: blur(12px);
+-            border: 1px solid rgba(255, 255, 255, 0.08);
+-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+-        }
+-        .glass-card:hover {
+-            background: rgba(255, 255, 255, 0.06);
+-            border-color: rgba(59, 130, 246, 0.3);
+-            box-shadow: 0 10px 30px -10px rgba(59, 130, 246, 0.15);
+-        }
+-        .scrollbar-thin::-webkit-scrollbar {
+-            width: 6px;
+-            height: 6px;
+-        }
+-        .scrollbar-thin::-webkit-scrollbar-track {
+-            background: transparent;
+-        }
+-        .scrollbar-thin::-webkit-scrollbar-thumb {
+-            background: rgba(255, 255, 255, 0.1);
+-            border-radius: 9999px;
+-        }
+-        .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+-            background: rgba(255, 255, 255, 0.25);
+-        }
++        body { background-color: #080710; color: #e2e8f0; font-family: 'Outfit', 'Inter', sans-serif; }
++        .glass-panel { background: rgba(255,255,255,0.03); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid rgba(255,255,255,0.06); }
++        .glass-card { background: rgba(255,255,255,0.04); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.08); transition: all 0.3s cubic-bezier(0.4,0,0.2,1); }
++        .glass-card:hover { background: rgba(255,255,255,0.06); border-color: rgba(59,130,246,0.3); box-shadow: 0 10px 30px -10px rgba(59,130,246,0.15); }
++        .scrollbar-thin::-webkit-scrollbar { width:6px; height:6px; }
++        .scrollbar-thin::-webkit-scrollbar-track { background:transparent; }
++        .scrollbar-thin::-webkit-scrollbar-thumb { background:rgba(255,255,255,0.1); border-radius:9999px; }
++        .scrollbar-thin::-webkit-scrollbar-thumb:hover { background:rgba(255,255,255,0.25); }
++        @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
++        .settings-slider { -webkit-appearance:none; appearance:none; height:6px; border-radius:9999px; background:rgba(255,255,255,0.08); outline:none; cursor:pointer; width:100%; }
++        .settings-slider::-webkit-slider-thumb { -webkit-appearance:none; appearance:none; width:18px; height:18px; border-radius:50%; background:#3b82f6; border:2px solid rgba(59,130,246,0.6); box-shadow:0 0 10px rgba(59,130,246,0.5); cursor:pointer; transition:all 0.15s; }
++        .settings-slider::-webkit-slider-thumb:hover { transform:scale(1.2); }
++        .settings-slider-purple::-webkit-slider-thumb { background:#a855f7; border-color:rgba(168,85,247,0.6); box-shadow:0 0 10px rgba(168,85,247,0.5); }
++        .settings-slider-amber::-webkit-slider-thumb { background:#f59e0b; border-color:rgba(245,158,11,0.6); box-shadow:0 0 10px rgba(245,158,11,0.5); }
++        .settings-slider-emerald::-webkit-slider-thumb { background:#10b981; border-color:rgba(16,185,129,0.6); box-shadow:0 0 10px rgba(16,185,129,0.5); }
++        .settings-slider-rose::-webkit-slider-thumb { background:#f43f5e; border-color:rgba(244,63,94,0.6); box-shadow:0 0 10px rgba(244,63,94,0.5); }
++        @media (min-width:1280px) { .xl-grid-2col { grid-template-columns: 2fr 1fr !important; } }
+     </style>
+ </head>
+ <body class="bg-[#080710] text-gray-200 overflow-hidden">
+@@ -575,6 +697,121 @@ HTML_CONTENT = """<!DOCTYPE html>
+             </svg>
+         );
+ 
++        const SunIcon = (props) => (
++            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
++                <circle cx="12" cy="12" r="4" />
++                <path d="M12 2v2" />
++                <path d="M12 20v2" />
++                <path d="m4.93 4.93 1.41 1.41" />
++                <path d="m17.66 17.66 1.41 1.41" />
++                <path d="M2 12h2" />
++                <path d="M20 12h2" />
++                <path d="m6.34 17.66-1.41 1.41" />
++                <path d="m19.07 4.93-1.41 1.41" />
++            </svg>
++        );
++
++        const Volume2Icon = (props) => (
++            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
++                <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
++                <path d="M15.54 8.46a5 5 0 0 1 0 7.07" />
++                <path d="M19.07 4.93a10 10 0 0 1 0 14.14" />
++            </svg>
++        );
++
++        const VideoIcon = (props) => (
++            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
++                <path d="m22 8-6 4 6 4V8Z" />
++                <rect width="14" height="12" x="2" y="6" rx="2" ry="2" />
++            </svg>
++        );
++
++        const FileTextIcon = (props) => (
++            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
++                <path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z" />
++                <path d="M14 2v4a2 2 0 0 0 2 2h4" />
++                <path d="M10 9H8" />
++                <path d="M16 13H8" />
++                <path d="M16 17H8" />
++            </svg>
++        );
++
++        const TrashIcon = (props) => (
++            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
++                <path d="M3 6h18M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
++            </svg>
++        );
++
++        const DownloadIcon = (props) => (
++            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
++                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3" />
++            </svg>
++        );
++
++        function ResourceChart({ label, dataPoints, color, maxVal = 100 }) {
++            const canvasRef = useRef(null);
++
++            useEffect(() => {
++                const canvas = canvasRef.current;
++                if (!canvas) return;
++                const ctx = canvas.getContext('2d');
++                const width = canvas.width;
++                const height = canvas.height;
++
++                ctx.clearRect(0, 0, width, height);
++
++                ctx.strokeStyle = 'rgba(255, 255, 255, 0.05)';
++                ctx.lineWidth = 1;
++                for (let i = 1; i < 4; i++) {
++                    const y = (height / 4) * i;
++                    ctx.beginPath();
++                    ctx.moveTo(0, y);
++                    ctx.lineTo(width, y);
++                    ctx.stroke();
++                }
++
++                if (dataPoints.length === 0) return;
++
++                ctx.beginPath();
++                ctx.strokeStyle = color;
++                ctx.lineWidth = 2;
++                ctx.lineJoin = 'round';
++
++                const step = width / 29;
++                dataPoints.forEach((val, idx) => {
++                    const x = idx * step;
++                    const y = height - (val / maxVal) * (height - 12) - 6;
++                    if (idx === 0) {
++                        ctx.moveTo(x, y);
++                    } else {
++                        ctx.lineTo(x, y);
++                    }
++                });
++                ctx.stroke();
++
++                ctx.lineTo((dataPoints.length - 1) * step, height);
++                ctx.lineTo(0, height);
++                ctx.closePath();
++                const grad = ctx.createLinearGradient(0, 0, 0, height);
++                grad.addColorStop(0, color.replace('1)', '0.2)'));
++                grad.addColorStop(1, color.replace('1)', '0.0)'));
++                ctx.fillStyle = grad;
++                ctx.fill();
++            }, [dataPoints, color, maxVal]);
++
++            return (
++                <div className="glass-card p-5 rounded-2xl flex flex-col justify-between flex-1">
++                    <div className="flex justify-between items-center mb-3">
++                        <span className="text-xs font-bold text-gray-400 uppercase tracking-wider">{label}</span>
++                        <span className="text-base font-mono font-bold text-white">
++                            {dataPoints.length > 0 ? `${dataPoints[dataPoints.length - 1].toFixed(1)}${maxVal === 100 ? '%' : ' FPS'}` : '--'}
++                        </span>
++                    </div>
++                    <canvas ref={canvasRef} width="260" height="90" className="w-full h-[90px] bg-black/20 rounded-xl" />
++                </div>
++            );
++        }
++
+         function App() {
+             const [fps, setFps] = useState(0);
+             const [hands, setHands] = useState(0);
+@@ -582,20 +819,51 @@ HTML_CONTENT = """<!DOCTYPE html>
+             const [confidence, setConfidence] = useState(0);
+             const [cameraStatus, setCameraStatus] = useState('Disconnected');
+             const [frame, setFrame] = useState(null);
+-            
+             const [socketStatus, setSocketStatus] = useState('disconnected');
+             const [events, setEvents] = useState([]);
+             const [activeMenu, setActiveMenu] = useState('dashboard');
+             const [isResetting, setIsResetting] = useState(false);
++            const [isSaving, setIsSaving] = useState(false);
++            const [savedSuccess, setSavedSuccess] = useState(false);
+             const [isCameraLoading, setIsCameraLoading] = useState(false);
+-
+-            // Virtual Mouse States
++            const [cpuUsage, setCpuUsage] = useState(0.0);
++            const [ramUsage, setRamUsage] = useState(0.0);
++            const [cpuHistory, setCpuHistory] = useState([]);
++            const [ramHistory, setRamHistory] = useState([]);
++            const [fpsHistory, setFpsHistory] = useState([]);
++            const [sessionTime, setSessionTime] = useState(0);
++            const [logSearchText, setLogSearchText] = useState('');
++            const [logCategory, setLogCategory] = useState('all');
+             const [virtualMouseEnabled, setVirtualMouseEnabled] = useState(false);
+             const [virtualMouseSensitivity, setVirtualMouseSensitivity] = useState(1.5);
+             const [virtualMouseDeadZone, setVirtualMouseDeadZone] = useState(0.15);
+             const [virtualMouseSmoothing, setVirtualMouseSmoothing] = useState(0.20);
+             const [virtualMouseClickThreshold, setVirtualMouseClickThreshold] = useState(0.05);
+-            
++            const [virtualMouseRightClickThreshold, setVirtualMouseRightClickThreshold] = useState(0.05);
++            const [virtualMouseScrollSensitivity, setVirtualMouseScrollSensitivity] = useState(5.0);
++            const [virtualMouseScrollDeadZone, setVirtualMouseScrollDeadZone] = useState(0.04);
++            const [virtualMouseScrollSmoothing, setVirtualMouseScrollSmoothing] = useState(0.25);
++            const [virtualMouseVolumeMinDistancePx, setVirtualMouseVolumeMinDistancePx] = useState(30.0);
++            const [virtualMouseVolumeMaxDistancePx, setVirtualMouseVolumeMaxDistancePx] = useState(250.0);
++            const [virtualMouseVolumeSmoothing, setVirtualMouseVolumeSmoothing] = useState(0.15);
++            const [virtualMouseBrightnessMinDistancePx, setVirtualMouseBrightnessMinDistancePx] = useState(30.0);
++            const [virtualMouseBrightnessMaxDistancePx, setVirtualMouseBrightnessMaxDistancePx] = useState(250.0);
++            const [virtualMouseBrightnessSmoothing, setVirtualMouseBrightnessSmoothing] = useState(0.15);
++            const [modeCursorEnabled, setModeCursorEnabled] = useState(true);
++            const [modeClickEnabled, setModeClickEnabled] = useState(true);
++            const [modeScrollEnabled, setModeScrollEnabled] = useState(true);
++            const [modeVolumeEnabled, setModeVolumeEnabled] = useState(true);
++            const [modeBrightnessEnabled, setModeBrightnessEnabled] = useState(true);
++            const [modeDragEnabled, setModeDragEnabled] = useState(true);
++            const [dragHoldThresholdMs, setDragHoldThresholdMs] = useState(300.0);
++            const [cursorAccelerationEnabled, setCursorAccelerationEnabled] = useState(true);
++            const [clickCooldownMs, setClickCooldownMs] = useState(300.0);
++            const [volumeCooldownMs, setVolumeCooldownMs] = useState(100.0);
++            const [brightnessCooldownMs, setBrightnessCooldownMs] = useState(100.0);
++            const [showOverlays, setShowOverlays] = useState(true);
++            const [showEventLogs, setShowEventLogs] = useState(true);
++            const [enableSounds, setEnableSounds] = useState(true);
++            const [enableTelemetry, setEnableTelemetry] = useState(true);
+             const [cursorX, setCursorX] = useState(0);
+             const [cursorY, setCursorY] = useState(0);
+             const [trackingState, setTrackingState] = useState('Disabled');
+@@ -603,8 +871,23 @@ HTML_CONTENT = """<!DOCTYPE html>
+             const [clickStatus, setClickStatus] = useState('OPEN');
+             const [clickCounter, setClickCounter] = useState(0);
+             const [currentAction, setCurrentAction] = useState('None');
+-
+-            // Switches State
++            const [rightClickStatus, setRightClickStatus] = useState('OPEN');
++            const [rightClickCounter, setRightClickCounter] = useState(0);
++            const [rightPinchDistance, setRightPinchDistance] = useState(0.0);
++            const [scrollMode, setScrollMode] = useState(false);
++            const [scrollDirection, setScrollDirection] = useState('NONE');
++            const [scrollSpeed, setScrollSpeed] = useState(0.0);
++            const [scrollCounter, setScrollCounter] = useState(0);
++            const [volumeMode, setVolumeMode] = useState(false);
++            const [volumeLevel, setVolumeLevel] = useState(0);
++            const [volumeDistance, setVolumeDistance] = useState(0.0);
++            const [activeMode, setActiveMode] = useState('CURSOR');
++            const [brightnessMode, setBrightnessMode] = useState(false);
++            const [brightnessLevel, setBrightnessLevel] = useState(0);
++            const [brightnessDistance, setBrightnessDistance] = useState(0.0);
++            const [dragStatus, setDragStatus] = useState('INACTIVE');
++            const [dragCounter, setDragCounter] = useState(0);
++            const [dragDuration, setDragDuration] = useState(0.0);
+             const [showLandmarks, setShowLandmarks] = useState(true);
+             const [showConnections, setShowConnections] = useState(true);
+             const [showBoundingBox, setShowBoundingBox] = useState(true);
+@@ -613,26 +896,32 @@ HTML_CONTENT = """<!DOCTYPE html>
+             const [showDebugPanel, setShowDebugPanel] = useState(true);
+             const [showHud, setShowHud] = useState(true);
+ 
++            const prevRightClickStatusRef = useRef('OPEN');
++            const prevScrollModeRef = useRef(false);
++            const prevVolumeLevelRef = useRef(-1);
++            const prevBrightnessLevelRef = useRef(-1);
++            const prevActiveModeRef = useRef('CURSOR');
++            const prevDragStatusRef = useRef('INACTIVE');
+             const prevGestureRef = useRef('None');
+             const socketRef = useRef(null);
+             const eventIdCounterRef = useRef(0);
+ 
+-            // Connect to the WebSocket backend
++            useEffect(() => {
++                const timer = setInterval(() => {
++                    setSessionTime(prev => prev + 1);
++                }, 1000);
++                return () => clearInterval(timer);
++            }, []);
++
+             useEffect(() => {
+                 const connectWS = () => {
+                     setSocketStatus('connecting');
+                     const wsProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+                     const wsUrl = `${wsProtocol}//${window.location.host}/ws`;
+-                    console.log(`Connecting to WebSocket: ${wsUrl}`);
+-                    
+                     const ws = new WebSocket(wsUrl);
+                     socketRef.current = ws;
+ 
+-                    ws.onopen = () => {
+-                        setSocketStatus('connected');
+-                        console.log('WebSocket connection established');
+-                    };
+-
++                    ws.onopen = () => setSocketStatus('connected');
+                     ws.onmessage = (event) => {
+                         try {
+                             const data = JSON.parse(event.data);
+@@ -649,789 +938,446 @@ HTML_CONTENT = """<!DOCTYPE html>
+                             setClickStatus(data.click_status || 'OPEN');
+                             setClickCounter(data.click_counter || 0);
+                             setCurrentAction(data.current_action || 'None');
+-
+-                            // Trigger logs on gesture change (ignoring empty/None/unknown)
+-                            if (data.gesture !== prevGestureRef.current) {
+-                                if (data.gesture && data.gesture !== 'None' && data.gesture !== 'unknown') {
+-                                    const timeString = new Date().toLocaleTimeString();
+-                                    eventIdCounterRef.current += 1;
+-                                    const newEvent = {
+-                                        id: `${Date.now()}-${eventIdCounterRef.current}`,
+-                                        timestamp: timeString,
+-                                        gesture: data.gesture,
+-                                        confidence: data.confidence,
+-                                        action: `Triggered mapped shortcut for [${data.gesture}]`
+-                                    };
+-                                    setEvents(prev => [newEvent, ...prev].slice(0, 50));
++                            setCpuUsage(data.cpu_usage || 0.0);
++                            setRamUsage(data.ram_usage || 0.0);
++                            setCpuHistory(prev => [...prev, data.cpu_usage || 0.0].slice(-30));
++                            setRamHistory(prev => [...prev, data.ram_usage || 0.0].slice(-30));
++                            setFpsHistory(prev => [...prev, data.fps || 0.0].slice(-30));
++                            setRightClickStatus(data.right_click_status || 'OPEN');
++                            setRightClickCounter(data.right_click_counter || 0);
++                            setRightPinchDistance(data.right_pinch_distance || 0.0);
++                            const newSM = data.scroll_mode || false;
++                            setScrollMode(newSM);
++                            setScrollDirection(data.scroll_direction || 'NONE');
++                            setScrollSpeed(data.scroll_speed || 0.0);
++                            setScrollCounter(data.scroll_counter || 0);
++                            const newDS = data.drag_status || 'INACTIVE';
++                            setDragStatus(newDS);
++                            setDragCounter(data.drag_counter || 0);
++                            setDragDuration(data.drag_duration || 0.0);
++                            if (newDS !== prevDragStatusRef.current) {
++                                if (newDS === 'DRAGGING') logSystemEvent('Drag Operation Started', 'Drag');
++                                else if (newDS === 'INACTIVE' && prevDragStatusRef.current === 'DRAGGING') logSystemEvent(`Drag Operation Completed | Duration: ${data.drag_duration.toFixed(2)}s`, 'Drag');
++                                prevDragStatusRef.current = newDS;
++                            }
++                            if (data.click_status === 'LEFT_CLICK' && data.click_counter > clickCounter) logSystemEvent(`Left Click triggered (Pinch: ${data.pinch_distance.toFixed(4)})`, 'Click');
++                            if (data.right_click_status === 'RIGHT_CLICK' && data.right_click_counter > rightClickCounter) logSystemEvent(`Right Click triggered (Middle Pinch: ${data.right_pinch_distance.toFixed(4)})`, 'Click');
++                            if (newSM && !prevScrollModeRef.current) logSystemEvent(`Scroll mode entered`, 'Scroll');
++                            else if (!newSM && prevScrollModeRef.current) logSystemEvent(`Scroll mode exited`, 'Scroll');
++                            prevScrollModeRef.current = newSM;
++                            const newVM = data.volume_mode || false;
++                            setVolumeMode(newVM);
++                            setVolumeLevel(data.volume_level || 0);
++                            setVolumeDistance(data.volume_distance || 0.0);
++                            if (newVM && data.volume_level !== prevVolumeLevelRef.current) {
++                                if (data.volume_level !== undefined) {
++                                    logSystemEvent(`Volume updated: ${data.volume_level}% (Distance: ${data.volume_distance.toFixed(1)}px)`, 'Volume');
++                                    prevVolumeLevelRef.current = data.volume_level;
+                                 }
++                            } else if (!newVM) prevVolumeLevelRef.current = -1;
++                            const newBM = data.brightness_mode || false;
++                            setBrightnessMode(newBM);
++                            setBrightnessLevel(data.brightness_level || 0);
++                            setBrightnessDistance(data.brightness_distance || 0.0);
++                            if (newBM && data.brightness_level !== prevBrightnessLevelRef.current) {
++                                if (data.brightness_level !== undefined) {
++                                    logSystemEvent(`Brightness updated: ${data.brightness_level}% (Distance: ${data.brightness_distance.toFixed(1)}px)`, 'Brightness');
++                                    prevBrightnessLevelRef.current = data.brightness_level;
++                                }
++                            } else if (!newBM) prevBrightnessLevelRef.current = -1;
++                            const newAM = data.active_mode || 'CURSOR';
++                            setActiveMode(newAM);
++                            if (newAM !== prevActiveModeRef.current) {
++                                logSystemEvent(`System Mode switched to: ${newAM}`, 'Mode');
++                                prevActiveModeRef.current = newAM;
++                            }
++                            if (data.gesture !== prevGestureRef.current) {
++                                if (data.gesture && data.gesture !== 'None' && data.gesture !== 'unknown') logSystemEvent(`Gesture Recognized: [${data.gesture}] (Confidence: ${(data.confidence * 100).toFixed(0)}%)`, 'Gesture');
+                                 prevGestureRef.current = data.gesture;
+                             }
+-                        } catch (err) {
+-                            console.error('Error decoding WebSocket JSON payload:', err);
+-                        }
+-                    };
+-
+-                    ws.onclose = () => {
+-                        setSocketStatus('disconnected');
+-                        console.log('WebSocket connection lost, retrying in 3 seconds...');
+-                        setTimeout(connectWS, 3000);
+-                    };
+-
+-                    ws.onerror = (error) => {
+-                        console.error('WebSocket encountered an error:', error);
++                        } catch (err) { console.error(err); }
+                     };
++                    ws.onclose = () => { setSocketStatus('disconnected'); setTimeout(connectWS, 3000); };
+                 };
+-
+                 connectWS();
+ 
+-                // Fetch initial switches configuration from backend
+-                fetch('/api/settings')
+-                    .then(res => res.json())
+-                    .then(data => {
+-                        setShowLandmarks(data.show_landmarks);
+-                        setShowConnections(data.show_connections);
+-                        setShowBoundingBox(data.show_bounding_box);
+-                        setShowFingerStates(data.show_finger_states);
+-                        setShowDistanceMeter(data.show_distance_meter);
+-                        setShowDebugPanel(data.show_debug_panel);
+-                        setShowHud(data.show_hud);
+-                        
+-                        setVirtualMouseEnabled(data.virtual_mouse_enabled);
+-                        setVirtualMouseSensitivity(data.virtual_mouse_sensitivity);
+-                        setVirtualMouseDeadZone(data.virtual_mouse_dead_zone);
+-                        setVirtualMouseSmoothing(data.virtual_mouse_smoothing);
+-                        if (data.virtual_mouse_click_threshold !== undefined) {
+-                            setVirtualMouseClickThreshold(data.virtual_mouse_click_threshold);
+-                        }
+-                    })
+-                    .catch(err => console.error('Error loading config settings:', err));
++                fetch('/api/settings').then(res => res.json()).then(data => {
++                    setShowLandmarks(data.show_landmarks); setShowConnections(data.show_connections);
++                    setShowBoundingBox(data.show_bounding_box); setShowFingerStates(data.show_finger_states);
++                    setShowDistanceMeter(data.show_distance_meter); setShowDebugPanel(data.show_debug_panel);
++                    setShowHud(data.show_hud); setVirtualMouseEnabled(data.virtual_mouse_enabled);
++                    setVirtualMouseSensitivity(data.virtual_mouse_sensitivity); setVirtualMouseDeadZone(data.virtual_mouse_dead_zone);
++                    setVirtualMouseSmoothing(data.virtual_mouse_smoothing);
++                    if (data.virtual_mouse_click_threshold !== undefined) setVirtualMouseClickThreshold(data.virtual_mouse_click_threshold);
++                    if (data.virtual_mouse_right_click_threshold !== undefined) setVirtualMouseRightClickThreshold(data.virtual_mouse_right_click_threshold);
++                    if (data.virtual_mouse_scroll_sensitivity !== undefined) setVirtualMouseScrollSensitivity(data.virtual_mouse_scroll_sensitivity);
++                    if (data.virtual_mouse_scroll_dead_zone !== undefined) setVirtualMouseScrollDeadZone(data.virtual_mouse_scroll_dead_zone);
++                    if (data.virtual_mouse_scroll_smoothing !== undefined) setVirtualMouseScrollSmoothing(data.virtual_mouse_scroll_smoothing);
++                    if (data.virtual_mouse_volume_min_distance_px !== undefined) setVirtualMouseVolumeMinDistancePx(data.virtual_mouse_volume_min_distance_px);
++                    if (data.virtual_mouse_volume_max_distance_px !== undefined) setVirtualMouseVolumeMaxDistancePx(data.virtual_mouse_volume_max_distance_px);
++                    if (data.virtual_mouse_volume_smoothing !== undefined) setVirtualMouseVolumeSmoothing(data.virtual_mouse_volume_smoothing);
++                    if (data.virtual_mouse_brightness_min_distance_px !== undefined) setVirtualMouseBrightnessMinDistancePx(data.virtual_mouse_brightness_min_distance_px);
++                    if (data.virtual_mouse_brightness_max_distance_px !== undefined) setVirtualMouseBrightnessMaxDistancePx(data.virtual_mouse_brightness_max_distance_px);
++                    if (data.virtual_mouse_brightness_smoothing !== undefined) setVirtualMouseBrightnessSmoothing(data.virtual_mouse_brightness_smoothing);
++                    if (data.mode_cursor_enabled !== undefined) setModeCursorEnabled(data.mode_cursor_enabled);
++                    if (data.mode_click_enabled !== undefined) setModeClickEnabled(data.mode_click_enabled);
++                    if (data.mode_scroll_enabled !== undefined) setModeScrollEnabled(data.mode_scroll_enabled);
++                    if (data.mode_volume_enabled !== undefined) setModeVolumeEnabled(data.mode_volume_enabled);
++                    if (data.mode_brightness_enabled !== undefined) setModeBrightnessEnabled(data.mode_brightness_enabled);
++                    if (data.mode_drag_enabled !== undefined) setModeDragEnabled(data.mode_drag_enabled);
++                    if (data.drag_hold_threshold_ms !== undefined) setDragHoldThresholdMs(data.drag_hold_threshold_ms);
++                    if (data.cursor_acceleration_enabled !== undefined) setCursorAccelerationEnabled(data.cursor_acceleration_enabled);
++                    if (data.click_cooldown_ms !== undefined) setClickCooldownMs(data.click_cooldown_ms);
++                    if (data.volume_cooldown_ms !== undefined) setVolumeCooldownMs(data.volume_cooldown_ms);
++                    if (data.brightness_cooldown_ms !== undefined) setBrightnessCooldownMs(data.brightness_cooldown_ms);
++                    if (data.show_overlays !== undefined) setShowOverlays(data.show_overlays);
++                    if (data.show_event_logs !== undefined) setShowEventLogs(data.show_event_logs);
++                    if (data.enable_sounds !== undefined) setEnableSounds(data.enable_sounds);
++                    if (data.enable_telemetry !== undefined) setEnableTelemetry(data.enable_telemetry);
++                }).catch(console.error);
+ 
+-                // Escape key emergency stop listener
+                 const handleEscape = (e) => {
+                     if (e.key === 'Escape') {
+-                        setVirtualMouseEnabled(false);
+-                        updateSetting('virtual_mouse_enabled', false);
+-                        logSystemEvent('\u26a0 EMERGENCY STOP: Virtual mouse disabled via ESC key.');
++                        setVirtualMouseEnabled(false); updateSetting('virtual_mouse_enabled', false);
++                        setRightClickStatus('OPEN'); setScrollMode(false); setScrollDirection('NONE');
++                        logSystemEvent('ΓÜá EMERGENCY STOP: Virtual mouse disabled via ESC key.', 'System');
+                     }
+                 };
+                 window.addEventListener('keydown', handleEscape);
+-
+-                return () => {
+-                    window.removeEventListener('keydown', handleEscape);
+-                    if (socketRef.current) {
+-                        socketRef.current.close();
+-                    }
+-                };
++                return () => { window.removeEventListener('keydown', handleEscape); if (socketRef.current) socketRef.current.close(); };
+             }, []);
+ 
+-            const logSystemEvent = (msg) => {
++            const logSystemEvent = (msg, category = 'System') => {
+                 const timeString = new Date().toLocaleTimeString();
+                 eventIdCounterRef.current += 1;
+-                const newEvent = {
+-                    id: `${Date.now()}-${eventIdCounterRef.current}`,
+-                    timestamp: timeString,
+-                    gesture: 'System',
+-                    confidence: 1.0,
+-                    action: msg
+-                };
+-                setEvents(prev => [newEvent, ...prev].slice(0, 50));
++                const newEvent = { id: `${Date.now()}-${eventIdCounterRef.current}`, timestamp: timeString, gesture: category, confidence: 1.0, action: msg };
++                setEvents(prev => [newEvent, ...prev].slice(0, 200));
+             };
+ 
+-            // REST API Actions
+             const handleStartCamera = async () => {
+                 setIsCameraLoading(true);
+-                logSystemEvent("Camera stream start requested.");
+                 try {
+                     const res = await fetch('/api/camera/start', { method: 'POST' });
+-                    const data = await res.json();
+-                    if (data.status === 'success') {
+-                        setCameraStatus('Connected');
+-                        logSystemEvent("Camera stream started.");
+-                    }
+-                } catch (err) {
+-                    console.error('Error starting camera:', err);
+-                    logSystemEvent("Failed to start camera.");
+-                } finally {
+-                    setIsCameraLoading(false);
+-                }
++                    if ((await res.json()).status === 'success') { setCameraStatus('Connected'); logSystemEvent("Camera stream started."); }
++                } catch (err) { console.error(err); } finally { setIsCameraLoading(false); }
+             };
+ 
+             const handleStopCamera = async () => {
+                 setIsCameraLoading(true);
+-                logSystemEvent("Camera stream stop requested.");
+                 try {
+                     await fetch('/api/camera/stop', { method: 'POST' });
+-                    setCameraStatus('Disconnected');
+-                    setFrame(null);
+-                    setFps(0);
+-                    setHands(0);
+-                    setGesture('None');
+-                    setConfidence(0);
+-                    logSystemEvent("Camera stream stopped.");
+-                } catch (err) {
+-                    console.error('Error stopping camera:', err);
+-                    logSystemEvent("Failed to stop camera.");
+-                } finally {
+-                    setIsCameraLoading(false);
+-                }
++                    setCameraStatus('Disconnected'); setFrame(null);
++                } catch (err) { console.error(err); } finally { setIsCameraLoading(false); }
+             };
+ 
+             const handleResetTracking = async () => {
+                 setIsResetting(true);
+-                logSystemEvent("Reset tracking requested.");
+-                try {
+-                    await fetch('/api/camera/reset', { method: 'POST' });
+-                    setEvents([]);
+-                    prevGestureRef.current = 'None';
+-                    logSystemEvent("Tracking reset complete.");
+-                } catch (err) {
+-                    console.error('Error resetting tracking:', err);
+-                    logSystemEvent("Failed to reset tracking.");
+-                } finally {
+-                    setTimeout(() => setIsResetting(false), 800);
+-                }
++                try { await fetch('/api/camera/reset', { method: 'POST' }); } finally { setTimeout(() => setIsResetting(false), 800); }
+             };
+ 
+             const updateSetting = async (key, val) => {
++                try { await fetch('/api/settings/update', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ [key]: val }) }); } catch (err) { console.error(err); }
++            };
++
++            const handleSaveSettings = async () => {
++                setIsSaving(true);
++                const payload = {
++                    virtual_mouse_enabled: virtualMouseEnabled,
++                    virtual_mouse_sensitivity: virtualMouseSensitivity,
++                    virtual_mouse_smoothing: virtualMouseSmoothing,
++                    virtual_mouse_click_threshold: virtualMouseClickThreshold,
++                    virtual_mouse_scroll_sensitivity: virtualMouseScrollSensitivity,
++                    drag_hold_threshold_ms: dragHoldThresholdMs,
++                    virtual_mouse_right_click_threshold: virtualMouseRightClickThreshold,
++                    virtual_mouse_scroll_dead_zone: virtualMouseScrollDeadZone,
++                    virtual_mouse_scroll_smoothing: virtualMouseScrollSmoothing,
++                    cursor_acceleration_enabled: cursorAccelerationEnabled,
++                    click_cooldown_ms: clickCooldownMs,
++                };
+                 try {
+-                    await fetch('/api/settings/update', {
+-                        method: 'POST',
+-                        headers: { 'Content-Type': 'application/json' },
+-                        body: JSON.stringify({ [key]: val })
+-                    });
+-                } catch (err) {
+-                    console.error('Error updating switch setting:', err);
+-                }
++                    await fetch('/api/settings/update', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
++                    setSavedSuccess(true);
++                    logSystemEvent('Settings saved successfully.', 'Settings');
++                    setTimeout(() => setSavedSuccess(false), 2500);
++                } catch (err) { console.error(err); logSystemEvent('Failed to save settings.', 'Settings'); }
++                finally { setIsSaving(false); }
+             };
+ 
+-            // Format confidence displays based on gesture states
+-            const formatConfidence = () => {
+-                if (gesture === 'None' || gesture === 'unknown' || gesture === 'No Model' || hands === 0) {
+-                    return '0%';
+-                }
+-                return `${(confidence * 100).toFixed(0)}%`;
++            const handleResetSettings = () => {
++                setVirtualMouseEnabled(false);
++                setVirtualMouseSensitivity(1.5);
++                setVirtualMouseSmoothing(0.20);
++                setVirtualMouseClickThreshold(0.05);
++                setVirtualMouseScrollSensitivity(5.0);
++                setDragHoldThresholdMs(300.0);
++                setVirtualMouseRightClickThreshold(0.05);
++                setVirtualMouseScrollDeadZone(0.04);
++                setVirtualMouseScrollSmoothing(0.25);
++                setCursorAccelerationEnabled(true);
++                setClickCooldownMs(300.0);
++                logSystemEvent('Settings reset to defaults.', 'Settings');
++            };
++
++            const clearEvents = () => { setEvents([]); logSystemEvent("Event log console cleared."); };
++            const downloadCSV = () => {
++                const csvContent = ['Timestamp,Category,Details', ...events.map(e => `${e.timestamp},${e.gesture},"${e.action.replace(/"/g, '""')}"`)].join('\n');
++                const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
++                const url = URL.createObjectURL(blob);
++                const link = document.createElement("a");
++                link.setAttribute("href", url); link.setAttribute("download", `gestureos_log_${Date.now()}.csv`);
++                document.body.appendChild(link); link.click(); document.body.removeChild(link);
++            };
++
++            const formatSessionTime = (seconds) => {
++                const h = Math.floor(seconds / 3600).toString().padStart(2, '0');
++                const m = Math.floor((seconds % 3600) / 60).toString().padStart(2, '0');
++                const s = (seconds % 60).toString().padStart(2, '0');
++                return `${h}:${m}:${s}`;
+             };
+ 
+             return (
+                 <div className="flex h-screen bg-[#080710] font-sans antialiased text-gray-200 overflow-hidden">
+-                    
+-                    {/* Left Sidebar */}
+                     <aside className="w-72 glass-panel border-r border-glass-border flex flex-col justify-between h-full z-10">
+                         <div>
+-                            {/* Logo section - centered, minimal empty space */}
+                             <div className="flex items-center gap-3 px-6 py-6 border-b border-glass-border justify-center">
+-                                <div className="p-2.5 bg-blue-500/10 rounded-xl border border-blue-500/20 text-accent-blue">
+-                                    <HandIcon className="w-6 h-6 stroke-[2]" />
+-                                </div>
++                                <div className="p-2.5 bg-blue-500/10 rounded-xl border border-blue-500/20 text-accent-blue"><HandIcon className="w-6 h-6 stroke-[2]" /></div>
+                                 <div>
+-                                    <h1 className="text-lg font-bold tracking-wider bg-gradient-to-r from-white via-gray-200 to-gray-400 bg-clip-text text-transparent">
+-                                        GestureOS
+-                                    </h1>
+-                                    <p className="text-[10px] text-gray-500 uppercase tracking-widest font-semibold">Intelligence Edition</p>
++                                    <h1 className="text-lg font-bold tracking-wider bg-gradient-to-r from-white via-gray-200 to-gray-400 bg-clip-text text-transparent">GestureOS</h1>
++                                    <p className="text-[10px] text-gray-500 uppercase tracking-widest font-semibold font-mono">Intelligence Pro</p>
+                                 </div>
+                             </div>
+-
+-                            {/* Navigation */}
+                             <nav className="px-4 py-6 space-y-2">
+-                                {[
+-                                    { id: 'dashboard', name: 'Dashboard', icon: LayersIcon },
+-                                    { id: 'mouse', name: 'Virtual Mouse', icon: MousePointerIcon },
+-                                    { id: 'shortcuts', name: 'Gestures Map', icon: SlidersIcon },
+-                                    { id: 'analytics', name: 'Real-time Metrics', icon: TrendingUpIcon },
+-                                    { id: 'settings', name: 'System Settings', icon: SettingsIcon }
+-                                ].map((item) => {
+-                                    const Icon = item.icon;
+-                                    const isActive = activeMenu === item.id;
+-                                    return (
+-                                        <button
+-                                            key={item.id}
+-                                            onClick={() => {
+-                                                setActiveMenu(item.id);
+-                                                logSystemEvent(`Navigated to page: ${item.name}`);
+-                                            }}
+-                                            className={`w-full flex items-center justify-between px-4 py-3.5 rounded-xl transition-all duration-300 group ${
+-                                                isActive 
+-                                                    ? 'bg-blue-600/20 border border-blue-500/30 text-white font-medium shadow-md shadow-blue-500/5' 
+-                                                    : 'text-gray-400 hover:text-white hover:bg-white/5 border border-transparent'
+-                                            }`}
+-                                        >
+-                                            <div className="flex items-center gap-3.5">
+-                                                <Icon className={`w-5 h-5 transition-transform duration-300 group-hover:scale-110 ${
+-                                                    isActive ? 'text-accent-blue' : 'text-gray-400 group-hover:text-white'
+-                                                }`} />
+-                                                <span className="text-sm tracking-wide">{item.name}</span>
+-                                            </div>
+-                                            <ChevronRightIcon className={`w-4 h-4 opacity-0 transition-all duration-300 -translate-x-2 ${
+-                                                isActive ? 'opacity-100 translate-x-0 text-accent-blue' : 'group-hover:opacity-50 group-hover:translate-x-0'
+-                                            }`} />
+-                                        </button>
+-                                    );
+-                                })}
++                                {[ { id: 'dashboard', name: 'Dashboard', icon: LayersIcon }, { id: 'mouse', name: 'Camera Stream', icon: VideoIcon }, { id: 'logs', name: 'Event Logs', icon: FileTextIcon }, { id: 'settings', name: 'System Settings', icon: SettingsIcon } ].map((item) => (
++                                    <button key={item.id} onClick={() => setActiveMenu(item.id)} className={`w-full flex items-center justify-between px-4 py-3.5 rounded-xl transition-all duration-300 group ${activeMenu === item.id ? 'bg-blue-600/20 border border-blue-500/30 text-white font-medium shadow-md shadow-blue-500/5' : 'text-gray-400 hover:text-white hover:bg-white/5 border border-transparent'}`}>
++                                        <div className="flex items-center gap-3.5"><item.icon className="w-5 h-5 transition-transform duration-300 group-hover:scale-110" /><span>{item.name}</span></div>
++                                        <ChevronRightIcon className={`w-4 h-4 opacity-0 transition-all duration-300 ${activeMenu === item.id ? 'opacity-100 text-accent-blue' : 'group-hover:opacity-50'}`} />
++                                    </button>
++                                ))}
+                             </nav>
+                         </div>
+-
+-                        {/* Sidebar Footer status */}
+-                        <div className="p-4 border-t border-glass-border">
+-                            <div className="glass-card rounded-xl p-4 flex flex-col gap-3">
+-                                <div className="flex items-center justify-between text-xs">
+-                                    <span className="text-gray-400 font-medium">Core Pipeline:</span>
+-                                    <span className="text-accent-green flex items-center gap-1.5 font-semibold">
+-                                        <span className="w-1.5 h-1.5 rounded-full bg-accent-green animate-ping" />
+-                                        Active
+-                                    </span>
+-                                </div>
+-                                <div className="flex items-center justify-between text-xs">
+-                                    <span className="text-gray-400 font-medium">WS Backend:</span>
+-                                    <span className={`flex items-center gap-1.5 font-semibold ${
+-                                        socketStatus === 'connected' ? 'text-accent-blue' : 'text-amber-500 animate-pulse'
+-                                    }`}>
+-                                        <span className={`w-1.5 h-1.5 rounded-full ${
+-                                            socketStatus === 'connected' ? 'bg-accent-blue' : 'bg-amber-500'
+-                                        }`} />
+-                                        {socketStatus === 'connected' ? 'Connected' : socketStatus === 'connecting' ? 'Connecting...' : 'Offline'}
+-                                    </span>
+-                                </div>
+-                            </div>
+-                        </div>
++                        <div className="p-4 border-t border-glass-border"><div className="glass-card rounded-xl p-4 flex flex-col gap-3 text-xs"><div className="flex justify-between"><span className="text-gray-400">WS Backend:</span><span className={socketStatus === 'connected' ? 'text-accent-blue' : 'text-amber-500'}>{socketStatus}</span></div></div></div>
+                     </aside>
+ 
+-                    {/* Main Content Area */}
+                     <main className="flex-1 flex flex-col h-full overflow-hidden bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-blue-950/15 via-[#080710] to-[#080710]">
+-                        
+-                        {/* Header Row - vertically aligned profile, mode status, notifications, settings, exit */}
+                         <header className="h-20 border-b border-glass-border px-8 flex items-center justify-between backdrop-blur-md z-10 shrink-0">
+                             <div>
+-                                <h2 className="text-xl font-bold tracking-wide text-white">
+-                                    {activeMenu === 'dashboard' ? 'System Monitor' : activeMenu === 'mouse' ? 'Virtual Mouse Monitor' : 'System Configuration'}
+-                                </h2>
+-                                <p className="text-xs text-gray-400 mt-0.5">
+-                                    {activeMenu === 'dashboard' 
+-                                        ? 'Telemetry overview and input gesture mapping controls.' 
+-                                        : activeMenu === 'mouse' 
+-                                        ? 'Real-time mouse tracking coordinates, status, and settings.' 
+-                                        : 'Calibrate input settings and device thresholds.'}
+-                                </p>
+-                            </div>
+-
+-                            <div className="flex items-center gap-4">
+-                                <div className="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-xs text-emerald-400 font-medium">
+-                                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+-                                    Engine Online
+-                                </div>
+-
+-                                <span className="w-px h-6 bg-glass-border hidden md:inline-block" />
+-
+-                                <button className="p-2.5 rounded-xl glass-card text-gray-400 hover:text-white relative group">
+-                                    <BellIcon className="w-5 h-5" />
+-                                    <span className="absolute top-1.5 right-1.5 w-2.5 h-2.5 bg-blue-500 rounded-full border-2 border-background" />
+-                                </button>
+-
+-                                <button className="p-2.5 rounded-xl glass-card text-gray-400 hover:text-white group">
+-                                    <SettingsIcon className="w-5 h-5 transition-transform duration-300 group-hover:rotate-45" />
+-                                </button>
+-
+-                                <div className="flex items-center gap-3 px-3 py-1.5 rounded-xl glass-card border border-glass-border text-left select-none">
+-                                    <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center text-white font-bold text-sm">
+-                                        <UserIcon className="w-4 h-4" />
+-                                    </div>
+-                                    <div className="hidden sm:block">
+-                                        <p className="text-xs font-semibold text-white">Operator</p>
+-                                        <p className="text-[10px] text-gray-400">Admin Role</p>
+-                                    </div>
+-                                </div>
+-
+-                                <button 
+-                                    onClick={handleStopCamera}
+-                                    className="p-2.5 rounded-xl bg-red-500/10 hover:bg-red-500/20 border border-red-500/20 hover:border-red-500/30 text-red-400 hover:text-red-300 transition-all duration-300 group"
+-                                    title="Stop Engine"
+-                                >
+-                                    <LogOutIcon className="w-5 h-5" />
+-                                </button>
++                                <h2 className="text-xl font-bold tracking-wide text-white">{activeMenu === 'dashboard' ? 'Telemetry Dashboard' : activeMenu === 'mouse' ? 'Camera Stream Monitor' : activeMenu === 'logs' ? 'System Event Logs' : 'Configuration settings'}</h2>
++                                <p className="text-xs text-gray-400 mt-0.5">{activeMenu === 'dashboard' ? 'Real-time resource utilization, gesture mapping, and session telemetry.' : 'System overview and calibration settings.'}</p>
+                             </div>
++                            <button onClick={handleStopCamera} className="p-2.5 rounded-xl bg-red-500/10 hover:bg-red-500/20 border border-red-500/20 text-red-400"><LogOutIcon className="w-5 h-5" /></button>
+                         </header>
+ 
+-                        {/* Outer scrollable viewport */}
+                         <div className="flex-1 overflow-y-auto p-8 scrollbar-thin">
+                             <div className="max-w-6xl mx-auto space-y-6">
+-                                
+                                 {activeMenu === 'dashboard' ? (
+                                     <>
+-                                        {/* Status Cards Grid */}
+-                                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+-                                            {/* FPS Card */}
+-                                            <div className="glass-card p-5 rounded-2xl flex items-center gap-4 relative overflow-hidden group">
+-                                                <div className="p-3 bg-blue-500/10 rounded-xl border border-blue-500/20 text-accent-blue">
+-                                                    <ActivityIcon className="w-6 h-6" />
++                                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-5">
++                                            {[ { icon: ActivityIcon, color: 'blue', label: 'Stream FPS', val: fps.toFixed(1) }, { icon: HandIcon, color: 'indigo', label: 'Hands', val: hands }, { icon: CpuIcon, color: 'red', label: 'CPU Usage', val: `${cpuUsage.toFixed(0)}%` }, { icon: SlidersIcon, color: 'emerald', label: 'RAM Usage', val: `${ramUsage.toFixed(0)}%` }, { icon: MousePointerIcon, color: 'blue', label: 'Active Mode', val: activeMode }, { icon: FileTextIcon, color: 'amber', label: 'Session Time', val: formatSessionTime(sessionTime) } ].map((c, i) => (
++                                                <div key={i} className="glass-card p-5 rounded-2xl flex items-center gap-4 relative">
++                                                    <div className={`p-3 rounded-xl border border-${c.color}-500/20 bg-${c.color}-500/10 text-${c.color}-400`}><c.icon className="w-6 h-6" /></div>
++                                                    <div><p className="text-xs font-bold uppercase tracking-wider text-gray-400">{c.label}</p><p className="text-2xl font-bold text-white mt-1 font-mono">{c.val}</p></div>
+                                                 </div>
+-                                                <div>
+-                                                    <p className="text-xs font-semibold uppercase tracking-wider text-gray-400">Frames Per Second</p>
+-                                                    <p className="text-2xl font-bold text-white mt-1 font-mono tracking-tight">
+-                                                        {fps > 0 ? fps : '0.0'}
+-                                                    </p>
+-                                                </div>
+-                                            </div>
++                                            ))}
++                                        </div>
++                                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
++                                            <ResourceChart label="CPU Usage History" dataPoints={cpuHistory} color="rgba(239, 68, 68, 1)" />
++                                            <ResourceChart label="RAM Memory History" dataPoints={ramHistory} color="rgba(16, 185, 129, 1)" />
++                                            <ResourceChart label="Camera FPS Stream" dataPoints={fpsHistory} color="rgba(59, 130, 246, 1)" maxVal={60} />
++                                        </div>
++                                    </>
++                                ) : activeMenu === 'mouse' ? (
++                                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
++                                        <div className="lg:col-span-2 glass-card rounded-2xl p-4 h-[480px] flex flex-col">
++                                            <div className="flex items-center justify-between pb-3 border-b border-glass-border"><span className="text-sm font-semibold text-gray-200">Device Stream Input</span></div>
++                                            <div className="flex-1 flex items-center justify-center bg-black/40 rounded-xl overflow-hidden mt-3">{cameraStatus === 'Connected' && frame ? <img src={frame} className="w-full h-full object-contain" /> : <div className="text-gray-500 animate-pulse">Camera Offline</div>}</div>
++                                        </div>
++                                        <div className="flex flex-col gap-6">
++                                            <div className="glass-card rounded-2xl p-5"><h3 className="text-sm font-bold uppercase text-gray-400 mb-4">Quick Actions</h3><div className="space-y-3"><button onClick={handleStartCamera} className="w-full py-3 bg-blue-600 rounded-xl text-white font-semibold">Launch Camera</button><button onClick={handleStopCamera} className="w-full py-3 bg-white/5 rounded-xl">Disconnect</button></div></div>
++                                        </div>
++                                    </div>
++                                ) : activeMenu === 'logs' ? (
++                                    <div className="glass-card rounded-2xl p-6 h-[520px] flex flex-col">
++                                        <div className="flex justify-between items-center border-b border-glass-border pb-4">
++                                            <span className="font-bold text-gray-200">System Logs</span>
++                                            <div className="flex gap-2"><button onClick={downloadCSV} className="px-3 py-1.5 bg-blue-500/10 text-xs rounded-xl">Export CSV</button><button onClick={clearEvents} className="px-3 py-1.5 bg-red-500/10 text-xs rounded-xl">Clear</button></div>
++                                        </div>
++                                        <div className="flex-1 overflow-y-auto mt-4 font-mono text-xs">{events.map(e => <div key={e.id} className="mb-2">[{e.timestamp}] <span className="text-blue-400">{e.gesture}</span>: {e.action}</div>)}</div>
++                                    </div>
++                                ) : (
++                                    <div className="flex flex-col gap-6">
+ 
+-                                            {/* Hands Detected Card */}
+-                                            <div className="glass-card p-5 rounded-2xl flex items-center gap-4 relative overflow-hidden group">
+-                                                <div className="p-3 bg-indigo-500/10 rounded-xl border border-indigo-500/20 text-accent-purple">
+-                                                    <HandIcon className="w-6 h-6" />
++                                        {/* Mouse Enable Hero Banner */}
++                                        <div className="glass-card rounded-2xl p-5 flex items-center justify-between" style={{background: virtualMouseEnabled ? 'rgba(59,130,246,0.08)' : 'rgba(255,255,255,0.04)', borderColor: virtualMouseEnabled ? 'rgba(59,130,246,0.35)' : 'rgba(255,255,255,0.08)', transition: 'all 0.4s ease'}}>
++                                            <div className="flex items-center gap-4">
++                                                <div style={{padding:'12px', borderRadius:'12px', border: virtualMouseEnabled ? '1px solid rgba(59,130,246,0.4)' : '1px solid #3f3f46', background: virtualMouseEnabled ? 'rgba(59,130,246,0.2)' : '#27272a', color: virtualMouseEnabled ? '#60a5fa' : '#71717a', transition:'all 0.4s'}}>
++                                                    <MousePointerIcon className="w-6 h-6" />
+                                                 </div>
+                                                 <div>
+-                                                    <p className="text-xs font-semibold uppercase tracking-wider text-gray-400">Hands Tracked</p>
+-                                                    <p className="text-2xl font-bold text-white mt-1 font-mono tracking-tight">
+-                                                        {hands}
+-                                                    </p>
++                                                    <p style={{fontSize:'14px',fontWeight:'700',color:'white',margin:0}}>Virtual Mouse Control</p>
++                                                    <p style={{fontSize:'12px',color:'#9ca3af',marginTop:'2px'}}>Gesture-driven cursor movement and interaction</p>
+                                                 </div>
+                                             </div>
+-
+-                                            {/* Current Gesture Card */}
+-                                            <div className="glass-card p-5 rounded-2xl flex items-center gap-4 relative overflow-hidden group">
+-                                                <div className="p-3 bg-violet-500/10 rounded-xl border border-violet-500/20 text-purple-400">
+-                                                    <SparklesIcon className="w-6 h-6" />
+-                                                </div>
+-                                                <div>
+-                                                    <p className="text-xs font-semibold uppercase tracking-wider text-gray-400">Current Gesture</p>
+-                                                    <div className="flex items-baseline gap-2 mt-1">
+-                                                        <p className="text-2xl font-bold text-white tracking-tight capitalize">
+-                                                            {gesture === 'None' || gesture === 'unknown' ? 'Idle' : gesture}
+-                                                        </p>
+-                                                        <span className="text-xs text-gray-500 font-mono">({formatConfidence()})</span>
++                                            <div className="flex items-center gap-3">
++                                                <span style={{fontSize:'11px',fontWeight:'700',textTransform:'uppercase',letterSpacing:'0.1em',padding:'4px 12px',borderRadius:'9999px',background: virtualMouseEnabled ? 'rgba(59,130,246,0.2)' : '#27272a', color: virtualMouseEnabled ? '#93c5fd' : '#71717a', border: virtualMouseEnabled ? '1px solid rgba(59,130,246,0.3)' : '1px solid #3f3f46'}}>
++                                                    {virtualMouseEnabled ? 'ENABLED' : 'DISABLED'}
++                                                </span>
++                                                <label className="flex items-center cursor-pointer">
++                                                    <div className="relative">
++                                                        <input id="mouse-enable-toggle" type="checkbox" checked={virtualMouseEnabled} onChange={e => { const val = e.target.checked; setVirtualMouseEnabled(val); updateSetting('virtual_mouse_enabled', val); }} className="sr-only peer" />
++                                                        <div className="w-14 h-7 bg-zinc-700 rounded-full peer peer-checked:after:translate-x-7 peer-checked:after:border-white after:content-[''] after:absolute after:top-[3px] after:left-[3px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-[22px] after:w-[22px] after:transition-all peer-checked:bg-blue-600"></div>
+                                                     </div>
+-                                                </div>
+-                                            </div>
+-
+-                                            {/* Camera Status Card */}
+-                                            <div className="glass-card p-5 rounded-2xl flex items-center gap-4 relative overflow-hidden group">
+-                                                <div className={`p-3 rounded-xl border transition-colors ${
+-                                                    cameraStatus === 'Connected' 
+-                                                        ? 'bg-emerald-500/10 border-emerald-500/20 text-accent-green' 
+-                                                        : 'bg-zinc-500/10 border-zinc-500/20 text-gray-400'
+-                                                }`}>
+-                                                    {cameraStatus === 'Connected' ? <CameraIcon className="w-6 h-6" /> : <VideoOffIcon className="w-6 h-6" />}
+-                                                </div>
+-                                                <div>
+-                                                    <p className="text-xs font-semibold uppercase tracking-wider text-gray-400">Camera State</p>
+-                                                    <p className={`text-2xl font-bold mt-1 tracking-tight ${
+-                                                        cameraStatus === 'Connected' ? 'text-accent-green' : 'text-gray-400'
+-                                                    }`}>
+-                                                        {cameraStatus}
+-                                                    </p>
+-                                                </div>
++                                                </label>
+                                             </div>
+                                         </div>
+ 
+-                                        {/* Layout Main Grid */}
+-                                        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+-                                            
+-                                            {/* Camera Feed Preview (2 Columns) */}
+-                                            <div className="lg:col-span-2 flex flex-col gap-4">
+-                                                <div className="glass-card rounded-2xl p-4 flex flex-col h-[480px] justify-between relative group overflow-hidden">
+-                                                    <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 opacity-20" />
+-                                                    
+-                                                    <div className="flex items-center justify-between pb-3 border-b border-glass-border">
+-                                                        <div className="flex items-center gap-2 text-sm">
+-                                                            <CameraIcon className="w-4 h-4 text-accent-blue" />
+-                                                            <span className="font-semibold text-gray-200">Device Stream Input</span>
+-                                                        </div>
+-                                                        <div className="flex items-center gap-1.5 text-xs text-gray-400">
+-                                                            <span className={`w-1.5 h-1.5 rounded-full ${
+-                                                                cameraStatus === 'Connected' ? 'bg-accent-green animate-ping' : 'bg-red-400'
+-                                                            }`} />
+-                                                            {cameraStatus === 'Connected' ? 'Streaming live' : 'Offline'}
+-                                                        </div>
+-                                                    </div>
++                                        {/* 2-col layout */}
++                                        <div style={{display:'grid', gridTemplateColumns:'1fr', gap:'24px'}} className="xl-grid-2col">
+ 
+-                                                    {/* Centered Camera Stream with responsive aspect ratio */}
+-                                                    <div className="flex-1 flex items-center justify-center bg-black/40 rounded-xl overflow-hidden border border-glass-border relative mt-3">
+-                                                        {cameraStatus === 'Connected' && frame ? (
+-                                                            <img 
+-                                                                src={frame} 
+-                                                                alt="Camera Feed" 
+-                                                                className="w-full h-full object-contain rounded-xl"
+-                                                            />
+-                                                        ) : (
+-                                                            <div className="flex flex-col items-center justify-center p-8 text-center max-w-sm">
+-                                                                <div className="w-16 h-16 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-gray-500 mb-4 animate-pulse">
+-                                                                    <VideoOffIcon className="w-8 h-8" />
+-                                                                </div>
+-                                                                <h4 className="text-white font-medium mb-1">Camera Stream Inactive</h4>
+-                                                                <p className="text-xs text-gray-400 leading-relaxed">
+-                                                                    To analyze hand geometry and process shortcuts, please launch the camera using the Quick Actions panel below.
+-                                                                </p>
+-                                                            </div>
+-                                                        )}
+-                                                    </div>
+-                                                </div>
+-                                            </div>
++                                            {/* LEFT: Sliders */}
++                                            <div className="flex flex-col gap-5">
++                                                <div className="glass-card p-6 rounded-2xl flex flex-col gap-6">
++                                                    <h3 style={{fontSize:'11px',fontWeight:'700',textTransform:'uppercase',letterSpacing:'0.1em',color:'#9ca3af',display:'flex',alignItems:'center',gap:'8px',margin:0}}>
++                                                        <SlidersIcon className="w-3.5 h-3.5" /> Mouse Parameters
++                                                    </h3>
+ 
+-                                            {/* Action & Log Cards (1 Column) */}
+-                                            <div className="flex flex-col gap-6">
+-                                                {/* Quick Actions Panel */}
+-                                                <div className="glass-card rounded-2xl p-5 flex flex-col justify-between">
+-                                                    <div>
+-                                                        <h3 className="text-sm font-bold uppercase tracking-wider text-gray-400 flex items-center gap-2">
+-                                                            <SlidersIcon className="w-4 h-4 text-accent-purple" />
+-                                                            Quick Actions
+-                                                        </h3>
+-                                                        <p className="text-xs text-gray-500 mt-1 mb-4">Immediate system state triggers.</p>
+-                                                    </div>
+-                                                    
+-                                                    <div className="space-y-3">
+-                                                        <button
+-                                                            onClick={handleStartCamera}
+-                                                            disabled={cameraStatus === 'Connected' || isCameraLoading}
+-                                                            className="w-full flex items-center justify-center gap-2.5 px-4 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 disabled:from-zinc-800 disabled:to-zinc-800 disabled:border-zinc-700 disabled:opacity-50 text-white font-semibold rounded-xl transition-all duration-300 shadow-lg shadow-blue-500/10 border border-blue-500/30"
+-                                                        >
+-                                                            <PlayIcon className="w-4 h-4 fill-white" />
+-                                                            Start Camera
+-                                                        </button>
+-                                                        
+-                                                        <button
+-                                                            onClick={handleStopCamera}
+-                                                            disabled={cameraStatus !== 'Connected' || isCameraLoading}
+-                                                            className="w-full flex items-center justify-center gap-2.5 px-4 py-3 bg-white/5 hover:bg-red-500/10 hover:text-red-400 border border-glass-border hover:border-red-500/25 disabled:opacity-50 disabled:hover:bg-white/5 disabled:hover:text-gray-400 text-gray-300 font-semibold rounded-xl transition-all duration-300"
+-                                                        >
+-                                                            <SquareIcon className="w-4 h-4" />
+-                                                            Stop Camera
+-                                                        </button>
+-
+-                                                        <button
+-                                                            onClick={handleResetTracking}
+-                                                            disabled={isResetting}
+-                                                            className="w-full flex items-center justify-center gap-2.5 px-4 py-3 bg-white/5 hover:bg-white/10 border border-glass-border disabled:opacity-50 text-gray-300 font-semibold rounded-xl transition-all duration-300"
+-                                                        >
+-                                                            <RotateCcwIcon className={`w-4 h-4 ${isResetting ? 'animate-spin' : ''}`} />
+-                                                            Reset Tracking
+-                                                        </button>
++                                                    {/* Sensitivity */}
++                                                    <div className="space-y-2">
++                                                        <div className="flex items-center justify-between">
++                                                            <span style={{fontSize:'14px',fontWeight:'600',color:'#e5e7eb'}}>Sensitivity</span>
++                                                            <span style={{fontSize:'12px',fontFamily:'monospace',fontWeight:'700',color:'#60a5fa',background:'rgba(59,130,246,0.1)',border:'1px solid rgba(59,130,246,0.2)',padding:'2px 10px',borderRadius:'8px'}}>{virtualMouseSensitivity.toFixed(2)}x</span>
++                                                        </div>
++                                                        <input type="range" min="0.5" max="3.0" step="0.1" value={virtualMouseSensitivity} onChange={e => setVirtualMouseSensitivity(parseFloat(e.target.value))} className="settings-slider w-full" />
++                                                        <div style={{display:'flex',justifyContent:'space-between',fontSize:'10px',color:'#52525b'}}>  <span>0.5x Slow</span><span>3.0x Fast</span></div>
+                                                     </div>
+-                                                </div>
+ 
+-                                                {/* Display Settings Switches */}
+-                                                <div className="glass-card rounded-2xl p-5">
+-                                                    <h3 className="text-sm font-bold uppercase tracking-wider text-gray-400 flex items-center gap-2">
+-                                                        <SlidersIcon className="w-4 h-4 text-accent-blue" />
+-                                                        Display Settings
+-                                                    </h3>
+-                                                    <p className="text-xs text-gray-500 mt-1 mb-4">Toggle live stream visual overlays.</p>
+-                                                    
+-                                                    <div className="grid grid-cols-2 gap-y-3.5 gap-x-2 text-[11px]">
+-                                                        {[
+-                                                            { id: 'show_landmarks', label: 'Landmarks', value: showLandmarks, setter: setShowLandmarks },
+-                                                            { id: 'show_connections', label: 'Connections', value: showConnections, setter: setShowConnections },
+-                                                            { id: 'show_bounding_box', label: 'Bounding Box', value: showBoundingBox, setter: setShowBoundingBox },
+-                                                            { id: 'show_finger_states', label: 'Finger States', value: showFingerStates, setter: setShowFingerStates },
+-                                                            { id: 'show_distance_meter', label: 'Distance Meter', value: showDistanceMeter, setter: setShowDistanceMeter },
+-                                                            { id: 'show_debug_panel', label: 'Debug Panel', value: showDebugPanel, setter: setShowDebugPanel },
+-                                                            { id: 'show_hud', label: 'HUD Overlay', value: showHud, setter: setShowHud },
+-                                                        ].map(item => (
+-                                                            <label key={item.id} className="flex items-center gap-2.5 cursor-pointer text-gray-300 hover:text-white select-none">
+-                                                                <input
+-                                                                    type="checkbox"
+-                                                                    checked={item.value}
+-                                                                    onChange={(e) => {
+-                                                                        const checked = e.target.checked;
+-                                                                        item.setter(checked);
+-                                                                        updateSetting(item.id, checked);
+-                                                                    }}
+-                                                                    className="w-3.5 h-3.5 rounded border-glass-border bg-[#080710] text-blue-500 focus:ring-blue-500/40 cursor-pointer"
+-                                                                />
+-                                                                <span>{item.label}</span>
+-                                                            </label>
+-                                                        ))}
++                                                    {/* Smoothing */}
++                                                    <div className="space-y-2">
++                                                        <div className="flex items-center justify-between">
++                                                            <span style={{fontSize:'14px',fontWeight:'600',color:'#e5e7eb'}}>Smoothing (EMA)</span>
++                                                            <span style={{fontSize:'12px',fontFamily:'monospace',fontWeight:'700',color:'#c084fc',background:'rgba(168,85,247,0.1)',border:'1px solid rgba(168,85,247,0.2)',padding:'2px 10px',borderRadius:'8px'}}>{virtualMouseSmoothing.toFixed(2)}</span>
++                                                        </div>
++                                                        <input type="range" min="0.05" max="0.5" step="0.02" value={virtualMouseSmoothing} onChange={e => setVirtualMouseSmoothing(parseFloat(e.target.value))} className="settings-slider settings-slider-purple w-full" />
++                                                        <div style={{display:'flex',justifyContent:'space-between',fontSize:'10px',color:'#52525b'}}><span>0.05 Responsive</span><span>0.50 Smooth</span></div>
+                                                     </div>
+-                                                </div>
+ 
+-                                                {/* Activity Log Panel */}
+-                                                <div className="glass-card rounded-2xl p-5 flex flex-col flex-1 min-h-[220px] justify-between">
+-                                                    <div>
+-                                                        <h3 className="text-sm font-bold uppercase tracking-wider text-gray-400 flex items-center gap-2">
+-                                                            <CpuIcon className="w-4 h-4 text-accent-blue" />
+-                                                            Activity Log
+-                                                        </h3>
+-                                                        <p className="text-xs text-gray-500 mt-1 mb-4">Real-time prediction event stream.</p>
++                                                    {/* Click Threshold */}
++                                                    <div className="space-y-2">
++                                                        <div className="flex items-center justify-between">
++                                                            <span style={{fontSize:'14px',fontWeight:'600',color:'#e5e7eb'}}>Click Threshold</span>
++                                                            <span style={{fontSize:'12px',fontFamily:'monospace',fontWeight:'700',color:'#fbbf24',background:'rgba(245,158,11,0.1)',border:'1px solid rgba(245,158,11,0.2)',padding:'2px 10px',borderRadius:'8px'}}>{virtualMouseClickThreshold.toFixed(3)}</span>
++                                                        </div>
++                                                        <input type="range" min="0.01" max="0.15" step="0.005" value={virtualMouseClickThreshold} onChange={e => setVirtualMouseClickThreshold(parseFloat(e.target.value))} className="settings-slider settings-slider-amber w-full" />
++                                                        <div style={{display:'flex',justifyContent:'space-between',fontSize:'10px',color:'#52525b'}}><span>0.01 Sensitive</span><span>0.15 Firm</span></div>
+                                                     </div>
+ 
+-                                                    <div className="flex-1 overflow-y-auto bg-black/60 rounded-xl border border-glass-border p-3 font-mono text-[11px] leading-relaxed scrollbar-thin text-blue-400/90 h-[120px]">
+-                                                        {events.length === 0 ? (
+-                                                            <div className="text-gray-600 flex items-center justify-center h-full">
+-                                                                <span>Waiting for events...</span>
+-                                                            </div>
+-                                                        ) : (
+-                                                            <div className="space-y-2.5">
+-                                                                {events.map((evt) => (
+-                                                                    <div key={evt.id} className="border-b border-white/5 pb-1.5 last:border-0 last:pb-0">
+-                                                                        <div className="flex items-center justify-between text-gray-500 font-semibold mb-0.5">
+-                                                                            <span>[{evt.timestamp}]</span>
+-                                                                            {evt.gesture !== 'System' && <span className="text-accent-green">{(evt.confidence * 100).toFixed(0)}%</span>}
+-                                                                        </div>
+-                                                                        <div className="text-white">
+-                                                                            {evt.gesture === 'System' ? (
+-                                                                                <span>Event: <span className="text-accent-purple font-bold">System Log</span></span>
+-                                                                            ) : (
+-                                                                                <span>Gesture: <span className="capitalize text-accent-blue font-bold">{evt.gesture}</span></span>
+-                                                                            )}
+-                                                                        </div>
+-                                                                        <div className="text-gray-400 text-[10px]">
+-                                                                            {evt.action}
+-                                                                        </div>
+-                                                                    </div>
+-                                                                ))}
+-                                                            </div>
+-                                                        )}
++                                                    {/* Scroll Sensitivity */}
++                                                    <div className="space-y-2">
++                                                        <div className="flex items-center justify-between">
++                                                            <span style={{fontSize:'14px',fontWeight:'600',color:'#e5e7eb'}}>Scroll Sensitivity</span>
++                                                            <span style={{fontSize:'12px',fontFamily:'monospace',fontWeight:'700',color:'#34d399',background:'rgba(16,185,129,0.1)',border:'1px solid rgba(16,185,129,0.2)',padding:'2px 10px',borderRadius:'8px'}}>{virtualMouseScrollSensitivity.toFixed(1)}x</span>
++                                                        </div>
++                                                        <input type="range" min="1.0" max="10.0" step="0.5" value={virtualMouseScrollSensitivity} onChange={e => setVirtualMouseScrollSensitivity(parseFloat(e.target.value))} className="settings-slider settings-slider-emerald w-full" />
++                                                        <div style={{display:'flex',justifyContent:'space-between',fontSize:'10px',color:'#52525b'}}><span>1x Slow</span><span>10x Fast</span></div>
+                                                     </div>
+-                                                </div>
+-                                            </div>
+ 
+-                                        </div>
+-                                    </>
+-                                ) : activeMenu === 'mouse' ? (
+-                                    <>
+-                                        {/* Hero Header Section */}
+-                                        <div className="glass-panel rounded-3xl p-6 flex flex-col md:flex-row md:items-center justify-between border border-glass-border relative overflow-hidden">
+-                                            <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 opacity-20" />
+-                                            <div>
+-                                                <h2 className="text-2xl font-bold tracking-wide text-white">Virtual Mouse Controls</h2>
+-                                                <p className="text-xs text-gray-400 mt-1 max-w-xl">
+-                                                    Control your system cursor in real-time using your index finger. Calibrate tracking properties below.
+-                                                </p>
+-                                            </div>
+-                                            <div className="mt-4 md:mt-0">
+-                                                <span className={`px-4 py-2 rounded-full text-xs font-semibold border ${
+-                                                    virtualMouseEnabled 
+-                                                        ? 'bg-emerald-500/10 border-emerald-500/20 text-accent-green' 
+-                                                        : 'bg-zinc-500/10 border-zinc-500/20 text-gray-400'
+-                                                }`}>
+-                                                    {virtualMouseEnabled ? 'Active' : 'Inactive'}
+-                                                </span>
+-                                            </div>
+-                                        </div>
+-
+-                                        {/* Two-Column Main Content Layout */}
+-                                        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+-                                            {/* Left: Camera Feed Preview (2 Columns) */}
+-                                            <div className="lg:col-span-2 flex flex-col gap-4">
+-                                                <div className="glass-card rounded-2xl p-4 flex flex-col h-[480px] justify-between relative group overflow-hidden">
+-                                                    <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 opacity-20" />
+-                                                    
+-                                                    <div className="flex items-center justify-between pb-3 border-b border-glass-border">
+-                                                        <div className="flex items-center gap-2 text-sm">
+-                                                            <CameraIcon className="w-4 h-4 text-accent-blue" />
+-                                                            <span className="font-semibold text-gray-200">Device Stream Input</span>
+-                                                        </div>
+-                                                        <div className="flex items-center gap-1.5 text-xs text-gray-400">
+-                                                            <span className={`w-1.5 h-1.5 rounded-full ${
+-                                                                cameraStatus === 'Connected' ? 'bg-accent-green animate-ping' : 'bg-red-400'
+-                                                            }`} />
+-                                                            {cameraStatus === 'Connected' ? 'Streaming live' : 'Offline'}
++                                                    {/* Drag Threshold */}
++                                                    <div className="space-y-2">
++                                                        <div className="flex items-center justify-between">
++                                                            <span style={{fontSize:'14px',fontWeight:'600',color:'#e5e7eb'}}>Drag Threshold</span>
++                                                            <span style={{fontSize:'12px',fontFamily:'monospace',fontWeight:'700',color:'#fb7185',background:'rgba(244,63,94,0.1)',border:'1px solid rgba(244,63,94,0.2)',padding:'2px 10px',borderRadius:'8px'}}>{dragHoldThresholdMs} ms</span>
+                                                         </div>
++                                                        <input type="range" min="150" max="1000" step="50" value={dragHoldThresholdMs} onChange={e => setDragHoldThresholdMs(parseInt(e.target.value))} className="settings-slider settings-slider-rose w-full" />
++                                                        <div style={{display:'flex',justifyContent:'space-between',fontSize:'10px',color:'#52525b'}}><span>150ms Quick</span><span>1000ms Long Hold</span></div>
+                                                     </div>
++                                                </div>
+ 
+-                                                    {/* Centered Camera Stream */}
+-                                                    <div className="flex-1 flex items-center justify-center bg-black/40 rounded-xl overflow-hidden border border-glass-border relative mt-3">
+-                                                        {cameraStatus === 'Connected' && frame ? (
+-                                                            <img 
+-                                                                src={frame} 
+-                                                                alt="Camera Feed" 
+-                                                                className="w-full h-full object-contain rounded-xl"
+-                                                            />
+-                                                        ) : (
+-                                                            <div className="flex flex-col items-center justify-center p-8 text-center max-w-sm">
+-                                                                <div className="w-16 h-16 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-gray-500 mb-4 animate-pulse">
+-                                                                    <VideoOffIcon className="w-8 h-8" />
+-                                                                </div>
+-                                                                <h4 className="text-white font-medium mb-1">Camera Stream Inactive</h4>
+-                                                                <p className="text-xs text-gray-400 leading-relaxed">
+-                                                                    To analyze hand geometry and process mouse tracking, please launch the camera using the Quick Actions panel or back on the Dashboard.
+-                                                                </p>
+-                                                            </div>
+-                                                        )}
+-                                                    </div>
++                                                {/* Reset & Save */}
++                                                <div className="flex gap-4">
++                                                    <button id="reset-settings-btn" onClick={handleResetSettings} style={{flex:1,display:'flex',alignItems:'center',justifyContent:'center',gap:'10px',padding:'14px',borderRadius:'12px',border:'1px solid #3f3f46',background:'rgba(39,39,42,0.6)',color:'#d4d4d8',fontWeight:'600',fontSize:'14px',cursor:'pointer',transition:'all 0.2s'}} onMouseEnter={e=>{e.target.style.background='rgba(63,63,70,0.6)';e.target.style.color='white'}} onMouseLeave={e=>{e.target.style.background='rgba(39,39,42,0.6)';e.target.style.color='#d4d4d8'}}>
++                                                        Γå║ Reset to Defaults
++                                                    </button>
++                                                    <button id="save-settings-btn" onClick={handleSaveSettings} disabled={isSaving} style={{flex:1,display:'flex',alignItems:'center',justifyContent:'center',gap:'10px',padding:'14px',borderRadius:'12px',border: savedSuccess ? '1px solid rgba(16,185,129,0.4)' : '1px solid rgba(59,130,246,0.5)',background: savedSuccess ? 'rgba(5,150,105,0.8)' : '#2563eb',color:'white',fontWeight:'600',fontSize:'14px',cursor:'pointer',transition:'all 0.2s',boxShadow: savedSuccess ? '0 4px 20px rgba(16,185,129,0.2)' : '0 4px 20px rgba(59,130,246,0.2)'}}>
++                                                        {isSaving ? 'ΓÅ│ Saving...' : savedSuccess ? 'Γ£ô Saved!' : '≡ƒÆ╛ Save Settings'}
++                                                    </button>
+                                                 </div>
+                                             </div>
+ 
+-                                            {/* Right: Telemetry & Controls Panel (1 Column) */}
+-                                            <div className="flex flex-col gap-6">
+-                                                {/* Telemetry Dashboard Card */}
+-                                                <div className="glass-card rounded-2xl p-5 flex flex-col justify-between">
+-                                                    <div>
+-                                                        <h3 className="text-sm font-bold uppercase tracking-wider text-gray-400 flex items-center gap-2">
+-                                                            <ActivityIcon className="w-4 h-4 text-accent-blue" />
+-                                                            Telemetry Dashboard
++                                            {/* RIGHT: Live Telemetry */}
++                                            <div>
++                                                <div className="glass-card p-6 rounded-2xl flex flex-col gap-5">
++                                                    <div className="flex items-center justify-between">
++                                                        <h3 style={{fontSize:'11px',fontWeight:'700',textTransform:'uppercase',letterSpacing:'0.1em',color:'#9ca3af',display:'flex',alignItems:'center',gap:'8px',margin:0}}>
++                                                            <span style={{width:'8px',height:'8px',borderRadius:'50%',background: socketStatus === 'connected' ? '#34d399' : '#f59e0b',display:'inline-block',animation: socketStatus === 'connected' ? 'pulse 2s infinite' : 'none'}}></span>
++                                                            Live Telemetry
+                                                         </h3>
+-                                                        <p className="text-xs text-gray-500 mt-1 mb-4">Real-time coordinates and performance.</p>
++                                                        <span style={{fontSize:'10px',fontFamily:'monospace',padding:'2px 8px',borderRadius:'9999px',border: socketStatus === 'connected' ? '1px solid rgba(52,211,153,0.3)' : '1px solid rgba(245,158,11,0.3)', background: socketStatus === 'connected' ? 'rgba(52,211,153,0.1)' : 'rgba(245,158,11,0.1)', color: socketStatus === 'connected' ? '#34d399' : '#f59e0b'}}>{socketStatus.toUpperCase()}</span>
+                                                     </div>
+ 
+-                                                    <div className="space-y-4">
+-                                                        <div className="flex justify-between items-center text-sm border-b border-glass-border pb-2">
+-                                                            <span className="text-gray-400">Cursor Coordinates</span>
+-                                                            <span className="font-mono font-bold text-white">
+-                                                                {trackingState === 'Tracking' ? `X: ${cursorX} , Y: ${cursorY}` : '-- , --'}
+-                                                            </span>
+-                                                        </div>
+-                                                        <div className="flex justify-between items-center text-sm border-b border-glass-border pb-2">
+-                                                            <span className="text-gray-400">Tracking State</span>
+-                                                            <span className={`font-semibold ${
+-                                                                trackingState === 'Tracking' ? 'text-accent-green' : trackingState === 'Disabled' ? 'text-gray-400' : 'text-rose-400'
+-                                                            }`}>
+-                                                                {trackingState}
+-                                                            </span>
+-                                                        </div>
+-                                                        <div className="flex justify-between items-center text-sm border-b border-glass-border pb-2">
+-                                                            <span className="text-gray-400">Stream FPS</span>
+-                                                            <span className="font-mono font-bold text-white">
+-                                                                {fps > 0 ? `${fps.toFixed(1)} FPS` : '-- FPS'}
+-                                                            </span>
+-                                                        </div>
+-                                                        <div className="flex justify-between items-center text-sm border-b border-glass-border pb-2">
+-                                                            <span className="text-gray-400">Current Action</span>
+-                                                            <span className={`font-semibold ${
+-                                                                currentAction === 'Left Click' ? 'text-accent-green' : 'text-white'
+-                                                            }`}>
+-                                                                {currentAction}
+-                                                            </span>
+-                                                        </div>
+-                                                        <div className="flex justify-between items-center text-sm border-b border-glass-border pb-2">
+-                                                            <span className="text-gray-400">Pinch Distance</span>
+-                                                            <span className="font-mono font-bold text-white">
+-                                                                {pinchDistance.toFixed(4)}
+-                                                            </span>
+-                                                        </div>
+-                                                        <div className="flex justify-between items-center text-sm border-b border-glass-border pb-2">
+-                                                            <span className="text-gray-400">Click Status</span>
+-                                                            <span className={`font-semibold ${
+-                                                                clickStatus === 'LEFT_CLICK' || clickStatus === 'PINCH' ? 'text-accent-green' : clickStatus === 'RELEASE' ? 'text-accent-blue' : 'text-white'
+-                                                            }`}>
+-                                                                {clickStatus}
+-                                                            </span>
+-                                                        </div>
+-                                                        <div className="flex justify-between items-center text-sm">
+-                                                            <span className="text-gray-400">Click Counter</span>
+-                                                            <span className="font-mono font-bold text-accent-blue">
+-                                                                {clickCounter}
+-                                                            </span>
++                                                    {/* Cursor X/Y */}
++                                                    <div>
++                                                        <p style={{fontSize:'11px',textTransform:'uppercase',letterSpacing:'0.05em',color:'#6b7280',fontWeight:'600',marginBottom:'8px'}}>Γ£¢ Cursor Position</p>
++                                                        <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:'10px'}}>
++                                                            <div style={{background:'rgba(0,0,0,0.3)',borderRadius:'12px',padding:'12px',border:'1px solid rgba(255,255,255,0.05)',textAlign:'center'}}>
++                                                                <p style={{fontSize:'10px',color:'#6b7280',textTransform:'uppercase',margin:'0 0 4px'}}>X</p>
++                                                                <p style={{fontSize:'22px',fontFamily:'monospace',fontWeight:'700',color:'#38bdf8',margin:0}}>{cursorX}</p>
++                                                            </div>
++                                                            <div style={{background:'rgba(0,0,0,0.3)',borderRadius:'12px',padding:'12px',border:'1px solid rgba(255,255,255,0.05)',textAlign:'center'}}>
++                                                                <p style={{fontSize:'10px',color:'#6b7280',textTransform:'uppercase',margin:'0 0 4px'}}>Y</p>
++                                                                <p style={{fontSize:'22px',fontFamily:'monospace',fontWeight:'700',color:'#38bdf8',margin:0}}>{cursorY}</p>
++                                                            </div>
+                                                         </div>
+                                                     </div>
+-                                                </div>
+-
+-                                                {/* Tracking Settings Card */}
+-                                                <div className="glass-card rounded-2xl p-5">
+-                                                    <h3 className="text-sm font-bold uppercase tracking-wider text-gray-400 flex items-center gap-2">
+-                                                        <SlidersIcon className="w-4 h-4 text-accent-purple" />
+-                                                        Tracking Settings
+-                                                    </h3>
+-                                                    <p className="text-xs text-gray-500 mt-1 mb-4">Configure virtual mouse parameters.</p>
+-
+-                                                    <div className="space-y-5">
+-                                                        {/* Enable Toggle Switch */}
+-                                                        <label className="flex items-center justify-between cursor-pointer group">
+-                                                            <span className="text-sm font-semibold text-gray-300 group-hover:text-white">Enable Virtual Mouse</span>
+-                                                            <div className="relative">
+-                                                                <input 
+-                                                                    type="checkbox" 
+-                                                                    checked={virtualMouseEnabled} 
+-                                                                    onChange={(e) => {
+-                                                                        const checked = e.target.checked;
+-                                                                        setVirtualMouseEnabled(checked);
+-                                                                        updateSetting('virtual_mouse_enabled', checked);
+-                                                                        logSystemEvent(`Virtual Mouse set to: ${checked ? 'Enabled' : 'Disabled'}`);
+-                                                                    }}
+-                                                                    className="sr-only peer" 
+-                                                                />
+-                                                                <div className="w-11 h-6 bg-zinc-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+-                                                            </div>
+-                                                        </label>
+ 
+-                                                        {/* Sensitivity Slider */}
+-                                                        <div className="space-y-2">
+-                                                            <div className="flex justify-between text-xs">
+-                                                                <span className="text-gray-400">Sensitivity</span>
+-                                                                <span className="text-white font-mono">{virtualMouseSensitivity.toFixed(2)}x</span>
++                                                    {/* FPS */}
++                                                    <div>
++                                                        <p style={{fontSize:'11px',textTransform:'uppercase',letterSpacing:'0.05em',color:'#6b7280',fontWeight:'600',marginBottom:'8px'}}>ΓùÄ FPS</p>
++                                                        <div style={{background:'rgba(0,0,0,0.3)',borderRadius:'12px',padding:'12px',border:'1px solid rgba(255,255,255,0.05)',display:'flex',alignItems:'center',gap:'12px'}}>
++                                                            <p style={{fontSize:'28px',fontFamily:'monospace',fontWeight:'700',color:'#60a5fa',margin:0,flex:1}}>{fps.toFixed(1)}</p>
++                                                            <div style={{display:'flex',gap:'3px',alignItems:'flex-end'}}>
++                                                                {[...Array(10)].map((_, i) => (
++                                                                    <div key={i} style={{width:'5px',borderRadius:'3px',height:`${8+i*2}px`,background: i < Math.round((fps/60)*10) ? (fps>45?'#34d399':fps>25?'#fbbf24':'#f87171') : '#27272a',transition:'all 0.3s'}}></div>
++                                                                ))}
+                                                             </div>
+-                                                            <input 
+-                                                                type="range" 
+-                                                                min="0.5" 
+-                                                                max="3.0" 
+-                                                                step="0.1"
+-                                                                value={virtualMouseSensitivity} 
+-                                                                onChange={(e) => {
+-                                                                    const val = parseFloat(e.target.value);
+-                                                                    setVirtualMouseSensitivity(val);
+-                                                                    updateSetting('virtual_mouse_sensitivity', val);
+-                                                                }}
+-                                                                className="w-full h-1.5 bg-zinc-700 rounded-lg appearance-none cursor-pointer accent-blue-500" 
+-                                                            />
+                                                         </div>
++                                                    </div>
+ 
+-                                                        {/* Dead Zone Slider */}
+-                                                        <div className="space-y-2">
+-                                                            <div className="flex justify-between text-xs">
+-                                                                <span className="text-gray-400">Dead Zone Padding</span>
+-                                                                <span className="text-white font-mono">{Math.round(virtualMouseDeadZone * 100)}%</span>
+-                                                            </div>
+-                                                            <input 
+-                                                                type="range" 
+-                                                                min="0.05" 
+-                                                                max="0.30" 
+-                                                                step="0.01"
+-                                                                value={virtualMouseDeadZone} 
+-                                                                onChange={(e) => {
+-                                                                    const val = parseFloat(e.target.value);
+-                                                                    setVirtualMouseDeadZone(val);
+-                                                                    updateSetting('virtual_mouse_dead_zone', val);
+-                                                                }}
+-                                                                className="w-full h-1.5 bg-zinc-700 rounded-lg appearance-none cursor-pointer accent-blue-500" 
+-                                                            />
++                                                    {/* Current Gesture */}
++                                                    <div>
++                                                        <p style={{fontSize:'11px',textTransform:'uppercase',letterSpacing:'0.05em',color:'#6b7280',fontWeight:'600',marginBottom:'8px'}}>Γ£ï Current Gesture</p>
++                                                        <div style={{background:'rgba(0,0,0,0.3)',borderRadius:'12px',padding:'12px',border:'1px solid rgba(255,255,255,0.05)',display:'flex',alignItems:'center',justifyContent:'space-between'}}>
++                                                            <span style={{fontSize:'14px',fontWeight:'600',fontFamily:'monospace',color:'white'}}>{gesture || 'None'}</span>
++                                                            <span style={{fontSize:'12px',fontFamily:'monospace',color:'#c084fc'}}>{(confidence*100).toFixed(0)}%</span>
+                                                         </div>
++                                                    </div>
+ 
+-                                                        {/* Smoothing Slider */}
+-                                                        <div className="space-y-2">
+-                                                            <div className="flex justify-between text-xs">
+-                                                                <span className="text-gray-400">Smoothing (Response)</span>
+-                                                                <span className="text-white font-mono">{virtualMouseSmoothing.toFixed(2)}</span>
+-                                                            </div>
+-                                                            <input 
+-                                                                type="range" 
+-                                                                min="0.05" 
+-                                                                max="0.50" 
+-                                                                step="0.02"
+-                                                                value={virtualMouseSmoothing} 
+-                                                                onChange={(e) => {
+-                                                                    const val = parseFloat(e.target.value);
+-                                                                    setVirtualMouseSmoothing(val);
+-                                                                    updateSetting('virtual_mouse_smoothing', val);
+-                                                                }}
+-                                                                className="w-full h-1.5 bg-zinc-700 rounded-lg appearance-none cursor-pointer accent-blue-500" 
+-                                                            />
++                                                    {/* Current Action */}
++                                                    <div>
++                                                        <p style={{fontSize:'11px',textTransform:'uppercase',letterSpacing:'0.05em',color:'#6b7280',fontWeight:'600',marginBottom:'8px'}}>ΓÜí Current Action</p>
++                                                        <div style={{background:'rgba(0,0,0,0.3)',borderRadius:'12px',padding:'12px',border: currentAction && currentAction !== 'None' ? '1px solid rgba(245,158,11,0.3)' : '1px solid rgba(255,255,255,0.05)',transition:'all 0.3s'}}>
++                                                            <span style={{fontSize:'14px',fontWeight:'600',fontFamily:'monospace',color: currentAction && currentAction !== 'None' ? '#fcd34d' : '#6b7280'}}>{currentAction || 'None'}</span>
+                                                         </div>
++                                                    </div>
+ 
+-                                                        {/* Click Threshold Slider */}
+-                                                        <div className="space-y-2">
+-                                                            <div className="flex justify-between text-xs">
+-                                                                <span className="text-gray-400">Click Threshold</span>
+-                                                                <span className="text-white font-mono">{virtualMouseClickThreshold.toFixed(3)}</span>
++                                                    {/* Hand Count */}
++                                                    <div>
++                                                        <p style={{fontSize:'11px',textTransform:'uppercase',letterSpacing:'0.05em',color:'#6b7280',fontWeight:'600',marginBottom:'8px'}}>Γ£ï Hand Count</p>
++                                                        <div style={{display:'flex',gap:'8px'}}>
++                                                            {[1,2].map(n => (
++                                                                <div key={n} style={{flex:1,borderRadius:'12px',padding:'12px',border: hands>=n ? '1px solid rgba(52,211,153,0.3)' : '1px solid rgba(255,255,255,0.05)',background: hands>=n ? 'rgba(16,185,129,0.1)' : 'rgba(0,0,0,0.3)',textAlign:'center',transition:'all 0.3s'}}>
++                                                                    <p style={{fontSize:'10px',color:'#6b7280',margin:'0 0 4px'}}>Hand {n}</p>
++                                                                    <p style={{fontSize:'20px',fontWeight:'700',margin:0,color: hands>=n ? '#34d399' : '#3f3f46'}}>{hands>=n ? 'Γ£ô' : 'Γùï'}</p>
++                                                                </div>
++                                                            ))}
++                                                            <div style={{flex:1,borderRadius:'12px',padding:'12px',border:'1px solid rgba(255,255,255,0.05)',background:'rgba(0,0,0,0.3)',textAlign:'center'}}>
++                                                                <p style={{fontSize:'10px',color:'#6b7280',margin:'0 0 4px'}}>Total</p>
++                                                                <p style={{fontSize:'20px',fontWeight:'700',fontFamily:'monospace',color:'white',margin:0}}>{hands}</p>
+                                                             </div>
+-                                                            <input 
+-                                                                type="range" 
+-                                                                min="0.01" 
+-                                                                max="0.15" 
+-                                                                step="0.005"
+-                                                                value={virtualMouseClickThreshold} 
+-                                                                onChange={(e) => {
+-                                                                    const val = parseFloat(e.target.value);
+-                                                                    setVirtualMouseClickThreshold(val);
+-                                                                    updateSetting('virtual_mouse_click_threshold', val);
+-                                                                }}
+-                                                                className="w-full h-1.5 bg-zinc-700 rounded-lg appearance-none cursor-pointer accent-blue-500" 
+-                                                            />
+                                                         </div>
+                                                     </div>
+                                                 </div>
+                                             </div>
++
+                                         </div>
+-                                    </>
+-                                ) : (
+-                                    <div className="glass-card rounded-2xl p-8 text-center text-gray-400">
+-                                        <p>This page is currently under construction. Please use the Dashboard or Virtual Mouse navigation links.</p>
+                                     </div>
+                                 )}
+                             </div>

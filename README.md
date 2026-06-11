@@ -44,7 +44,7 @@ python main.py
 
 ## implementation order:
 Phase 1 → Hand Tracking (Done)
-Phase 2 → Dashboard
+Phase 2 → Dashboard (Done)
 Phase 3 → Virtual Mouse
 Phase 4 → Virtual Keyboard
 Phase 5 → Air Drawing

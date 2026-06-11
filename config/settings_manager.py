@@ -30,6 +30,16 @@ class SettingsState:
     virtual_mouse_dead_zone: float = 0.15
     virtual_mouse_smoothing: float = 0.20
     virtual_mouse_click_threshold: float = 0.05
+    virtual_mouse_right_click_threshold: float = 0.05  # Phase 3.3
+    virtual_mouse_scroll_sensitivity: float = 5.0      # Phase 3.4
+    virtual_mouse_scroll_dead_zone: float = 0.04       # Phase 3.4
+    virtual_mouse_scroll_smoothing: float = 0.25       # Phase 3.4
+    virtual_mouse_volume_min_distance_px: float = 30.0 # Phase 3.4
+    virtual_mouse_volume_max_distance_px: float = 250.0 # Phase 3.4
+    virtual_mouse_volume_smoothing: float = 0.15       # Phase 3.4
+    virtual_mouse_brightness_min_distance_px: float = 30.0 # Phase 3.5
+    virtual_mouse_brightness_max_distance_px: float = 250.0 # Phase 3.5
+    virtual_mouse_brightness_smoothing: float = 0.15       # Phase 3.5
 
 
 class SettingsManager:
@@ -82,6 +92,16 @@ class SettingsManager:
                 virtual_mouse_dead_zone=float(raw.get("virtual_mouse_dead_zone", 0.15)),
                 virtual_mouse_smoothing=float(raw.get("virtual_mouse_smoothing", 0.20)),
                 virtual_mouse_click_threshold=float(raw.get("virtual_mouse_click_threshold", 0.05)),
+                virtual_mouse_right_click_threshold=float(raw.get("virtual_mouse_right_click_threshold", 0.05)),
+                virtual_mouse_scroll_sensitivity=float(raw.get("virtual_mouse_scroll_sensitivity", 5.0)),
+                virtual_mouse_scroll_dead_zone=float(raw.get("virtual_mouse_scroll_dead_zone", 0.04)),
+                virtual_mouse_scroll_smoothing=float(raw.get("virtual_mouse_scroll_smoothing", 0.25)),
+                virtual_mouse_volume_min_distance_px=float(raw.get("virtual_mouse_volume_min_distance_px", 30.0)),
+                virtual_mouse_volume_max_distance_px=float(raw.get("virtual_mouse_volume_max_distance_px", 250.0)),
+                virtual_mouse_volume_smoothing=float(raw.get("virtual_mouse_volume_smoothing", 0.15)),
+                virtual_mouse_brightness_min_distance_px=float(raw.get("virtual_mouse_brightness_min_distance_px", 30.0)),
+                virtual_mouse_brightness_max_distance_px=float(raw.get("virtual_mouse_brightness_max_distance_px", 250.0)),
+                virtual_mouse_brightness_smoothing=float(raw.get("virtual_mouse_brightness_smoothing", 0.15)),
             )
 
         camera = raw.get("camera", {}) if isinstance(raw, dict) else {}
@@ -104,6 +124,16 @@ class SettingsManager:
             virtual_mouse_dead_zone=float(vm.get("dead_zone", 0.15)),
             virtual_mouse_smoothing=float(vm.get("smoothing", 0.20)),
             virtual_mouse_click_threshold=float(vm.get("click_threshold", 0.05)),
+            virtual_mouse_right_click_threshold=float(vm.get("right_click_threshold", 0.05)),
+            virtual_mouse_scroll_sensitivity=float(vm.get("scroll_sensitivity", 5.0)),
+            virtual_mouse_scroll_dead_zone=float(vm.get("scroll_dead_zone", 0.04)),
+            virtual_mouse_scroll_smoothing=float(vm.get("scroll_smoothing", 0.25)),
+            virtual_mouse_volume_min_distance_px=float(vm.get("volume_min_distance_px", 30.0)),
+            virtual_mouse_volume_max_distance_px=float(vm.get("volume_max_distance_px", 250.0)),
+            virtual_mouse_volume_smoothing=float(vm.get("volume_smoothing", 0.15)),
+            virtual_mouse_brightness_min_distance_px=float(vm.get("brightness_min_distance_px", 30.0)),
+            virtual_mouse_brightness_max_distance_px=float(vm.get("brightness_max_distance_px", 250.0)),
+            virtual_mouse_brightness_smoothing=float(vm.get("brightness_smoothing", 0.15)),
         )
 
     def save(self) -> None:
@@ -124,6 +154,16 @@ class SettingsManager:
             "virtual_mouse_dead_zone": self._state.virtual_mouse_dead_zone,
             "virtual_mouse_smoothing": self._state.virtual_mouse_smoothing,
             "virtual_mouse_click_threshold": self._state.virtual_mouse_click_threshold,
+            "virtual_mouse_right_click_threshold": self._state.virtual_mouse_right_click_threshold,
+            "virtual_mouse_scroll_sensitivity": self._state.virtual_mouse_scroll_sensitivity,
+            "virtual_mouse_scroll_dead_zone": self._state.virtual_mouse_scroll_dead_zone,
+            "virtual_mouse_scroll_smoothing": self._state.virtual_mouse_scroll_smoothing,
+            "virtual_mouse_volume_min_distance_px": self._state.virtual_mouse_volume_min_distance_px,
+            "virtual_mouse_volume_max_distance_px": self._state.virtual_mouse_volume_max_distance_px,
+            "virtual_mouse_volume_smoothing": self._state.virtual_mouse_volume_smoothing,
+            "virtual_mouse_brightness_min_distance_px": self._state.virtual_mouse_brightness_min_distance_px,
+            "virtual_mouse_brightness_max_distance_px": self._state.virtual_mouse_brightness_max_distance_px,
+            "virtual_mouse_brightness_smoothing": self._state.virtual_mouse_brightness_smoothing,
         }
         with self.path.open("w", encoding="utf-8") as file:
             json.dump(payload, file, indent=2)
@@ -147,6 +187,16 @@ class SettingsManager:
         virtual_mouse_dead_zone: float | None = None,
         virtual_mouse_smoothing: float | None = None,
         virtual_mouse_click_threshold: float | None = None,
+        virtual_mouse_right_click_threshold: float | None = None,
+        virtual_mouse_scroll_sensitivity: float | None = None,
+        virtual_mouse_scroll_dead_zone: float | None = None,
+        virtual_mouse_scroll_smoothing: float | None = None,
+        virtual_mouse_volume_min_distance_px: float | None = None,
+        virtual_mouse_volume_max_distance_px: float | None = None,
+        virtual_mouse_volume_smoothing: float | None = None,
+        virtual_mouse_brightness_min_distance_px: float | None = None,
+        virtual_mouse_brightness_max_distance_px: float | None = None,
+        virtual_mouse_brightness_smoothing: float | None = None,
         save: bool = True,
     ) -> bool:
         changed = False
@@ -182,6 +232,16 @@ class SettingsManager:
             ("virtual_mouse_dead_zone", virtual_mouse_dead_zone),
             ("virtual_mouse_smoothing", virtual_mouse_smoothing),
             ("virtual_mouse_click_threshold", virtual_mouse_click_threshold),
+            ("virtual_mouse_right_click_threshold", virtual_mouse_right_click_threshold),
+            ("virtual_mouse_scroll_sensitivity", virtual_mouse_scroll_sensitivity),
+            ("virtual_mouse_scroll_dead_zone", virtual_mouse_scroll_dead_zone),
+            ("virtual_mouse_scroll_smoothing", virtual_mouse_scroll_smoothing),
+            ("virtual_mouse_volume_min_distance_px", virtual_mouse_volume_min_distance_px),
+            ("virtual_mouse_volume_max_distance_px", virtual_mouse_volume_max_distance_px),
+            ("virtual_mouse_volume_smoothing", virtual_mouse_volume_smoothing),
+            ("virtual_mouse_brightness_min_distance_px", virtual_mouse_brightness_min_distance_px),
+            ("virtual_mouse_brightness_max_distance_px", virtual_mouse_brightness_max_distance_px),
+            ("virtual_mouse_brightness_smoothing", virtual_mouse_brightness_smoothing),
         ]:
             if val is not None:
                 current_val = getattr(self._state, key)
@@ -219,6 +279,16 @@ class SettingsManager:
         config.virtual_mouse_dead_zone = self._state.virtual_mouse_dead_zone
         config.virtual_mouse_smoothing = self._state.virtual_mouse_smoothing
         config.virtual_mouse_click_threshold = self._state.virtual_mouse_click_threshold
+        config.virtual_mouse_right_click_threshold = self._state.virtual_mouse_right_click_threshold
+        config.virtual_mouse_scroll_sensitivity = self._state.virtual_mouse_scroll_sensitivity
+        config.virtual_mouse_scroll_dead_zone = self._state.virtual_mouse_scroll_dead_zone
+        config.virtual_mouse_scroll_smoothing = self._state.virtual_mouse_scroll_smoothing
+        config.virtual_mouse_volume_min_distance_px = self._state.virtual_mouse_volume_min_distance_px
+        config.virtual_mouse_volume_max_distance_px = self._state.virtual_mouse_volume_max_distance_px
+        config.virtual_mouse_volume_smoothing = self._state.virtual_mouse_volume_smoothing
+        config.virtual_mouse_brightness_min_distance_px = self._state.virtual_mouse_brightness_min_distance_px
+        config.virtual_mouse_brightness_max_distance_px = self._state.virtual_mouse_brightness_max_distance_px
+        config.virtual_mouse_brightness_smoothing = self._state.virtual_mouse_brightness_smoothing
         return config
 
     def snapshot(self) -> SettingsState:
@@ -238,6 +308,16 @@ class SettingsManager:
             virtual_mouse_dead_zone=self._state.virtual_mouse_dead_zone,
             virtual_mouse_smoothing=self._state.virtual_mouse_smoothing,
             virtual_mouse_click_threshold=self._state.virtual_mouse_click_threshold,
+            virtual_mouse_right_click_threshold=self._state.virtual_mouse_right_click_threshold,
+            virtual_mouse_scroll_sensitivity=self._state.virtual_mouse_scroll_sensitivity,
+            virtual_mouse_scroll_dead_zone=self._state.virtual_mouse_scroll_dead_zone,
+            virtual_mouse_scroll_smoothing=self._state.virtual_mouse_scroll_smoothing,
+            virtual_mouse_volume_min_distance_px=self._state.virtual_mouse_volume_min_distance_px,
+            virtual_mouse_volume_max_distance_px=self._state.virtual_mouse_volume_max_distance_px,
+            virtual_mouse_volume_smoothing=self._state.virtual_mouse_volume_smoothing,
+            virtual_mouse_brightness_min_distance_px=self._state.virtual_mouse_brightness_min_distance_px,
+            virtual_mouse_brightness_max_distance_px=self._state.virtual_mouse_brightness_max_distance_px,
+            virtual_mouse_brightness_smoothing=self._state.virtual_mouse_brightness_smoothing,
         )
 
     def _normalize_theme(self, theme: str) -> str:

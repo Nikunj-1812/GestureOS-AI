@@ -40,4 +40,15 @@ virtual_mouse:
   sensitivity: 1.5
   dead_zone: 0.15
   smoothing: 0.20
-  click_threshold: 0.05
+  click_threshold: 0.05          # Thumb (4) + Index (8) left-click pinch threshold
+  right_click_threshold: 0.05    # Phase 3.3: Thumb (4) + Middle (12) right-click threshold
+  scroll_sensitivity: 5.0        # Phase 3.4: scroll speed multiplier
+  scroll_dead_zone: 0.003        # Phase 3.4: minimum Y-delta to trigger scroll (FIX: was 0.04)
+  scroll_smoothing: 0.30         # Phase 3.4: EMA alpha for scroll velocity
+  volume_min_distance_px: 30.0   # Phase 3.4: distance mapping for 0% volume
+  volume_max_distance_px: 250.0  # Phase 3.4: distance mapping for 100% volume
+  volume_smoothing: 0.15         # Phase 3.4: EMA alpha for volume smoothing
+  brightness_min_distance_px: 30.0  # Phase 3.5: distance mapping for 0% brightness
+  brightness_max_distance_px: 250.0 # Phase 3.5: distance mapping for 100% brightness
+  brightness_smoothing: 0.15       # Phase 3.5: EMA alpha for brightness smoothing
+
