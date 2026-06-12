@@ -1,0 +1,49 @@
+Created At: 2026-06-12T10:29:20Z
+Completed At: 2026-06-12T10:29:20Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 3499
+Total Bytes: 240461
+Showing lines 1435 to 1475
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1435:                                 if (isHandDetected && data.index_tip_x !== undefined && data.index_tip_x !== null) {
+1436:                                     const rawX = data.index_tip_x;
+1437:                                     const rawY = data.index_tip_y;
+1438:                                     const xMirrored = 1.0 - rawX;
+1439:                                     const cx = xMirrored * 640.0;
+1440:                                     const cy = rawY * 360.0;
+1441:                                     
+1442:                                     const smoothing = 0.25;
+1443:                                     if (webSmoothXRef.current === null || webSmoothYRef.current === null) {
+1444:                                         webSmoothXRef.current = cx;
+1445:                                         webSmoothYRef.current = cy;
+1446:                                     } else {
+1447:                                         webSmoothXRef.current += (cx - webSmoothXRef.current) * smoothing;
+1448:                                         webSmoothYRef.current += (cy - webSmoothYRef.current) * smoothing;
+1449:                                     }
+1450:                                     
+1451:                                     const smoothedX = webSmoothXRef.current;
+1452:                                     const smoothedY = webSmoothYRef.current;
+1453:                                     
+1454:                                     const ipDist = data.index_pinch_distance !== undefined ? data.index_pinch_distance : (data.pinch_distance || 0.0);
+1455:                                     setPinchDistance(ipDist);
+1456:                                     
+1457:                                     const isPinching = ipDist <= 0.05;
+1458:                                     
+1459:                                     const canvas = document.getElementById('drawing-canvas');
+1460:                                     if (canvas) {
+1461:                                         const ctx = canvas.getContext('2d');
+1462:                                         if (isPinching) {
+1463:                                             setDrawingStatus('Drawing');
+1464:                                             if (!isDrawingStateRef.current) {
+1465:                                                 isDrawingStateRef.current = true;
+1466:                                                 currentStrokeRef.current = {
+1467:                                                     points: [{ x: smoothedX, y: smoothedY }],
+1468:                                                     color: webBrushColorRef.current,
+1469:                                                     size: webBrushSizeRef.current
+1470:                                                 };
+1471:                                                 lastPointRef.current = { x: smoothedX, y: smoothedY };
+1472:                                             } else {
+1473:                                                 const prevPoint = lastPointRef.current;
+1474:                                                 if (prevPoint) {
+1475:                                                     ctx.beginPath();
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

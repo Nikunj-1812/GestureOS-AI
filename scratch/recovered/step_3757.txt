@@ -1,0 +1,52 @@
+Created At: 2026-06-12T11:14:02Z
+Completed At: 2026-06-12T11:14:03Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 2369
+Total Bytes: 129583
+Showing lines 2000 to 2100
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+2000:                                     
+2001:                                     // Get current status for UI
+2002:                                     const currentStatus = inGracePeriodRef.current 
+2003:                                         ? 'Grace Period' 
+2004:                                         : isDrawModeActive 
+2005:                                             ? 'Drawing' 
+2006:                                             : 'Hovering';
+2007:                                             
+2008:                                     // Telemetry updates in sidebar
+2009:                                     const statusEl = document.getElementById('telemetry-drawing-status');
+2010:                                     if (statusEl) {
+2011:                                         statusEl.textContent = currentStatus;
+2012:                                         statusEl.className = `text-sm font-bold ${
+2013:                                             currentStatus === 'Drawing' 
+2014:                                                 ? 'text-accent-green' 
+2015:                                                 : currentStatus === 'Grace Period' 
+2016:                                                     ? 'text-amber-500 animate-pulse' 
+2017:                                                     : 'text-accent-yellow'
+2018:                                         }`;
+2019:                                     }
+2020:                                     
+2021:                                     const coordsEl = document.getElementById('telemetry-pointer-
+<truncated 4547 bytes>
+                                         cursorRing.style.borderColor = currentStatus === 'Drawing' 
+2081:                                                 ? '#a6da95' 
+2082:                                                 : currentStatus === 'Grace Period' 
+2083:                                                     ? '#f5a97f' 
+2084:                                                     : '#8aadf4';
+2085:                                             cursorRing.style.borderStyle = currentStatus === 'Drawing' ? 'solid' : 'dashed';
+2086:                                         }
+2087:                                         
+2088:                                         const cursorDot = cursorEl.querySelector('.cursor-dot');
+2089:                                         if (cursorDot) {
+2090:                                             cursorDot.style.width = `${webBrushSizeRef.current}px`;
+2091:                                             cursorDot.style.height = `${webBrushSizeRef.current}px`;
+2092:                                             cursorDot.style.backgroundColor = webBrushToolRef.current === 'eraser' ? '#ed8796' : webBrushColorRef.current;
+2093:                                         }
+2094:                                         
+2095:                                         const sizeBadge = cursorEl.querySelector('.cursor-size');
+2096:                                         if (sizeBadge) sizeBadge.textContent = `${webBrushSizeRef.current}px`;
+2097:                                         
+2098:                                         const colorBadge = cursorEl.querySelector('.cursor-color-badge');
+2099:                                         if (colorBadge) colorBadge.style.backgroundColor = webBrushToolRef.current === 'eraser' ? '#ed8796' : webBrushColorRef.current;
+2100:                                         
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

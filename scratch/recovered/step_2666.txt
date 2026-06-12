@@ -1,0 +1,27 @@
+Created At: 2026-06-12T09:51:53Z
+Completed At: 2026-06-12T09:51:53Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 3013
+Total Bytes: 206760
+Showing lines 100 to 118
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+100:             fps=config.camera_fps,
+101:         ).start()
+102:         camera_running = True
+103:         logger.info(f"Camera stream started on index {config.camera_index}.")
+104:         return True
+105:     except Exception as e:
+106:         camera_stream = None
+107:         camera_running = False
+108:         logger.error(f"Failed to start camera: {e}")
+109:         return False
+110: 
+111: def stop_camera_stream():
+112:     global camera_stream, camera_running
+113:     camera_running = False
+114:     if camera_stream is not None:
+115:         try:
+116:             camera_stream.stop()
+117:         except Exception:
+118:             pass
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

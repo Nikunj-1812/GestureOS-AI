@@ -40,6 +40,15 @@ class SettingsState:
     virtual_mouse_brightness_min_distance_px: float = 30.0 # Phase 3.5
     virtual_mouse_brightness_max_distance_px: float = 250.0 # Phase 3.5
     virtual_mouse_brightness_smoothing: float = 0.15       # Phase 3.5
+    virtual_mouse_drag_threshold_ms: float = 200.0         # Phase 3.5
+    keyboard_sound_enabled: bool = True
+    keyboard_system_typing_enabled: bool = False
+    keyboard_autocomplete_enabled: bool = True
+    brush_size: int = 15
+    brush_color: str = "#c6a0f6"
+    brush_color_name: str = "Mauve"
+    brush_tool: str = "pen"
+
 
 
 class SettingsManager:
@@ -102,7 +111,16 @@ class SettingsManager:
                 virtual_mouse_brightness_min_distance_px=float(raw.get("virtual_mouse_brightness_min_distance_px", 30.0)),
                 virtual_mouse_brightness_max_distance_px=float(raw.get("virtual_mouse_brightness_max_distance_px", 250.0)),
                 virtual_mouse_brightness_smoothing=float(raw.get("virtual_mouse_brightness_smoothing", 0.15)),
+                virtual_mouse_drag_threshold_ms=float(raw.get("virtual_mouse_drag_threshold_ms", 200.0)),
+                keyboard_sound_enabled=bool(raw.get("keyboard_sound_enabled", True)),
+                keyboard_system_typing_enabled=bool(raw.get("keyboard_system_typing_enabled", False)),
+                keyboard_autocomplete_enabled=bool(raw.get("keyboard_autocomplete_enabled", True)),
+                brush_size=int(raw.get("brush_size", 15)),
+                brush_color=str(raw.get("brush_color", "#c6a0f6")),
+                brush_color_name=str(raw.get("brush_color_name", "Mauve")),
+                brush_tool=str(raw.get("brush_tool", "pen")),
             )
+
 
         camera = raw.get("camera", {}) if isinstance(raw, dict) else {}
         ui = raw.get("ui", {}) if isinstance(raw, dict) else {}
@@ -134,7 +152,16 @@ class SettingsManager:
             virtual_mouse_brightness_min_distance_px=float(vm.get("brightness_min_distance_px", 30.0)),
             virtual_mouse_brightness_max_distance_px=float(vm.get("brightness_max_distance_px", 250.0)),
             virtual_mouse_brightness_smoothing=float(vm.get("brightness_smoothing", 0.15)),
+            virtual_mouse_drag_threshold_ms=float(vm.get("drag_threshold_ms", 200.0)),
+            keyboard_sound_enabled=bool(raw.get("keyboard_sound_enabled", True)),
+            keyboard_system_typing_enabled=bool(raw.get("keyboard_system_typing_enabled", False)),
+            keyboard_autocomplete_enabled=bool(raw.get("keyboard_autocomplete_enabled", True)),
+            brush_size=int(raw.get("brush_size", 15)),
+            brush_color=str(raw.get("brush_color", "#c6a0f6")),
+            brush_color_name=str(raw.get("brush_color_name", "Mauve")),
+            brush_tool=str(raw.get("brush_tool", "pen")),
         )
+
 
     def save(self) -> None:
         self.path.parent.mkdir(parents=True, exist_ok=True)
@@ -164,7 +191,16 @@ class SettingsManager:
             "virtual_mouse_brightness_min_distance_px": self._state.virtual_mouse_brightness_min_distance_px,
             "virtual_mouse_brightness_max_distance_px": self._state.virtual_mouse_brightness_max_distance_px,
             "virtual_mouse_brightness_smoothing": self._state.virtual_mouse_brightness_smoothing,
+            "virtual_mouse_drag_threshold_ms": self._state.virtual_mouse_drag_threshold_ms,
+            "keyboard_sound_enabled": self._state.keyboard_sound_enabled,
+            "keyboard_system_typing_enabled": self._state.keyboard_system_typing_enabled,
+            "keyboard_autocomplete_enabled": self._state.keyboard_autocomplete_enabled,
+            "brush_size": self._state.brush_size,
+            "brush_color": self._state.brush_color,
+            "brush_color_name": self._state.brush_color_name,
+            "brush_tool": self._state.brush_tool,
         }
+
         with self.path.open("w", encoding="utf-8") as file:
             json.dump(payload, file, indent=2)
             file.write("\n")
@@ -197,8 +233,17 @@ class SettingsManager:
         virtual_mouse_brightness_min_distance_px: float | None = None,
         virtual_mouse_brightness_max_distance_px: float | None = None,
         virtual_mouse_brightness_smoothing: float | None = None,
+        virtual_mouse_drag_threshold_ms: float | None = None,
+        keyboard_sound_enabled: bool | None = None,
+        keyboard_system_typing_enabled: bool | None = None,
+        keyboard_autocomplete_enabled: bool | None = None,
+        brush_size: int | None = None,
+        brush_color: str | None = None,
+        brush_color_name: str | None = None,
+        brush_tool: str | None = None,
         save: bool = True,
     ) -> bool:
+
         changed = False
 
         if camera_index is not None:
@@ -242,7 +287,16 @@ class SettingsManager:
             ("virtual_mouse_brightness_min_distance_px", virtual_mouse_brightness_min_distance_px),
             ("virtual_mouse_brightness_max_distance_px", virtual_mouse_brightness_max_distance_px),
             ("virtual_mouse_brightness_smoothing", virtual_mouse_brightness_smoothing),
+            ("virtual_mouse_drag_threshold_ms", virtual_mouse_drag_threshold_ms),
+            ("keyboard_sound_enabled", keyboard_sound_enabled),
+            ("keyboard_system_typing_enabled", keyboard_system_typing_enabled),
+            ("keyboard_autocomplete_enabled", keyboard_autocomplete_enabled),
+            ("brush_size", brush_size),
+            ("brush_color", brush_color),
+            ("brush_color_name", brush_color_name),
+            ("brush_tool", brush_tool),
         ]:
+
             if val is not None:
                 current_val = getattr(self._state, key)
                 if val != current_val:
@@ -289,7 +343,12 @@ class SettingsManager:
         config.virtual_mouse_brightness_min_distance_px = self._state.virtual_mouse_brightness_min_distance_px
         config.virtual_mouse_brightness_max_distance_px = self._state.virtual_mouse_brightness_max_distance_px
         config.virtual_mouse_brightness_smoothing = self._state.virtual_mouse_brightness_smoothing
+        config.virtual_mouse_drag_threshold_ms = self._state.virtual_mouse_drag_threshold_ms
+        config.keyboard_sound_enabled = self._state.keyboard_sound_enabled
+        config.keyboard_system_typing_enabled = self._state.keyboard_system_typing_enabled
+        config.keyboard_autocomplete_enabled = self._state.keyboard_autocomplete_enabled
         return config
+
 
     def snapshot(self) -> SettingsState:
         return SettingsState(
@@ -318,7 +377,12 @@ class SettingsManager:
             virtual_mouse_brightness_min_distance_px=self._state.virtual_mouse_brightness_min_distance_px,
             virtual_mouse_brightness_max_distance_px=self._state.virtual_mouse_brightness_max_distance_px,
             virtual_mouse_brightness_smoothing=self._state.virtual_mouse_brightness_smoothing,
+            virtual_mouse_drag_threshold_ms=self._state.virtual_mouse_drag_threshold_ms,
+            keyboard_sound_enabled=self._state.keyboard_sound_enabled,
+            keyboard_system_typing_enabled=self._state.keyboard_system_typing_enabled,
+            keyboard_autocomplete_enabled=self._state.keyboard_autocomplete_enabled,
         )
+
 
     def _normalize_theme(self, theme: str) -> str:
         normalized = theme.strip().lower()

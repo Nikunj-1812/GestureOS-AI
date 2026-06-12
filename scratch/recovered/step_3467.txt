@@ -1,0 +1,64 @@
+Created At: 2026-06-12T10:52:59Z
+Completed At: 2026-06-12T10:52:59Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 4035
+Total Bytes: 278290
+Showing lines 1025 to 1080
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1025:             const drawingStatusRef = useRef('Idle');
+1026:             const setDrawingStatus = (val) => {
+1027:                 _setDrawingStatus(val);
+1028:                 drawingStatusRef.current = val;
+1029:             };
+1030: 
+1031:             const [webBrushSize, _setWebBrushSize] = useState(5);
+1032:             const webBrushSizeRef = useRef(5);
+1033:             const setWebBrushSize = (val) => {
+1034:                 _setWebBrushSize(val);
+1035:                 webBrushSizeRef.current = val;
+1036:             };
+1037: 
+1038:             const [webBrushColor, _setWebBrushColor] = useState('#c6a0f6'); // Mauve
+1039:             const webBrushColorRef = useRef('#c6a0f6');
+1040:             const setWebBrushColor = (val) => {
+1041:                 _setWebBrushColor(val);
+1042:                 webBrushColorRef.current = val;
+1043:             };
+1044: 
+1045:             const [webBrushColorName, setWebBrushColorName] = useState('Mauve');
+1046:             const [undoStack, _setUndoStack] = useState([]);
+1047:             const undoStackRef = useRef([]);
+1048:             const setUndoStack = (val) => {
+1049:                 if (typeof val === 'function') {
+1050:                     _setUndoStack(prev => {
+1051:                         const next = val(prev);
+1052:                         undoStackRef.current = next;
+1053:                         return next;
+1054:                     });
+1055:                 } else {
+1056:                     _setUndoStack(val);
+1057:                     undoStackRef.current = val;
+1058:                 }
+1059:             };
+1060: 
+1061:             const [redoStack, setRedoStack] = useState([]);
+1062:             const [streamFps, setStreamFps] = useState(0.0);
+1063: 
+1064:             // Refs for drawing state machine
+1065:             const currentStrokeRef = useRef(null);
+1066:             const lastPointRef = useRef(null);
+1067:             const isDrawingStateRef = useRef(false);
+1068:             const webSmoothXRef = useRef(null);
+1069:             const webSmoothYRef = useRef(null);
+1070:             const activeMenuRef = useRef('dashboard');
+1071: 
+1072:             // Responsive & white board states
+1073:             const [fullScreenMode, setFullScreenMode] = useState(false);
+1074:             
+1075:             const [backgroundMode, _setBackgroundMode] = useState('camera'); // 'camera' | 'whiteboard'
+1076:             const backgroundModeRef = useRef('camera');
+1077:             const setBackgroundMode = (val) => {
+1078:                 _setBackgroundMode(val);
+1079:                 backgroundModeRef.current = val;
+1080:             };
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

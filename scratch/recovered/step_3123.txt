@@ -1,0 +1,73 @@
+Created At: 2026-06-12T10:20:24Z
+Completed At: 2026-06-12T10:20:24Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 3488
+Total Bytes: 240174
+Showing lines 600 to 1399
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+600:         window.addEventListener("unhandledrejection", function (event) {
+601:             const errorData = {
+602:                 message: "Unhandled Promise Rejection: " + event.reason,
+603:                 error: event.reason && event.reason.stack ? event.reason.stack : null
+604:             };
+605:             console.error("Unhandled Promise Rejection:", errorData);
+606:             
+607:             // Send to backend API
+608:             fetch("/api/log_error", {
+609:                 method: "POST",
+610:                 headers: { "Content-Type": "application/json" },
+611:                 body: JSON.stringify(errorData)
+612:             }).catch(err => console.error("Failed to send error to backend", err));
+613:         });
+614:     </script>
+615:     <!-- Tailwind CSS (Hosted Locally) -->
+616:     <script src="/static/tailwind.js"></script>
+617:     <script>
+618:         tailwind.config = {
+619:             theme: {
+620:                 extend: {
+621:                     colors: {
+622:                         background: "#080710",
+623:                         glass: {
+624:                             light: "rgba(255, 255, 255, 0.05)",
+625:                             border: "rgba(255, 255, 255, 0.06)",
+626:                             glow: "rgba(59, 130, 246, 0.15)",
+627:                         },
+628:                         accent: {
+629:                             blue: "#3b82f6",
+630:                             purple: "#8b5cf6",
+631:                             green: "#10b981",
+632:                         }
+633:                     },
+
+<truncated 45281 bytes>
+agStatus(newDS);
+1370:                             setDragDuration(data.drag_duration || 0.0);
+1371:                             setDragCounter(data.drag_counter || 0);
+1372:                             const prevDS = prevDragStatusRef.current;
+1373:                             if (newDS === 'DRAGGING' && prevDS !== 'DRAGGING') {
+1374:                                 const timeString = new Date().toLocaleTimeString();
+1375:                                 eventIdCounterRef.current += 1;
+1376:                                 setEvents(prev => [{
+1377:                                     id: `${Date.now()}-${eventIdCounterRef.current}`,
+1378:                                     timestamp: timeString,
+1379:                                     gesture: 'Drag Start',
+1380:                                     confidence: 1.0,
+1381:                                     action: `[DRAG] Drag Start | Count = ${data.drag_counter || 0}`
+1382:                                 }, ...prev].slice(0, 50));
+1383:                             } else if (newDS === 'IDLE' && prevDS === 'DRAGGING') {
+1384:                                 const timeString = new Date().toLocaleTimeString();
+1385:                                 eventIdCounterRef.current += 1;
+1386:                                 setEvents(prev => [{
+1387:                                     id: `${Date.now()}-${eventIdCounterRef.current}`,
+1388:                                     timestamp: timeString,
+1389:                                     gesture: 'Drag End',
+1390:                                     confidence: 1.0,
+1391:                                     action: `[DRAG] Drag End | Duration = ${(data.drag_duration || 0.0).toFixed(2)}s`
+1392:                                 }, ...prev].slice(0, 50));
+1393:                             }
+1394:                             prevDragStatusRef.current = newDS;
+1395: 
+<truncated 462 bytes>
+
+NOTE: The output was truncated because it was too long. Use a more targeted query or a smaller range to get the information you need.

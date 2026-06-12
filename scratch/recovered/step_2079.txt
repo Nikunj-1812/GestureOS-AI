@@ -1,0 +1,29 @@
+Created At: 2026-06-12T05:19:20Z
+Completed At: 2026-06-12T05:19:20Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 2637
+Total Bytes: 183729
+Showing lines 1290 to 1310
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1290:             const updateSetting = async (key, val) => {
+1291:                 try {
+1292:                     await fetch('/api/settings/update', {
+1293:                         method: 'POST',
+1294:                         headers: { 'Content-Type': 'application/json' },
+1295:                         body: JSON.stringify({ [key]: val })
+1296:                     });
+1297:                 } catch (err) {
+1298:                     console.error('Error updating switch setting:', err);
+1299:                 }
+1300:             };
+1301: 
+1302:             // Format confidence displays based on gesture states
+1303:             const formatConfidence = () => {
+1304:                 if (gesture === 'None' || gesture === 'unknown' || gesture === 'No Model' || hands === 0) {
+1305:                     return '0%';
+1306:                 }
+1307:                 return `${(confidence * 100).toFixed(0)}%`;
+1308:             };
+1309: 
+1310:             // Virtual Keyboard UI event handlers
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

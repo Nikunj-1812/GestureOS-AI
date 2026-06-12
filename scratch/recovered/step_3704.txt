@@ -1,0 +1,44 @@
+Created At: 2026-06-12T11:09:28Z
+Completed At: 2026-06-12T11:09:28Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 4482
+Total Bytes: 313447
+Showing lines 3866 to 4000
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+3866:                                                     <div>
+3867:                                                         <h2 className="text-2xl font-bold tracking-wide text-white">Air Drawing Canvas</h2>
+3868:                                                         <p className="text-xs text-gray-400 mt-1 max-w-xl">
+3869:                                                             Draw in the air using finger pinch gestures. Customize brush size and color, and manage drawings.
+3870:                                                         </p>
+3871:                                                     </div>
+3872:                                                     <div className="mt-4 md:mt-0">
+3873:                                                         <span className="px-4 py-2 rounded-full text-xs font-semibold border bg-emerald-500/10 border-emerald-500/20 text-accent-green">
+3874:                                                             Live Canvas
+3875:                                                         </span>
+3876:                                                     </div>
+3877:                                                 </div>
+3878:                                             )}
+3879: 
+3880:                                             {/* Drawing Page Layout */}
+3881:                                             <div className={`grid grid-cols-1 ${fullScreenMode ? '' : 'lg:grid-cols-3 gap-6 mt-6'}`}>
+3882:                                                 {/* Canvas Workspace Column */}
+3883:                                            
+<truncated 10479 bytes>
+                             ? 'bg-blue-600/30 border-blue-500 text-blue-200 shadow-[0_0_10px_rgba(59,130,246,0.3)]' 
+3985:                                                                                     : 'bg-zinc-800/50 border-zinc-700 text-gray-300'
+3986:                                                                             }`}
+3987:                                                                         >
+3988:                                                                             {size}px
+3989:                                                                         </button>
+3990:                                                                     ))}
+3991:                                                                 </div>
+3992:                                                             </div>
+3993:                                                             
+3994:                                                             {/* Gesture Guide Cheat-Sheet */}
+3995:                                                             <div className="border-t border-white/10 pt-3 mt-2 space-y-2">
+3996:                                                                 <span className="text-[10px] text-gray-450 font-bold block uppercase tracking-wider">Gesture Cheat-Sheet</span>
+3997:                                                                 <div className="space-y-1.5 text-[10px] text-gray-300 font-sans">
+3998:                                                                     <div className="flex justify-between py-1 px-2 rounded bg-white/5 border border-white/5">
+3999:                                                                         <span>☝️ Index UP</span>
+4000:                                                                         <span className="font-semibold text-accent-green">✏️ Draw</span>
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

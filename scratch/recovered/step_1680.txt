@@ -1,0 +1,39 @@
+Created At: 2026-06-12T04:55:19Z
+Completed At: 2026-06-12T04:55:19Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 2115
+Total Bytes: 144418
+Showing lines 1275 to 1305
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1275:                                 <button className="p-2.5 rounded-xl glass-card text-gray-400 hover:text-white group">
+1276:                                     <SettingsIcon className="w-5 h-5 transition-transform duration-300 group-hover:rotate-45" />
+1277:                                 </button>
+1278: 
+1279:                                 <div className="flex items-center gap-3 px-3 py-1.5 rounded-xl glass-card border border-glass-border text-left select-none">
+1280:                                     <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center text-white font-bold text-sm">
+1281:                                         <UserIcon className="w-4 h-4" />
+1282:                                     </div>
+1283:                                     <div className="hidden sm:block">
+1284:                                         <p className="text-xs font-semibold text-white">Operator</p>
+1285:                                         <p className="text-[10px] text-gray-400">Admin Role</p>
+1286:                                     </div>
+1287:                                 </div>
+1288: 
+1289:                                 <button 
+1290:                                     onClick={handleStopCamera}
+1291:                                     className="p-2.5 rounded-xl bg-red-500/10 hover:bg-red-500/20 border border-red-500/20 hover:border-red-500/30 text-red-400 hover:text-red-300 transition-all duration-300 group"
+1292:                                     title="Stop Engine"
+1293:                                 >
+1294:                                     <LogOutIcon className="w-5 h-5" />
+1295:                                 </button>
+1296:                             </div>
+1297:                         </header>
+1298: 
+1299:                         {/* Outer scrollable viewport */}
+1300:                         <div className="flex-1 overflow-y-auto p-8 scrollbar-thin">
+1301:                             <div className="max-w-6xl mx-auto space-y-6">
+1302:                                 
+1303:                                 {activeMenu === 'dashboard' ? (
+1304:                                     <>
+1305:                                         {/* Status Cards Grid */}
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

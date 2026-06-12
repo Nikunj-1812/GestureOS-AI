@@ -1,0 +1,29 @@
+Created At: 2026-06-12T09:20:48Z
+Completed At: 2026-06-12T09:20:48Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 2725
+Total Bytes: 188567
+Showing lines 855 to 875
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+855:             // Phase 3.5 — Drag & Drop Control
+856:             const [dragStatus, setDragStatus] = useState('IDLE');
+857:             const [dragDuration, setDragDuration] = useState(0.0);
+858:             const [dragCounter, setDragCounter] = useState(0);
+859:             const [virtualMouseDragThresholdMs, setVirtualMouseDragThresholdMs] = useState(200.0);
+860:             const prevDragStatusRef = useRef('IDLE');
+861: 
+862:             // Virtual Keyboard UI States
+863:             const [hoveredKey, setHoveredKey] = useState('None');
+864:             const [lastPressedKey, setLastPressedKey] = useState('None');
+865:             const [typedText, setTypedText] = useState('');
+866:             const [isShiftActive, setIsShiftActive] = useState(false);
+867:             const [isCapsLockActive, setIsCapsLockActive] = useState(false);
+868:             const [pressedKey, setPressedKey] = useState(null);
+869:             const [hoverDuration, setHoverDuration] = useState(0.0);
+870:             const [enableKeyboardSound, setEnableKeyboardSound] = useState(true);
+871:             
+872:             const smoothXRef = useRef(null);
+873:             const smoothYRef = useRef(null);
+874:             const candidateKeyRef = useRef(null);
+875:             const candidateStartTimeRef = useRef(null);
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

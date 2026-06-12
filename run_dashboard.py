@@ -13,6 +13,14 @@ import os
 import sys
 from pathlib import Path
 
+# Enable high-precision timers on Windows to allow precise sleep/intervals (e.g. 1ms)
+if sys.platform == 'win32':
+    try:
+        import ctypes
+        ctypes.windll.winmm.timeBeginPeriod(1)
+    except Exception:
+        pass
+
 # Suppress third-party logging / console spam (MediaPipe, TensorFlow, OpenCV)
 os.environ['GLOG_minloglevel'] = '2'
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'

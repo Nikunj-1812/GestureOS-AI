@@ -1,0 +1,60 @@
+Created At: 2026-06-11T11:34:01Z
+Completed At: 2026-06-11T11:34:02Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 1364
+Total Bytes: 89652
+Showing lines 215 to 275
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+215:         "virtual_mouse_volume_min_distance_px", "virtual_mouse_volume_max_distance_px", "virtual_mouse_volume_smoothing",
+216:         "virtual_mouse_brightness_min_distance_px", "virtual_mouse_brightness_max_distance_px", "virtual_mouse_brightness_smoothing",
+217:         # Phase 3.6 Settings
+218:         "drag_hold_threshold_ms", "click_cooldown_ms", "volume_cooldown_ms", "brightness_cooldown_ms"
+219:     ]
+220:     int_keys = [
+221:         "camera_index", "fps_limit"
+222:     ]
+223:     for key in bool_keys:
+224:         if key in updates:
+225:             params[key] = bool(updates[key])
+226:     for key in float_keys:
+227:         if key in updates:
+228:             params[key] = float(updates[key])
+229:     for key in int_keys:
+230:         if key in updates:
+231:             params[key] = int(updates[key])
+232:     
+233:     changed = settings_manager.update(**params)
+234:     if changed:
+235:         settings_manager.save()
+236:         settings_manager.apply_to_config(config)
+237:         # Apply to live instance
+238:         virtual_mouse.enabled = config.virtual_mouse_enabled
+239:         virtual_mouse.sensitivity = config.virtual_mouse_sensitivity
+240:         virtual_mouse.dead_zone = config.virtual_mouse_dead_zone
+241:         virtual_mouse.smoothing = config.virtual_mouse_smoothing
+242:         if hasattr(config, 'virtual_mouse_click_threshold'):
+243:             virtual_mouse.click_threshold = config.virtual_mouse_click_threshold
+244:         if hasattr(config, 'virtual_mouse_right_click_threshold'):
+245:             virtual_mouse.right_click
+<truncated 1021 bytes>
+oothing') and virtual_mouse._volume_controller:
+257:             virtual_mouse._volume_controller.smoothing = config.virtual_mouse_volume_smoothing
+258:         if hasattr(config, 'virtual_mouse_brightness_min_distance_px') and virtual_mouse._brightness_controller:
+259:             virtual_mouse._brightness_controller.min_distance = config.virtual_mouse_brightness_min_distance_px
+260:         if hasattr(config, 'virtual_mouse_brightness_max_distance_px') and virtual_mouse._brightness_controller:
+261:             virtual_mouse._brightness_controller.max_distance = config.virtual_mouse_brightness_max_distance_px
+262:         if hasattr(config, 'virtual_mouse_brightness_smoothing') and virtual_mouse._brightness_controller:
+263:             virtual_mouse._brightness_controller.smoothing = config.virtual_mouse_brightness_smoothing
+264:         
+265:         # Apply Phase 3.6 Settings to live instance
+266:         virtual_mouse.mode_cursor_enabled = getattr(config, 'mode_cursor_enabled', True)
+267:         virtual_mouse.mode_click_enabled = getattr(config, 'mode_click_enabled', True)
+268:         virtual_mouse.mode_scroll_enabled = getattr(config, 'mode_scroll_enabled', True)
+269:         virtual_mouse.mode_volume_enabled = getattr(config, 'mode_volume_enabled', True)
+270:         virtual_mouse.mode_brightness_enabled = getattr(config, 'mode_brightness_enabled', True)
+271:         virtual_mouse.mode_drag_enabled = getattr(config, 'mode_drag_enabled', True)
+272:         virtual_mouse.drag_hold_threshold_ms = getattr(config, 'drag_hold_threshold_ms', 300.0)
+273:         virtual_mouse.cursor_acceleration_enabled = getattr(config, 'cursor_acceleration_enabled', True)
+274:         virtual_mouse.click_cooldown_ms = getattr(config, 'click_cooldown_ms', 300.0)
+275:         virtual_mouse.debounce_ms = getattr(config, 'click_cooldown_ms', 300.0)
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

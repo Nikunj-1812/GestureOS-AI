@@ -1,0 +1,48 @@
+Created At: 2026-06-11T10:28:35Z
+Completed At: 2026-06-11T10:28:35Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 1924
+Total Bytes: 129492
+Showing lines 1871 to 1910
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1871:                                                                 className="w-full h-1.5 bg-zinc-700 rounded-lg appearance-none cursor-pointer accent-blue-500" 
+1872:                                                             />
+1873:                                                         </div>
+1874: 
+1875:                                                         {/* Volume Smoothing Slider */}
+1876:                                                         <div className="space-y-2">
+1877:                                                             <div className="flex justify-between text-xs">
+1878:                                                                 <span className="text-gray-400">Volume Smoothing</span>
+1879:                                                                 <span className="text-white font-mono">{virtualMouseVolumeSmoothing.toFixed(2)}</span>
+1880:                                                             </div>
+1881:                                                             <input 
+1882:                                                                 type="range" 
+1883:                                                                 min="0.05" 
+1884:                                                                 max="0.50" 
+1885:                                                                 step="0.01"
+1886:                                                                 value={virtualMouseVolumeSmoothing} 
+1887:                                                                 onChange={(e) => {
+1888:                                                                     const val = parseFloat(e.target.value);
+1889:                                                                     setVirtualMouseVolumeSmoothing(val);
+1890:                                                                     updateSetting('virtual_mouse_volume_smoothing', val);
+1891:                                                                 }}
+1892:                                                                 className="w-full h-1.5 bg-zinc-700 rounded-lg appearance-none cursor-pointer accent-blue-500" 
+1893:                                                             />
+1894:                                                         </div>
+1895:                                                     </div>
+1896:                                                 </div>
+1897:                                             </div>
+1898:                                         </div>
+1899:                                     </>
+1900:                                 ) : (
+1901:                                     <div className="glass-card rounded-2xl p-8 text-center text-gray-400">
+1902:                                         <p>This page is currently under construction. Please use the Dashboard or Virtual Mouse navigation links.</p>
+1903:                                     </div>
+1904:                                 )}
+1905:                             </div>
+1906:                         </div>
+1907:                     </main>
+1908:                 </div>
+1909:             );
+1910:         }
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

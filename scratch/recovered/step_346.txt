@@ -1,0 +1,48 @@
+Created At: 2026-06-11T10:08:33Z
+Completed At: 2026-06-11T10:08:34Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 1639
+Total Bytes: 106428
+Showing lines 721 to 760
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+721:                                     action: `Right Click triggered | gesture=thumb_middle_pinch | dist=${(data.right_pinch_distance || 0).toFixed(4)}`
+722:                                 };
+723:                                 setEvents(prev => [rcEvent, ...prev].slice(0, 50));
+724:                             }
+725:                             prevRightClickStatusRef.current = newRC;
+726:                             // Phase 3.4 — Scroll
+727:                             const prevSM = prevScrollModeRef.current;
+728:                             const newSM = data.scroll_mode || false;
+729:                             setScrollMode(newSM);
+730:                             setScrollDirection(data.scroll_direction || 'NONE');
+731:                             setScrollSpeed(data.scroll_speed || 0.0);
+732:                             setScrollCounter(data.scroll_counter || 0);
+733:                             // Log scroll start/stop transitions
+734:                             if (newSM && !prevSM) {
+735:                                 const timeString = new Date().toLocaleTimeString();
+736:                                 eventIdCounterRef.current += 1;
+737:                                 setEvents(prev => [{
+738:                                     id: `${Date.now()}-${eventIdCounterRef.current}`,
+739:                                     timestamp: timeString,
+740:                                     gesture: 'Scroll Start',
+741:                                     confidence: 1.0,
+742:                                     action: 'Scroll Mode activated | gesture=index_middle_up'
+743:                                 }, ...prev].slice(0, 50));
+744:                             } else if (!newSM && prevSM) {
+745:                                 const timeString = new Date().toLocaleTimeString();
+746:                                 eventIdCounterRef.current += 1;
+747:                                 setEvents(prev => [{
+748:                                     id: `${Date.now()}-${eventIdCounterRef.current}`,
+749:                                     timestamp: timeString,
+750:                                     gesture: 'Scroll Stop',
+751:                                     confidence: 1.0,
+752:                                     action: `Scroll Mode deactivated | total events=${data.scroll_counter || 0}`
+753:                                 }, ...prev].slice(0, 50));
+754:                             }
+755:                             prevScrollModeRef.current = newSM;
+756: 
+757:                             // Trigger logs on gesture change (ignoring empty/None/unknown)
+758:                             if (data.gesture !== prevGestureRef.current) {
+759:                                 if (data.gesture && data.gesture !== 'None' && data.gesture !== 'unknown') {
+760:                                     const timeString = new Date().toLocaleTimeString();
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

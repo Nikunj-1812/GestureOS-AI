@@ -1,0 +1,73 @@
+Created At: 2026-06-12T11:16:31Z
+Completed At: 2026-06-12T11:16:31Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 2369
+Total Bytes: 129583
+Showing lines 1256 to 1320
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1256:             const drawStrokeSegment = (ctx, points, color, size, tool = 'pen') => {
+1257:                 if (!points || points.length < 1) return;
+1258:                 
+1259:                 ctx.save();
+1260:                 ctx.beginPath();
+1261:                 ctx.lineCap = 'round';
+1262:                 ctx.lineJoin = 'round';
+1263:                 
+1264:                 if (tool === 'eraser') {
+1265:                     ctx.globalCompositeOperation = 'destination-out';
+1266:                     ctx.strokeStyle = 'rgba(0,0,0,1)';
+1267:                     ctx.lineWidth = size;
+1268:                     ctx.fillStyle = 'rgba(0,0,0,1)';
+1269:                 } else if (tool === 'highlighter') {
+1270:                     ctx.globalCompositeOperation = 'source-over';
+1271:                     ctx.lineWidth = size;
+1272:                     
+1273:                     let transparentColor = color;
+1274:                     if (color.startsWith('#')) {
+1275:                         let hex = color.slice(1);
+1276:                         if (hex.length === 3) {
+1277:                             hex = hex.split('').map(char => char + char).join('');
+1278:                         }
+1279:                         const r = parseInt(hex.slice(0, 2), 16);
+1280:                         const g = parseInt(hex.slice(2, 4), 16);
+1281:                         const b = parseInt(hex.slice(4, 6), 16);
+1282:                         transparentColor = `rgba(${r}, ${g}, ${b}, 0.45)`;
+1283:                     }
+1284:                     ctx.strokeStyle = transparentColor;
+1285:                     ctx.fillStyle = transparentColor;
+1286:                 } else {
+1287:                     ctx.globalCompositeOperation = 'source-over';
+1288:                     ctx.strokeStyle = color;
+1289:                     ctx.lineWidth = size;
+1290:                     ctx.fillStyle = color;
+1291:                 }
+1292:                 
+1293:                 if (points.length === 1) {
+1294:                     const pt = points[0];
+1295:                     ctx.arc(pt.x, pt.y, size / 2, 0, 2 * Math.PI);
+1296:                     ctx.fill();
+1297:                 } else if (points.length === 2) {
+1298:                     ctx.moveTo(points[0].x, points[0].y);
+1299:                     ctx.lineTo(points[1].x, points[1].y);
+1300:                     ctx.stroke();
+1301:                 } else {
+1302:                     ctx.moveTo(points[0].x, points[0].y);
+1303:                     for (let i = 1; i < points.length - 1; i++) {
+1304:                         const xc = (points[i].x + points[i + 1].x) / 2;
+1305:                         const yc = (points[i].y + points[i + 1].y) / 2;
+1306:                         ctx.quadraticCurveTo(points[i].x, points[i].y, xc, yc);
+1307:                     }
+1308:                     ctx.lineTo(points[points.length - 1].x, points[points.length - 1].y);
+1309:                     ctx.stroke();
+1310:                 }
+1311:                 ctx.restore();
+1312:             };
+1313: 
+1314:             // Draw smooth hover trail
+1315:             const drawHoverTrail = (ctx, trail) => {
+1316:                 for (let i = 1; i < trail.length; i++) {
+1317:                     ctx.beginPath();
+1318:                     ctx.moveTo(trail[i - 1].x, trail[i - 1].y);
+1319:                     ctx.lineTo(trail[i].x, trail[i].y);
+1320:                     const opacity = (i / trail.length) * 0.4;
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

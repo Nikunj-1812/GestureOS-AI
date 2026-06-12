@@ -1,0 +1,41 @@
+Created At: 2026-06-12T04:55:35Z
+Completed At: 2026-06-12T04:55:36Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 2115
+Total Bytes: 144418
+Showing lines 1130 to 1162
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1130:                     logSystemEvent("Tracking reset complete.");
+1131:                 } catch (err) {
+1132:                     console.error('Error resetting tracking:', err);
+1133:                     logSystemEvent("Failed to reset tracking.");
+1134:                 } finally {
+1135:                     setTimeout(() => setIsResetting(false), 800);
+1136:                 }
+1137:             };
+1138: 
+1139:             const updateSetting = async (key, val) => {
+1140:                 try {
+1141:                     await fetch('/api/settings/update', {
+1142:                         method: 'POST',
+1143:                         headers: { 'Content-Type': 'application/json' },
+1144:                         body: JSON.stringify({ [key]: val })
+1145:                     });
+1146:                 } catch (err) {
+1147:                     console.error('Error updating switch setting:', err);
+1148:                 }
+1149:             };
+1150: 
+1151:             // Format confidence displays based on gesture states
+1152:             const formatConfidence = () => {
+1153:                 if (gesture === 'None' || gesture === 'unknown' || gesture === 'No Model' || hands === 0) {
+1154:                     return '0%';
+1155:                 }
+1156:                 return `${(confidence * 100).toFixed(0)}%`;
+1157:             };
+1158: 
+1159:             return (
+1160:                 <div className="flex h-screen bg-[#080710] font-sans antialiased text-gray-200 overflow-hidden">
+1161:                     
+1162:                     {/* Left Sidebar */}
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

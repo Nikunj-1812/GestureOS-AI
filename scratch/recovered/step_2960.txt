@@ -1,0 +1,59 @@
+Created At: 2026-06-12T10:08:07Z
+Completed At: 2026-06-12T10:08:07Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 3194
+Total Bytes: 215157
+Showing lines 1351 to 1400
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1351:                             setDragStatus(newDS);
+1352:                             setDragDuration(data.drag_duration || 0.0);
+1353:                             setDragCounter(data.drag_counter || 0);
+1354:                             const prevDS = prevDragStatusRef.current;
+1355:                             if (newDS === 'DRAGGING' && prevDS !== 'DRAGGING') {
+1356:                                 const timeString = new Date().toLocaleTimeString();
+1357:                                 eventIdCounterRef.current += 1;
+1358:                                 setEvents(prev => [{
+1359:                                     id: `${Date.now()}-${eventIdCounterRef.current}`,
+1360:                                     timestamp: timeString,
+1361:                                     gesture: 'Drag Start',
+1362:                                     confidence: 1.0,
+1363:                                     action: `[DRAG] Drag Start | Count = ${data.drag_counter || 0}`
+1364:                                 }, ...prev].slice(0, 50));
+1365:                             } else if (newDS === 'IDLE' && prevDS === 'DRAGGING') {
+1366:                                 const timeString = new Date().toLocaleTimeString();
+1367:                                 eventIdCounterRef.current += 1;
+1368:                                 setEvents(prev => [{
+1369:                                     id: `${Date.now()}-${eventIdCounterRef.current}`,
+1370:                                     timestamp: timeString,
+1371:                                     gesture: 'Drag End',
+1372:           
+<truncated 97 bytes>
+AG] Drag End | Duration = ${(data.drag_duration || 0.0).toFixed(2)}s`
+1374:                                 }, ...prev].slice(0, 50));
+1375:                             }
+1376:                             prevDragStatusRef.current = newDS;
+1377: 
+1378:                             // Phase 3.5 — Mode Manager
+1379:                             const newAM = data.active_mode || 'CURSOR';
+1380:                             setActiveMode(newAM);
+1381:                             if (newAM !== prevActiveModeRef.current) {
+1382:                                 const timeString = new Date().toLocaleTimeString();
+1383:                                 eventIdCounterRef.current += 1;
+1384:                                 const modeEvent = {
+1385:                                     id: `${Date.now()}-${eventIdCounterRef.current}`,
+1386:                                     timestamp: timeString,
+1387:                                     gesture: 'Mode Switch',
+1388:                                     confidence: 1.0,
+1389:                                     action: `[MODE] ${newAM}`
+1390:                                 };
+1391:                                 setEvents(prev => [modeEvent, ...prev].slice(0, 50));
+1392:                                 prevActiveModeRef.current = newAM;
+1393:                             }
+1394: 
+1395:                             // Trigger logs on gesture change (ignoring empty/None/unknown)
+1396:                             if (data.gesture !== prevGestureRef.current) {
+1397:                                 if (data.gesture && data.gesture !== 'None' && data.gesture !== 'unknown') {
+1398:                                     const timeString = new Date().toLocaleTimeString();
+1399:                                     eventIdCounterRef.current += 1;
+1400:                                     const newEvent = {
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

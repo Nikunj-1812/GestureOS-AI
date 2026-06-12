@@ -1,0 +1,54 @@
+Created At: 2026-06-12T10:59:51Z
+Completed At: 2026-06-12T10:59:51Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 4256
+Total Bytes: 294748
+Showing lines 1650 to 1800
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1650:                                         confidence: data.confidence,
+1651:                                         action: `Triggered mapped shortcut for [${data.gesture}]`
+1652:                                     };
+1653:                                     setEvents(prev => [newEvent, ...prev].slice(0, 50));
+1654:                                 }
+1655:                                 prevGestureRef.current = data.gesture;
+1656:                             }
+1657: 
+1658:                             // Phase 5.1 — Air Drawing Canvas
+1659:                             if (activeMenuRef.current === 'drawing') {
+1660:                                 setStreamFps(data.fps || 0.0);
+1661:                                 const isHandDetected = data.hands > 0;
+1662:                                 const handScore = data.hand_score !== undefined ? data.hand_score : 1.0;
+1663:                                 
+1664:                                 // Reset One Euro filter state when hand enters/exits frame to avoid jumps
+1665:                                 if (isHandDetected && !wasHandDetectedRef.current) {
+1666:                                     filterXRef.current.reset();
+1667:                                     filterYRef.current.reset();
+1668:                                     hoverTrailRef.current = [];
+1669:                                     smoothedPinchDistRef.current = 0.0;
+1670:                                     consecutivePinchFramesRef.current = 0;
+1671:                                     consecutiveReleaseFramesRef.current = 0;
+1672:    
+<truncated 7699 bytes>
+:                                             currentStrokeRef.current.points.push({ x: smoothedX, y: smoothedY });
+1780:                                             lastPointRef.current = { x: smoothedX, y: smoothedY };
+1781:                                         }
+1782:                                     } else {
+1783:                                         drawingPinchActiveRef.current = false;
+1784:                                         
+1785:                                         // Activate grace period instead of stopping immediately
+1786:                                         if (isDrawingStateRef.current) {
+1787:                                             if (!inGracePeriodRef.current) {
+1788:                                                 inGracePeriodRef.current = true;
+1789:                                                 setDrawingStatus('Grace Period');
+1790:                                                 gracePeriodTimeoutRef.current = setTimeout(() => {
+1791:                                                     inGracePeriodRef.current = false;
+1792:                                                     isDrawingStateRef.current = false;
+1793:                                                     setDrawingStatus('Hovering');
+1794:                                                     
+1795:                                                     const stroke = currentStrokeRef.current;
+1796:                                                     if (stroke && stroke.points.length > 0) {
+1797:                                                         setUndoStack(prev => [...prev, stroke]);
+1798:                                                         setRedoStack([]);
+1799:                                                     }
+1800:                                                     currentStrokeRef.current = null;
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

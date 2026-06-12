@@ -1,0 +1,39 @@
+Created At: 2026-06-11T12:31:34Z
+Completed At: 2026-06-11T12:31:35Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 1987
+Total Bytes: 135200
+Showing lines 380 to 410
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+380:                 "click_counter": vm_result.get("click_counter", 0) if vm_result else 0,
+381:                 "current_action": vm_result.get("current_action", "None") if vm_result else "None",
+382:                 # Phase 3.3 — Right Click telemetry
+383:                 "right_click_status": vm_result.get("right_click_status", "OPEN") if vm_result else "OPEN",
+384:                 "right_click_counter": vm_result.get("right_click_counter", 0) if vm_result else 0,
+385:                 "right_pinch_distance": vm_result.get("right_pinch_distance", 0.0) if vm_result else 0.0,
+386:                 # Phase 3.4 — Scroll telemetry
+387:                 "scroll_mode": vm_result.get("scroll_mode", False) if vm_result else False,
+388:                 "scroll_direction": vm_result.get("scroll_direction", "NONE") if vm_result else "NONE",
+389:                 "scroll_speed": vm_result.get("scroll_speed", 0.0) if vm_result else 0.0,
+390:                 "scroll_counter": vm_result.get("scroll_counter", 0) if vm_result else 0,
+391:                 # Phase 3.4 — Volume telemetry
+392:                 "volume_mode": vm_result.get("volume_mode", False) if vm_result else False,
+393:                 "volume_level": vm_result.get("volume_level", 0) if vm_result else 0,
+394:                 "volume_distance": vm_result.get("volume_distance", 0.0) if vm_result else 0.0,
+395:                 # Phase 3.5 — Mode Manager & Brightness telemetry
+396:                 "active_mode": vm_result.get("active_mode", "CURSOR") if vm_result else "CURSOR",
+397:                 "brightness_mode": vm_result.get("brightness_mode", False) if vm_result else False,
+398:                 "brightness_level": vm_result.get("brightness_level", 0) if vm_result else 0,
+399:                 "brightness_distance": vm_result.get("brightness_distance", 0.0) if vm_result else 0.0,
+400:             }
+401:             
+402:             t_send_start = time.perf_counter()
+403:             await websocket.send_json(payload)
+404:             t_send = time.perf_counter() - t_send_start
+405:             
+406:             t_total = time.perf_counter() - t0
+407:             
+408:             # Maintain roughly target frame rate
+409:             elapsed = time.perf_counter() - loop_start
+410:             interval = max(0.001, 1.0 / max(config.camera_fps, 1) - elapsed)
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

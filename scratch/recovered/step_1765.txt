@@ -1,0 +1,34 @@
+Created At: 2026-06-12T05:01:06Z
+Completed At: 2026-06-12T05:01:06Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 2428
+Total Bytes: 170876
+Showing lines 230 to 255
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+230:         if hasattr(config, 'virtual_mouse_volume_min_distance_px') and virtual_mouse._volume_controller:
+231:             virtual_mouse._volume_controller.min_distance = config.virtual_mouse_volume_min_distance_px
+232:         if hasattr(config, 'virtual_mouse_volume_max_distance_px') and virtual_mouse._volume_controller:
+233:             virtual_mouse._volume_controller.max_distance = config.virtual_mouse_volume_max_distance_px
+234:         if hasattr(config, 'virtual_mouse_volume_smoothing') and virtual_mouse._volume_controller:
+235:             virtual_mouse._volume_controller.smoothing = config.virtual_mouse_volume_smoothing
+236:         if hasattr(config, 'virtual_mouse_brightness_min_distance_px') and virtual_mouse._brightness_controller:
+237:             virtual_mouse._brightness_controller.min_distance = config.virtual_mouse_brightness_min_distance_px
+238:         if hasattr(config, 'virtual_mouse_brightness_max_distance_px') and virtual_mouse._brightness_controller:
+239:             virtual_mouse._brightness_controller.max_distance = config.virtual_mouse_brightness_max_distance_px
+240:         if hasattr(config, 'virtual_mouse_brightness_smoothing') and virtual_mouse._brightness_controller:
+241:             virtual_mouse._brightness_controller.smoothing = config.virtual_mouse_brightness_smoothing
+242:             virtual_mouse.drag_threshold_ms = config.virtual_mouse_drag_threshold_ms
+243:     return {"status": "success"}
+244: 
+245: @app.post("/api/log_error")
+246: def api_log_error(error_data: dict):
+247:     logger.error(f"[FRONTEND ERROR] {json.dumps(error_data, indent=2)}")
+248:     return {"status": "logged"}
+249: 
+250: @app.websocket("/ws")
+251: async def websocket_endpoint(websocket: WebSocket):
+252:     await websocket.accept()
+253:     logger.info("WebSocket client connected")
+254:     
+255:     last_fps_tick = time.perf_counter()
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

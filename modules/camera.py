@@ -46,8 +46,8 @@ class CameraStream:
     def __init__(
         self,
         index: int  = _CAMERA_CFG.get("index", 0),
-        width: int  = _CAMERA_CFG.get("width", 1280),
-        height: int = _CAMERA_CFG.get("height", 720),
+        width: int  = _CAMERA_CFG.get("width", 640),
+        height: int = _CAMERA_CFG.get("height", 360),
         fps: int    = _CAMERA_CFG.get("fps", 30),
     ) -> None:
         self.index  = index

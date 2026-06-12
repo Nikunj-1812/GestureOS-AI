@@ -1,0 +1,30 @@
+Created At: 2026-06-11T10:25:53Z
+Completed At: 2026-06-11T10:25:53Z
+File Path: `file:///C:/Users/nikun/.gemini/antigravity/brain/f71acb1b-ab5a-4de9-85a5-1a298f3c313a/task.md`
+Total Lines: 22
+Total Bytes: 1202
+Showing lines 1 to 22
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1: # Phase 3.5 Tasks — Brightness Control & Central Mode Manager
+2: 
+3: - [x] Install dependencies and update configuration:
+4:   - [x] Add `screen-brightness-control` to `requirements.txt` and install it.
+5:   - [x] Add brightness defaults to `config/settings.yaml`.
+6:   - [x] Update `config/app_config.py`.
+7:   - [x] Update `config/settings_manager.py`.
+8: - [ ] Implement core logic:
+9:   - [x] Create `modules/brightness_controller.py`.
+10:   - [x] Create `modules/mode_manager.py`.
+11:   - [x] Update `modules/virtual_mouse.py` with the new mode routing logic.
+12: - [ ] Update HUD & CV Overlays:
+13:   - [ ] Update `modules/visualizer.py` to draw Brightness gesture feedback, graphical progress bars, and update HUD rows.
+14: - [ ] Integrate with Backend & Dashboards:
+15:   - [ ] Update settings APIs and WebSocket payloads in `web_backend.py`.
+16:   - [ ] Update the inline React dashboard template in `web_backend.py` (Top cards, telemetry cards, settings sliders, event log parsing).
+17:   - [ ] Update the desktop UI in `dashboard/pages/virtual_mouse_page.py`.
+18: - [ ] Verification and testing:
+19:   - [ ] Create `scratch/test_brightness.py` validation script.
+20:   - [ ] Add unit tests to `tests/test_virtual_mouse.py`.
+21:   - [ ] Validate and run server.
+22: 
+The above content shows the entire, complete file contents of the requested file.

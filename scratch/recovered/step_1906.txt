@@ -1,0 +1,45 @@
+Created At: 2026-06-12T05:07:15Z
+Completed At: 2026-06-12T05:07:15Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 2592
+Total Bytes: 179512
+Showing lines 2380 to 2470
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+2380:                                         <div className="glass-panel rounded-3xl p-6 border border-glass-border relative overflow-hidden flex flex-col gap-4">
+2381:                                             <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 opacity-20" />
+2382:                                             <div>
+2383:                                                 <h3 className="text-lg font-bold text-white">QWERTY Keyboard Grid</h3>
+2384:                                                 <p className="text-xs text-gray-400">Click keys to trigger typing action. Layout dynamically matches Caps/Shift states.</p>
+2385:                                             </div>
+2386: 
+2387:                                             {/* Responsive Keyboard */}
+2388:                                             <div className="flex flex-col gap-2 max-w-4xl mx-auto w-full bg-zinc-950/40 p-4 rounded-2xl border border-glass-border">
+2389:                                                 {/* Row 1 (Numbers) */}
+2390:                                                 <div className="flex gap-1.5 w-full justify-between">
+2391:                                                     {["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"].map(key => (
+2392:                                                         <button 
+2393:                                                             key={key}
+2394:                                                             onMouseEnter={() => setHoveredKey(key)}
+2395:              
+<truncated 5368 bytes>
+border border-zinc-750'
+2452:                                                         }`}
+2453:                                                     >
+2454:                                                         Caps
+2455:                                                     </button>
+2456:                                                     {["A", "S", "D", "F", "G", "H", "J", "K", "L"].map(key => {
+2457:                                                         const label = isCapsLockActive || isShiftActive ? key.toUpperCase() : key.toLowerCase();
+2458:                                                         return (
+2459:                                                             <button 
+2460:                                                                 key={key}
+2461:                                                                 onMouseEnter={() => setHoveredKey(key)}
+2462:                                                                 onMouseLeave={() => setHoveredKey('None')}
+2463:                                                                 onClick={() => handleWebKeyPress(key)}
+2464:                                                                 className={`flex-1 h-12 rounded-lg text-sm font-semibold transition-all duration-100 ${
+2465:                                                                     pressedKey === key 
+2466:                                                                         ? 'bg-amber-500 text-black scale-95' 
+2467:                                                                         : 'bg-zinc-850 hover:bg-zinc-700 text-white active:scale-95 border border-zinc-750'
+2468:                                                                 }`}
+2469:                                                             >
+2470:                                                                 {label}
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

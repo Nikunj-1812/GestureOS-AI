@@ -1,0 +1,63 @@
+Created At: 2026-06-11T10:49:11Z
+Completed At: 2026-06-11T10:49:12Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 2019
+Total Bytes: 136606
+Showing lines 180 to 240
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+180: 
+181: @app.post("/api/settings/update")
+182: def api_update_settings(updates: dict):
+183:     params = {}
+184:     bool_keys = [
+185:         "show_landmarks", "show_connections", "show_bounding_box",
+186:         "show_finger_states", "show_distance_meter", "show_debug_panel",
+187:         "show_hud", "virtual_mouse_enabled"
+188:     ]
+189:     float_keys = [
+190:         "virtual_mouse_sensitivity", "virtual_mouse_dead_zone", "virtual_mouse_smoothing",
+191:         "virtual_mouse_click_threshold", "virtual_mouse_right_click_threshold",
+192:         "virtual_mouse_scroll_sensitivity", "virtual_mouse_scroll_dead_zone", "virtual_mouse_scroll_smoothing",
+193:         "virtual_mouse_volume_min_distance_px", "virtual_mouse_volume_max_distance_px", "virtual_mouse_volume_smoothing",
+194:         "virtual_mouse_brightness_min_distance_px", "virtual_mouse_brightness_max_distance_px", "virtual_mouse_brightness_smoothing"
+195:     ]
+196:     for key in bool_keys:
+197:         if key in updates:
+198:             params[key] = bool(updates[key])
+199:     for key in float_keys:
+200:         if key in updates:
+201:             params[key] = float(updates[key])
+202:     
+203:     changed = settings_manager.update(**params)
+204:     if changed:
+205:         settings_manager.save()
+206:         settings_manager.apply_to_config(config)
+207:         # Apply to live instance
+208:         virtual_mouse.enabled = config.virtual_mouse_enabled
+209:         virtual_mouse.sensitivity = config.virtual_mouse_sensitivity
+210:         virtual_mouse.dead_zone = config.virtual_mouse_dead_z
+<truncated 560 bytes>
+:         if hasattr(config, 'virtual_mouse_scroll_dead_zone'):
+219:             virtual_mouse.scroll_dead_zone = config.virtual_mouse_scroll_dead_zone
+220:         if hasattr(config, 'virtual_mouse_scroll_smoothing'):
+221:             virtual_mouse.scroll_smoothing = config.virtual_mouse_scroll_smoothing
+222:         if hasattr(config, 'virtual_mouse_volume_min_distance_px') and virtual_mouse._volume_controller:
+223:             virtual_mouse._volume_controller.min_distance = config.virtual_mouse_volume_min_distance_px
+224:         if hasattr(config, 'virtual_mouse_volume_max_distance_px') and virtual_mouse._volume_controller:
+225:             virtual_mouse._volume_controller.max_distance = config.virtual_mouse_volume_max_distance_px
+226:         if hasattr(config, 'virtual_mouse_volume_smoothing') and virtual_mouse._volume_controller:
+227:             virtual_mouse._volume_controller.smoothing = config.virtual_mouse_volume_smoothing
+228:         if hasattr(config, 'virtual_mouse_brightness_min_distance_px') and virtual_mouse._brightness_controller:
+229:             virtual_mouse._brightness_controller.min_distance = config.virtual_mouse_brightness_min_distance_px
+230:         if hasattr(config, 'virtual_mouse_brightness_max_distance_px') and virtual_mouse._brightness_controller:
+231:             virtual_mouse._brightness_controller.max_distance = config.virtual_mouse_brightness_max_distance_px
+232:         if hasattr(config, 'virtual_mouse_brightness_smoothing') and virtual_mouse._brightness_controller:
+233:             virtual_mouse._brightness_controller.smoothing = config.virtual_mouse_brightness_smoothing
+234:     return {"status": "success"}
+235: 
+236: @app.websocket("/ws")
+237: async def websocket_endpoint(websocket: WebSocket):
+238:     await websocket.accept()
+239:     logger.info("WebSocket client connected")
+240:     
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

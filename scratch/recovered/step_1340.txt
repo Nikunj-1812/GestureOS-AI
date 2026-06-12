@@ -1,0 +1,54 @@
+Created At: 2026-06-11T12:58:58Z
+Completed At: 2026-06-11T12:58:58Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 1987
+Total Bytes: 135200
+Showing lines 1935 to 1980
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1935:                                                             />
+1936:                                                         </div>
+1937: 
+1938:                                                         {/* Brightness Smoothing Slider */}
+1939:                                                         <div className="space-y-2">
+1940:                                                             <div className="flex justify-between text-xs">
+1941:                                                                 <span className="text-gray-400">Brightness Smoothing</span>
+1942:                                                                 <span className="text-white font-mono">{virtualMouseBrightnessSmoothing.toFixed(2)}</span>
+1943:                                                             </div>
+1944:                                                             <input 
+1945:                                                                 type="range" 
+1946:                                                                 min="0.05" 
+1947:                                                                 max="0.50" 
+1948:                                                                 step="0.01"
+1949:                                                                 value={virtualMouseBrightnessSmoothing} 
+1950:                                                                 onChange={(e) => {
+1951:                                                                     const val = parseFloat(e.target.value);
+1952:                                                                     setVirtualMouseBrightnessSmoothing(val);
+1953:                                                                     updateSetting('virtual_mouse_brightness_smoothing', val);
+1954:                                                                 }}
+1955:                                                                 className="w-full h-1.5 bg-zinc-700 rounded-lg appearance-none cursor-pointer accent-blue-500" 
+1956:                                                             />
+1957:                                                         </div>
+1958:                                                     </div>
+1959:                                                 </div>
+1960:                                             </div>
+1961:                                         </div>
+1962:                                     </>
+1963:                                 ) : (
+1964:                                     <div className="glass-card rounded-2xl p-8 text-center text-gray-400">
+1965:                                         <p>This page is currently under construction. Please use the Dashboard or Virtual Mouse navigation links.</p>
+1966:                                     </div>
+1967:                                 )}
+1968:                             </div>
+1969:                         </div>
+1970:                     </main>
+1971:                 </div>
+1972:             );
+1973:         }
+1974: 
+1975:         const root = ReactDOM.createRoot(document.getElementById('root'));
+1976:         root.render(<App />);
+1977:     </script>
+1978: </body>
+1979: </html>"""
+1980: 
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

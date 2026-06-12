@@ -1,0 +1,34 @@
+Created At: 2026-06-12T11:10:00Z
+Completed At: 2026-06-12T11:10:01Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 4482
+Total Bytes: 313447
+Showing lines 1810 to 1835
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1810:                                             const menuEl = document.getElementById('drawing-tool-menu');
+1811:                                             if (menuEl) {
+1812:                                                 if (nextGesture === 'menu') {
+1813:                                                     menuEl.classList.remove('hidden');
+1814:                                                 } else if (nextGesture === 'draw' || nextGesture === 'pause') {
+1815:                                                     menuEl.classList.add('hidden');
+1816:                                                 }
+1817:                                             }
+1818:                                         }
+1819:                                     }
+1820:                                     
+1821:                                     // HUD Mode Pill direct DOM updates
+1822:                                     const hudEl = document.getElementById('drawing-hud-pill');
+1823:                                     if (hudEl) {
+1824:                                         const dot = hudEl.querySelector('.hud-dot');
+1825:                                         const label = hudEl.querySelector('.hud-label');
+1826:                                         
+1827:                                         let labelText = '📷 Tracking';
+1828:                                         let dotClass = 'w-2.5 h-2.5 rounded-full bg-gray-450';
+1829:                                         let glowShadow = '0 0 10px rgba(255, 255, 255, 0.05)';
+1830:                                         let borderColor = 'rgba(255, 255, 255, 0.1)';
+1831:                                         
+1832:                                         if (activeGestureRef.current === 'draw') {
+1833:                                             labelText = '✏️ Draw Mode';
+1834:                                             dotClass = 'w-2.5 h-2.5 rounded-full bg-[#a6da95] animate-pulse';
+1835:                                             glowShadow = '0 0 15px rgba(166, 218, 149, 0.5)';
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

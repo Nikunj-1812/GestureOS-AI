@@ -1,0 +1,80 @@
+Created At: 2026-06-12T09:41:59Z
+Completed At: 2026-06-12T09:41:59Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 2763
+Total Bytes: 190961
+Showing lines 1360 to 1430
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1360:                     setTimeout(() => setIsResetting(false), 800);
+1361:                 }
+1362:             };
+1363: 
+1364:             const updateSetting = async (key, val) => {
+1365:                 try {
+1366:                     await fetch('/api/settings/update', {
+1367:                         method: 'POST',
+1368:                         headers: { 'Content-Type': 'application/json' },
+1369:                         body: JSON.stringify({ [key]: val })
+1370:                     });
+1371:                 } catch (err) {
+1372:                     console.error('Error updating switch setting:', err);
+1373:                 }
+1374:             };
+1375: 
+1376:             // Format confidence displays based on gesture states
+1377:             const formatConfidence = () => {
+1378:                 if (gesture === 'None' || gesture === 'unknown' || gesture === 'No Model' || hands === 0) {
+1379:                     return '0%';
+1380:                 }
+1381:                 return `${(confidence * 100).toFixed(0)}%`;
+1382:             };
+1383: 
+1384:             const playKeyboardClickSound = () => {
+1385:                 try {
+1386:                     const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+1387:                     const osc = audioCtx.createOscillator();
+1388:                     const gain = audioCtx.createGain();
+1389:                     osc.type = 'sine';
+1390:                     osc.frequency.setValueAtTime(1000, audioCtx.currentTime);
+1391:                     gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+
+<truncated 111 bytes>
+                osc.connect(gain);
+1394:                     gain.connect(audioCtx.destination);
+1395:                     osc.start();
+1396:                     osc.stop(audioCtx.currentTime + 0.05);
+1397:                 } catch (e) {
+1398:                     console.error("Failed to play audio click:", e);
+1399:                 }
+1400:             };
+1401: 
+1402:             // Virtual Keyboard UI event handlers
+1403:             const handleWebKeyPress = (key) => {
+1404:                 setPressedKey(key);
+1405:                 setTimeout(() => setPressedKey(null), 100);
+1406:                 setLastPressedKey(key);
+1407: 
+1408:                 if (systemTypingEnabled) {
+1409:                     fetch('/api/keyboard/type', {
+1410:                         method: 'POST',
+1411:                         headers: { 'Content-Type': 'application/json' },
+1412:                         body: JSON.stringify({
+1413:                             key: key,
+1414:                             shift: isShiftActive,
+1415:                             caps: isCapsLockActive
+1416:                         })
+1417:                     }).catch(err => console.error('Error posting keypress to backend:', err));
+1418:                 }
+1419: 
+1420:                 if (key === 'Shift') {
+1421:                     setIsShiftActive(!isShiftActive);
+1422:                 } else if (key === 'Caps Lock') {
+1423:                     setIsCapsLockActive(!isCapsLockActive);
+1424:                 } else if (key === 'Backspace') {
+1425:                     setTypedText(prev => prev.slice(0, -1));
+1426:                 } else if (key === 'Space') {
+1427:                     setTypedText(prev => prev + ' ');
+1428:                     autoReleaseShift();
+1429:                 } else if (key === 'Tab') {
+1430:                     setTypedText(prev => prev + '    ');
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

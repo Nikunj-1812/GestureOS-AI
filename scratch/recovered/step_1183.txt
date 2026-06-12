@@ -1,0 +1,38 @@
+Created At: 2026-06-11T11:24:08Z
+Completed At: 2026-06-11T11:24:09Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 1421
+Total Bytes: 93677
+Showing lines 1300 to 1340
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1300:                                                 <div className="flex justify-between text-xs">
+1301:                                                     <span className="text-gray-400">Scroll Sensitivity</span>
+1302:                                                     <span className="text-white font-mono">{virtualMouseScrollSensitivity.toFixed(1)}x</span>
+1303:                                                 </div>
+1304:                                                 <input type="range" min="1.0" max="10.0" step="0.5" value={virtualMouseScrollSensitivity} onChange={e => { const val = parseFloat(e.target.value); setVirtualMouseScrollSensitivity(val); updateSetting('virtual_mouse_scroll_sensitivity', val); }} className="w-full h-1.5 bg-zinc-700 rounded-lg appearance-none cursor-pointer accent-blue-500" />
+1305:                                             </div>
+1306:                                             <div className="space-y-1">
+1307:                                                 <div className="flex justify-between text-xs">
+1308:                                                     <span className="text-gray-400">Scroll Dead Zone</span>
+1309:                                                     <span className="text-white font-mono">{virtualMouseScrollDeadZone.toFixed(4)}</span>
+1310:                                                 </div>
+1311:                                                 <input type="range" min="0.001" max="0.010" step="0.0005" value={virtualMouseScrollDeadZone} onChange={e => { const val = parseFloat(e.target.value); setVir
+<truncated 1614 bytes>
+</h3>
+1325:                                             <div className="space-y-1">
+1326:                                                 <div className="flex justify-between text-xs">
+1327:                                                     <span className="text-gray-400">Volume Cooldown</span>
+1328:                                                     <span className="text-white font-mono">{volumeCooldownMs} ms</span>
+1329:                                                 </div>
+1330:                                                 <input type="range" min="50" max="500" step="25" value={volumeCooldownMs} onChange={e => { const val = parseInt(e.target.value); setVolumeCooldownMs(val); updateSetting('volume_cooldown_ms', val); }} className="w-full h-1.5 bg-zinc-700 rounded-lg appearance-none cursor-pointer accent-blue-500" />
+1331:                                             </div>
+1332:                                             <div className="space-y-1">
+1333:                                                 <div className="flex justify-between text-xs">
+1334:                                                     <span className="text-gray-400">Brightness Cooldown</span>
+1335:                                                     <span className="text-white font-mono">{brightnessCooldownMs} ms</span>
+1336:                                                 </div>
+1337:                                                 <input type="range" min="50" max="500" step="25" value={brightnessCooldownMs} onChange={e => { const val = parseInt(e.target.value); setBrightnessCooldownMs(val); updateSetting('brightness_cooldown_ms', val); }} className="w-full h-1.5 bg-zinc-700 rounded-lg appearance-none cursor-pointer accent-blue-500" />
+1338:                                             </div>
+1339:                                         </div>
+1340: 
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

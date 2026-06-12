@@ -1,0 +1,44 @@
+Created At: 2026-06-11T10:27:17Z
+Completed At: 2026-06-11T10:27:17Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 1772
+Total Bytes: 117640
+Showing lines 1530 to 1610
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1530:                                                         <div className="flex justify-between items-center text-sm border-b border-glass-border pb-2">
+1531:                                                             <span className="text-gray-400">Scroll Speed</span>
+1532:                                                             <span className="font-mono font-bold text-white">
+1533:                                                                 {scrollSpeed.toFixed(2)}
+1534:                                                             </span>
+1535:                                                         </div>
+1536:                                                         <div className="flex justify-between items-center text-sm border-b border-glass-border pb-2">
+1537:                                                             <span className="text-gray-400">Scroll Counter</span>
+1538:                                                             <span className="font-mono font-bold text-teal-400">
+1539:                                                                 {scrollCounter}
+1540:                                                             </span>
+1541:                                                         </div>
+1542: 
+1543:                                                         {/* Phase 3.4 Volume Section */}
+1544:                                                         <div className="text-[10px] uppercase tracking-widest text-gray-600 font-semibold pt-1">Volume Control (Thumb + Pinky Up)</div>
+1545: 
+1546:                               
+<truncated 4708 bytes>
+       <div className="w-11 h-6 bg-zinc-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+1594:                                                             </div>
+1595:                                                         </label>
+1596: 
+1597:                                                         {/* Sensitivity Slider */}
+1598:                                                         <div className="space-y-2">
+1599:                                                             <div className="flex justify-between text-xs">
+1600:                                                                 <span className="text-gray-400">Sensitivity</span>
+1601:                                                                 <span className="text-white font-mono">{virtualMouseSensitivity.toFixed(2)}x</span>
+1602:                                                             </div>
+1603:                                                             <input 
+1604:                                                                 type="range" 
+1605:                                                                 min="0.5" 
+1606:                                                                 max="3.0" 
+1607:                                                                 step="0.1"
+1608:                                                                 value={virtualMouseSensitivity} 
+1609:                                                                 onChange={(e) => {
+1610:                                                                     const val = parseFloat(e.target.value);
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

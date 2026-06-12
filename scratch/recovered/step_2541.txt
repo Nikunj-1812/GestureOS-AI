@@ -1,0 +1,67 @@
+Created At: 2026-06-12T09:41:55Z
+Completed At: 2026-06-12T09:41:55Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 2763
+Total Bytes: 190961
+Showing lines 870 to 950
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+870:             
+871:             // Phase 3.5 — Drag & Drop Control
+872:             const [dragStatus, setDragStatus] = useState('IDLE');
+873:             const [dragDuration, setDragDuration] = useState(0.0);
+874:             const [dragCounter, setDragCounter] = useState(0);
+875:             const [virtualMouseDragThresholdMs, setVirtualMouseDragThresholdMs] = useState(200.0);
+876:             const prevDragStatusRef = useRef('IDLE');
+877: 
+878:             // Virtual Keyboard UI States
+879:             const [hoveredKey, setHoveredKey] = useState('None');
+880:             const [lastPressedKey, setLastPressedKey] = useState('None');
+881:             const [typedText, setTypedText] = useState('');
+882:             const [isShiftActive, setIsShiftActive] = useState(false);
+883:             const [isCapsLockActive, setIsCapsLockActive] = useState(false);
+884:             const [pressedKey, setPressedKey] = useState(null);
+885:             const [hoverDuration, setHoverDuration] = useState(0.0);
+886:             const [enableKeyboardSound, setEnableKeyboardSound] = useState(true);
+887:             const [systemTypingEnabled, setSystemTypingEnabled] = useState(false);
+888:             
+889:             const smoothXRef = useRef(null);
+890:             const smoothYRef = useRef(null);
+891:             const candidateKeyRef = useRef(null);
+892:             const candidateStartTimeRef = useRef(null);
+893:             const lastHoverDetectTimeRef = useRef(null);
+894:             const hoveredKeyRef = useRef('None');
+895:             const pinchActiveRef = useRef(f
+<truncated 1248 bytes>
+               const ws = new WebSocket(wsUrl);
+920:                     socketRef.current = ws;
+921: 
+922:                     ws.onopen = () => {
+923:                         setSocketStatus('connected');
+924:                         console.log('WebSocket connection established');
+925:                     };
+926: 
+927:                     ws.onmessage = (event) => {
+928:                         try {
+929:                             const data = JSON.parse(event.data);
+930:                             setFps(data.fps);
+931:                             setHands(data.hands);
+932:                             setGesture(data.gesture);
+933:                             setConfidence(data.confidence);
+934:                             setCameraStatus(data.camera_status);
+935:                             setFrame(data.frame);
+936:                             setCursorX(data.cursor_x || 0);
+937:                             setCursorY(data.cursor_y || 0);
+938:                             setTrackingState(data.tracking_state || 'Disabled');
+939:                             setPinchDistance(data.pinch_distance || 0.0);
+940:                             setClickStatus(data.click_status || 'OPEN');
+941:                             setClickCounter(data.click_counter || 0);
+942:                             setCurrentAction(data.current_action || 'None');
+943: 
+944:                             // Key Hover Detection for Web Keyboard
+945:                             let detectedKey = null;
+946:                             const wsNow = Date.now();
+947: 
+948:                             if (data.index_tip_x !== undefined && data.index_tip_y !== undefined && data.index_tip_x !== null && data.index_tip_y !== null) {
+949:                                 const rawX = data.index_tip_x;
+950:                                 const rawY = data.index_tip_y;
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

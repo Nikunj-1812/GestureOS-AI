@@ -1,0 +1,76 @@
+Created At: 2026-06-11T10:50:16Z
+Completed At: 2026-06-11T10:50:16Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 2053
+Total Bytes: 138910
+Showing lines 418 to 500
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+418:             
+419:             # FPS Calculation
+420:             now = time.perf_counter()
+421:             delta = max(now - last_fps_tick, 1e-6)
+422:             instant_fps = 1.0 / delta
+423:             fps_smooth = instant_fps if fps_smooth == 0 else (fps_smooth * 0.85 + instant_fps * 0.15)
+424:             last_fps_tick = now
+425:             
+426:             # Send live telemetry + frame over WebSocket
+427:             payload = {
+428:                 "fps": float(round(fps_smooth, 1)),
+429:                 "hands": len(detected_hands),
+430:                 "gesture": gesture_label,
+431:                 "confidence": float(round(gesture_confidence, 3)),
+432:                 "camera_status": "Connected",
+433:                 "frame": f"data:image/jpeg;base64,{frame_b64}",
+434:                 "cursor_x": cursor_x,
+435:                 "cursor_y": cursor_y,
+436:                 "tracking_state": tracking_state,
+437:                 "pinch_distance": vm_result.get("pinch_distance", 0.0) if vm_result else 0.0,
+438:                 "click_status": vm_result.get("click_status", "OPEN") if vm_result else "OPEN",
+439:                 "click_counter": vm_result.get("click_counter", 0) if vm_result else 0,
+440:                 "current_action": vm_result.get("current_action", "None") if vm_result else "None",
+441:                 # Phase 3.3 — Right Click telemetry
+442:                 "right_click_status": vm_result.get("right_click_status", "OPEN") if vm_result else "OPEN",
+443:                 "right_click_counter": vm_result.get("right_click_counter", 0)
+<truncated 1500 bytes>
+_status": vm_result.get("drag_status", "INACTIVE") if vm_result else "INACTIVE",
+461:                 "drag_counter": vm_result.get("drag_counter", 0) if vm_result else 0,
+462:                 "drag_duration": vm_result.get("drag_duration", 0.0) if vm_result else 0.0,
+463:                 # Resource metrics
+464:                 "cpu_usage": float(cpu_usage),
+465:                 "ram_usage": float(ram_usage),
+466:             }
+467:             
+468:             t_send_start = time.perf_counter()
+469:             await websocket.send_json(payload)
+470:             t_send = time.perf_counter() - t_send_start
+471:             
+472:             t_total = time.perf_counter() - t0
+473:             
+474:             # Maintain roughly target frame rate
+475:             elapsed = time.perf_counter() - loop_start
+476:             interval = max(0.001, 1.0 / max(config.camera_fps, 1) - elapsed)
+477:             await asyncio.sleep(interval)
+478:             
+479:     except WebSocketDisconnect:
+480:         logger.info("WebSocket client disconnected")
+481:     except Exception as e:
+482:         logger.error(f"Error in websocket loop: {e}")
+483: 
+484: HTML_CONTENT = """<!DOCTYPE html>
+485: <html lang="en">
+486: <head>
+487:     <meta charset="UTF-8">
+488:     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+489:     <title>GestureOS AI - Web Dashboard</title>
+490:     <!-- Tailwind CSS CDN -->
+491:     <script src="https://cdn.tailwindcss.com"></script>
+492:     <script>
+493:         tailwind.config = {
+494:             theme: {
+495:                 extend: {
+496:                     colors: {
+497:                         background: "#080710",
+498:                         glass: {
+499:                             light: "rgba(255, 255, 255, 0.05)",
+500:                             border: "rgba(255, 255, 255, 0.06)",
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

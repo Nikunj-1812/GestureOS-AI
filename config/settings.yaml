@@ -9,8 +9,8 @@ app:
 
 camera:
   index: 0          # 0 = laptop built-in | 1 = external webcam | 2 = other external
-  width: 1280
-  height: 720
+  width: 640
+  height: 360
   fps: 30
   flip_horizontal: true
 
@@ -51,4 +51,5 @@ virtual_mouse:
   brightness_min_distance_px: 30.0  # Phase 3.5: distance mapping for 0% brightness
   brightness_max_distance_px: 250.0 # Phase 3.5: distance mapping for 100% brightness
   brightness_smoothing: 0.15       # Phase 3.5: EMA alpha for brightness smoothing
+  drag_threshold_ms: 200.0         # Phase 3.5: Drag & Drop pinch hold duration threshold in ms
 

@@ -1,0 +1,24 @@
+Created At: 2026-06-12T09:58:07Z
+Completed At: 2026-06-12T09:58:07Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 3021
+Total Bytes: 207053
+Showing lines 2060 to 2075
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+2060:                                                     </div>
+2061: 
+2062:                                                     {/* Centered Camera Stream */}
+2063:                                                     <div className="flex-1 flex items-center justify-center bg-black/40 rounded-xl overflow-hidden border border-glass-border relative mt-3">
+2064:                                                         {cameraStatus === 'Connected' && frame ? (
+2065:                                                             <img 
+2066:                                                                 src={frame} 
+2067:                                                                 alt="Camera Feed" 
+2068:                                                                 className="w-full h-full object-contain rounded-xl"
+2069:                                                             />
+2070:                                                         ) : (
+2071:                                                             <div className="flex flex-col items-center justify-center p-8 text-center max-w-sm">
+2072:                                                                 <div className="w-16 h-16 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-gray-500 mb-4 animate-pulse">
+2073:                                                                     <VideoOffIcon className="w-8 h-8" />
+2074:                                                                 </div>
+2075:                                                                 <h4 className="text-white font-medium mb-1">Camera Stream Inactive</h4>
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

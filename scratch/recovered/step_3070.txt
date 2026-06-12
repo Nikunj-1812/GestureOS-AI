@@ -1,0 +1,34 @@
+Created At: 2026-06-12T10:16:18Z
+Completed At: 2026-06-12T10:16:18Z
+File Path: `file:///C:/Users/nikun/.gemini/antigravity/brain/f71acb1b-ab5a-4de9-85a5-1a298f3c313a/.system_generated/tasks/task-2640.log`
+Total Lines: 42
+Total Bytes: 7910
+Showing lines 1 to 42
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1: C:\Users\nikun\OneDrive\Desktop\GestureOS-AI-main\web_backend.py:555: SyntaxWarning: invalid escape sequence '\w'
+2:   HTML_CONTENT = """<!DOCTYPE html>
+3: 2026-06-12 15:46:04.896 | INFO     | modules.gesture_engine:_load_model:106 - Loaded gesture model: models\weights\gesture_classifier_v1.onnx
+4: 2026-06-12 15:46:04.896 | INFO     | modules.gesture_engine:_load_model:112 - Loaded 4 gesture labels.
+5: 2026-06-12 15:46:04.980 | INFO     | modules.volume_controller:_initialize_pycaw:56 - VolumeController initialized. Synced with system volume: 97%
+6: 2026-06-12 15:46:05.104 | INFO     | modules.brightness_controller:_initialize_sbc:45 - BrightnessController initialized. Synced with system brightness: 48%
+7: C:\Users\nikun\OneDrive\Desktop\GestureOS-AI-main\web_backend.py:130: DeprecationWarning: 
+8:         on_event is deprecated, use lifespan event handlers instead.
+9: 
+10:         Read more about it in the
+11:         [FastAPI docs for Lifespan Events](https://fastapi.tiangolo.com/advanced/events/).
+12:         
+13:   @app.on_event("startup")
+14: C:\Users\nikun\OneDrive\Desktop\GestureOS-AI-main\web_backend.py:135: DeprecationWarning: 
+15:         on_event is deprecated, use lifespan event handlers instead.
+16: 
+17:         Read more about it in the
+18:         [FastAPI docs for Lifespan Events](https://fastapi.tiangolo.com/advanced/events/).
+19:         
+20:   @app.on_event("shutdown")
+21: C:\Users\nikun\OneDrive\Desktop\GestureOS-AI-main\web_backend.py:555: SyntaxWarning: invalid escape sequen
+<truncated 4559 bytes>
+0.1:8000/static/babel.min.js:3:474430)\n    at t.parseExprOps (http://127.0.0.1:8000/static/babel.min.js:3:474540)\n    at t.parseMaybeConditional (http://127.0.0.1:8000/static/babel.min.js:3:474010)\n    at t.parseMaybeAssign (http://127.0.0.1:8000/static/babel.min.js:3:472916)\n    at t.parseMaybeAssign (http://127.0.0.1:8000/static/babel.min.js:3:394340)\n    at t.parseFunctionBody (http://127.0.0.1:8000/static/babel.min.js:3:499479)\n    at http://127.0.0.1:8000/static/babel.min.js:3:378991\n    at t.forwardNoArrowParamsConversionAt (http://127.0.0.1:8000/static/babel.min.js:3:383210)\n    at t.parseFunctionBody (http://127.0.0.1:8000/static/babel.min.js:3:378908)\n    at t.parseArrowExpression (http://127.0.0.1:8000/static/babel.min.js:3:498982)\n    at t.parseExprAtom (http://127.0.0.1:8000/static/babel.min.js:3:485575)\n    at t.parseExprAtom (http://127.0.0.1:8000/static/babel.min.js:3:354089)\n    at t.parseExprSubscripts (http://127.0.0.1:8000/static/babel.min.js:3:478402)\n    at t.parseUpdate (http://127.0.0.1:8000/static/babel.min.js:3:478023)\n    at t.parseMaybeUnary (http://127.0.0.1:8000/static/babel.min.js:3:477637)\n    at t.parseMaybeUnaryOrPrivate (http://127.0.0.1:8000/static/babel.min.js:3:474430)\n    at t.parseExprOps (http://127.0.0.1:8000/static/babel.min.js:3:474540)\n    at t.parseMaybeConditional (http://127.0.0.1:8000/static/babel.min.js:3:474010)\n    at t.parseMaybeAssign (http://127.0.0.1:8000/static/babel.min.js:3:472916)\n    at t.parseMaybeAssign (http://127.0.0.1:8000/static/babel.min.js:3:394340)\n    at http://127.0.0.1:8000/static/babel.min.js:3:472496\n    at t.allowInAnd (http://127.0.0.1:8000/static/babel.min.js:3:505708)\n    at t.parseMaybeAssignAllowIn (http://127.0.0.1:8000/static/babel.min.js:3:472465)\n    at t.parseMaybeAssignAllowInOrVoidPattern (http://127.0.0.1:8000/static/babel.min.js:3:507307)"
+40: }
+41: INFO:     127.0.0.1:58039 - "POST /api/log_error HTTP/1.1" 200 OK
+42: 
+The above content shows the entire, complete file contents of the requested file.

@@ -1,0 +1,35 @@
+Created At: 2026-06-12T05:19:14Z
+Completed At: 2026-06-12T05:19:14Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 2637
+Total Bytes: 183729
+Showing lines 930 to 956
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+930:                                 }
+931:                             } else {
+932:                                 smoothXRef.current = null;
+933:                                 smoothYRef.current = null;
+934:                             }
+935: 
+936:                             // Hover Delay (150ms) and Debouncing (100ms)
+937:                             if (detectedKey) {
+938:                                 lastHoverDetectTimeRef.current = wsNow;
+939:                                 if (detectedKey === candidateKeyRef.current) {
+940:                                     const elapsed = (wsNow - candidateStartTimeRef.current) / 1000;
+941:                                     setHoverDuration(elapsed);
+942:                                     if (elapsed >= 0.150) {
+943:                                         setHoveredKey(detectedKey);
+944:                                     }
+945:                                 } else {
+946:                                     candidateKeyRef.current = detectedKey;
+947:                                     candidateStartTimeRef.current = wsNow;
+948:                                     setHoverDuration(0.0);
+949:                                 }
+950:                             } else {
+951:                                 let debounceElapsed = 0;
+952:                                 if (lastHoverDetectTimeRef.current) {
+953:                                     debounceElapsed = (wsNow - lastHoverDetectTimeRef.current) / 1000;
+954:                                 }
+955:                                 if (debounceElapsed >= 0.100 || !lastHoverDetectTimeRef.current) {
+956:                                     candidateKeyRef.current = null;
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

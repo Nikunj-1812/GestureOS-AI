@@ -1,0 +1,33 @@
+Created At: 2026-06-12T10:06:03Z
+Completed At: 2026-06-12T10:06:03Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 3040
+Total Bytes: 208293
+Showing lines 311 to 335
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+311:         return {"status": "error", "message": str(e)}
+312: 
+313: @app.post("/api/keyboard/suggest")
+314: def api_keyboard_suggest(payload: dict):
+315:     text = payload.get("text", "")
+316:     curr_word = word_predictor.get_current_word(text)
+317:     suggestions = word_predictor.get_suggestions(curr_word)
+318:     return {
+319:         "status": "success",
+320:         "current_word": curr_word,
+321:         "suggestions": suggestions
+322:     }
+323: 
+324: @app.websocket("/ws")
+325: async def websocket_endpoint(websocket: WebSocket):
+326:     await websocket.accept()
+327:     logger.info("WebSocket client connected")
+328:     
+329:     last_fps_tick = time.perf_counter()
+330:     fps_smooth = 0.0
+331:     last_frame_id = -1
+332:     last_gesture = "unknown"
+333:     
+334:     try:
+335:         while True:
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

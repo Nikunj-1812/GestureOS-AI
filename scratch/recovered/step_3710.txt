@@ -1,0 +1,44 @@
+Created At: 2026-06-12T11:09:38Z
+Completed At: 2026-06-12T11:09:38Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 4482
+Total Bytes: 313447
+Showing lines 4301 to 4400
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+4301:                                                                         🖥️ Fullscreen
+4302:                                                                     </button>
+4303:                                                                     <button 
+4304:                                                                         onClick={() => setBackgroundMode(prev => prev === 'camera' ? 'whiteboard' : 'camera')}
+4305:                                                                         className="flex-1 py-2 px-3 rounded-xl bg-blue-600/20 hover:bg-blue-600/30 border border-blue-500/30 text-blue-200 font-semibold text-xs active:scale-95 transition-all"
+4306:                                                                     >
+4307:                                                                         {backgroundMode === 'camera' ? '✏️ Whiteboard' : '📷 Camera'}
+4308:                                                                     </button>
+4309:                                                                 </div>
+4310:                                                             </div>
+4311: 
+4312:                                                             {/* Jitter Reduction Filter */}
+4313:                                                             <div className="space-y-2">
+4314:                                                                 <div className="flex justify-between text-xs text-gray-400">
+4315:                                                                     <span>Jitter Filter</span>
+4316:                   
+<truncated 6612 bytes>
+assName={`h-8 rounded-lg border-2 transition-all ${
+4383:                                                                                 webBrushColor === item.color ? 'border-white scale-110' : 'border-transparent hover:scale-105'
+4384:                                                                             }`}
+4385:                                                                             title={item.name}
+4386:                                                                         />
+4387:                                                                     ))}
+4388:                                                                 </div>
+4389:                                                             </div>
+4390: 
+4391:                                                             {/* Toolbar buttons */}
+4392:                                                             <div className="grid grid-cols-2 gap-2">
+4393:                                                                 <button 
+4394:                                                                     onClick={handleWebUndo}
+4395:                                                                     disabled={undoStack.length === 0}
+4396:                                                                     className={`py-2 px-3 rounded-xl font-semibold text-xs border transition-all ${
+4397:                                                                         undoStack.length === 0
+4398:                                                                             ? 'bg-zinc-850/40 border-zinc-900/10 text-zinc-650 cursor-not-allowed'
+4399:                                                                             : 'bg-zinc-800 hover:bg-zinc-700 border-zinc-700 text-white active:scale-95'
+4400:                                                                     }`}
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

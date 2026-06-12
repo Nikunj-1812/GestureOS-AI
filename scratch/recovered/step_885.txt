@@ -1,0 +1,39 @@
+Created At: 2026-06-11T10:49:39Z
+Completed At: 2026-06-11T10:49:39Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 2053
+Total Bytes: 138910
+Showing lines 1450 to 1530
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1450:                                                             disabled={cameraStatus !== 'Connected' || isCameraLoading}
+1451:                                                             className="w-full flex items-center justify-center gap-2.5 px-4 py-3 bg-white/5 hover:bg-red-500/10 hover:text-red-400 border border-glass-border hover:border-red-500/25 disabled:opacity-50 disabled:hover:bg-white/5 disabled:hover:text-gray-400 text-gray-300 font-semibold rounded-xl transition-all duration-300"
+1452:                                                         >
+1453:                                                             <SquareIcon className="w-4 h-4" />
+1454:                                                             Stop Camera
+1455:                                                         </button>
+1456: 
+1457:                                                         <button
+1458:                                                             onClick={handleResetTracking}
+1459:                                                             disabled={isResetting}
+1460:                                                             className="w-full flex items-center justify-center gap-2.5 px-4 py-3 bg-white/5 hover:bg-white/10 border border-glass-border disabled:opacity-50 text-gray-300 font-semibold rounded-xl transition-all duration-300"
+1461:                                                         >
+1462:                                                             <RotateCcwIcon className={`w-4 h-4 ${isResetting ? 'animate-spin' : ''}`} />
+1463:               
+<truncated 5416 bytes>
+ay-600 flex items-center justify-center h-full">
+1516:                                                                 <span>Waiting for events...</span>
+1517:                                                             </div>
+1518:                                                         ) : (
+1519:                                                             <div className="space-y-2.5">
+1520:                                                                 {events.map((evt) => (
+1521:                                                                     <div key={evt.id} className="border-b border-white/5 pb-1.5 last:border-0 last:pb-0">
+1522:                                                                         <div className="flex items-center justify-between text-gray-500 font-semibold mb-0.5">
+1523:                                                                             <span>[{evt.timestamp}]</span>
+1524:                                                                             {evt.gesture !== 'System' && <span className="text-accent-green">{(evt.confidence * 100).toFixed(0)}%</span>}
+1525:                                                                         </div>
+1526:                                                                         <div className="text-white">
+1527:                                                                             {evt.gesture === 'System' ? (
+1528:                                                                                 <span>Event: <span className="text-accent-purple font-bold">System Log</span></span>
+1529:                                                                             ) : (
+1530:                                                                                 <span>Gesture: <span className="capitalize text-accent-blue font-bold">{evt.gesture}</span></span>
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

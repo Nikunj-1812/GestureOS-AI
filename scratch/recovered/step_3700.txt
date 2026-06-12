@@ -1,0 +1,80 @@
+Created At: 2026-06-12T11:09:20Z
+Completed At: 2026-06-12T11:09:20Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 4482
+Total Bytes: 313447
+Showing lines 1220 to 1290
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1220:                 resizeObserver.observe(container);
+1221:                 return () => {
+1222:                     resizeObserver.disconnect();
+1223:                 };
+1224:             }, [activeMenu, fullScreenMode]);
+1225: 
+1226:             // Redraw everything on canvas size change
+1227:             useEffect(() => {
+1228:                 if (activeMenu === 'drawing') {
+1229:                     renderAll();
+1230:                 }
+1231:             }, [canvasWidth, canvasHeight, activeMenu]);
+1232: 
+1233:             // Bezier quadratic interpolation for drawing smooth curves
+1234:             const drawStrokeSegment = (ctx, points, color, size) => {
+1235:                 if (!points || points.length < 1) return;
+1236:                 
+1237:                 ctx.beginPath();
+1238:                 ctx.strokeStyle = color;
+1239:                 ctx.lineWidth = size;
+1240:                 ctx.lineCap = 'round';
+1241:                 ctx.lineJoin = 'round';
+1242:                 
+1243:                 if (points.length === 1) {
+1244:                     const pt = points[0];
+1245:                     ctx.arc(pt.x, pt.y, size / 2, 0, 2 * Math.PI);
+1246:                     ctx.fillStyle = color;
+1247:                     ctx.fill();
+1248:                 } else if (points.length === 2) {
+1249:                     ctx.moveTo(points[0].x, points[0].y);
+1250:                     ctx.lineTo(points[1].x, points[1].y);
+1251:                     ctx.stroke();
+1252:                 } else {
+1253:                     ctx.moveTo(points[0].x, points[0].y);
+1254:    
+<truncated 82 bytes>
+           const xc = (points[i].x + points[i + 1].x) / 2;
+1256:                         const yc = (points[i].y + points[i + 1].y) / 2;
+1257:                         ctx.quadraticCurveTo(points[i].x, points[i].y, xc, yc);
+1258:                     }
+1259:                     ctx.lineTo(points[points.length - 1].x, points[points.length - 1].y);
+1260:                     ctx.stroke();
+1261:                 }
+1262:             };
+1263: 
+1264:             // Draw smooth hover trail
+1265:             const drawHoverTrail = (ctx, trail) => {
+1266:                 for (let i = 1; i < trail.length; i++) {
+1267:                     ctx.beginPath();
+1268:                     ctx.moveTo(trail[i - 1].x, trail[i - 1].y);
+1269:                     ctx.lineTo(trail[i].x, trail[i].y);
+1270:                     const opacity = (i / trail.length) * 0.4;
+1271:                     ctx.strokeStyle = `rgba(138, 180, 244, ${opacity})`;
+1272:                     ctx.lineWidth = 4;
+1273:                     ctx.stroke();
+1274:                 }
+1275:             };
+1276: 
+1277:             // Unified Render Function
+1278:             const renderAll = () => {
+1279:                 const canvas = document.getElementById('drawing-canvas');
+1280:                 if (!canvas) return;
+1281:                 const ctx = canvas.getContext('2d');
+1282:                 ctx.clearRect(0, 0, canvas.width, canvas.height);
+1283:                 
+1284:                 // 1. Draw finalized strokes
+1285:                 undoStackRef.current.forEach(stroke => {
+1286:                     drawStrokeSegment(ctx, stroke.points, stroke.color, stroke.size);
+1287:                 });
+1288:                 
+1289:                 // 2. Draw active stroke
+1290:                 if (isDrawingStateRef.current && currentStrokeRef.current && currentStrokeRef.current.points.length > 0) {
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

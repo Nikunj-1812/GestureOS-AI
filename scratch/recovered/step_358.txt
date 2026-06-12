@@ -1,0 +1,45 @@
+Created At: 2026-06-11T10:09:02Z
+Completed At: 2026-06-11T10:09:02Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 1639
+Total Bytes: 106428
+Showing lines 1481 to 1520
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1481:                                                                 {scrollDirection === 'UP' ? '▲ UP' : scrollDirection === 'DOWN' ? '▼ DOWN' : '—'}
+1482:                                                             </span>
+1483:                                                         </div>
+1484:                                                         <div className="flex justify-between items-center text-sm border-b border-glass-border pb-2">
+1485:                                                             <span className="text-gray-400">Scroll Speed</span>
+1486:                                                             <span className="font-mono font-bold text-white">
+1487:                                                                 {scrollSpeed.toFixed(2)}
+1488:                                                             </span>
+1489:                                                         </div>
+1490:                                                         <div className="flex justify-between items-center text-sm">
+1491:                                                             <span className="text-gray-400">Scroll Counter</span>
+1492:                                                             <span className="font-mono font-bold text-teal-400">
+1493:                                                                 {scrollCounter}
+1494:                                                             </span>
+1495:                                                         </div>
+1496:                                                     </div>
+149
+<truncated 483 bytes>
+ssName="w-4 h-4 text-accent-purple" />
+1503:                                                         Tracking Settings
+1504:                                                     </h3>
+1505:                                                     <p className="text-xs text-gray-500 mt-1 mb-4">Configure virtual mouse parameters.</p>
+1506: 
+1507:                                                     <div className="space-y-5">
+1508:                                                         {/* Enable Toggle Switch */}
+1509:                                                         <label className="flex items-center justify-between cursor-pointer group">
+1510:                                                             <span className="text-sm font-semibold text-gray-300 group-hover:text-white">Enable Virtual Mouse</span>
+1511:                                                             <div className="relative">
+1512:                                                                 <input 
+1513:                                                                     type="checkbox" 
+1514:                                                                     checked={virtualMouseEnabled} 
+1515:                                                                     onChange={(e) => {
+1516:                                                                         const checked = e.target.checked;
+1517:                                                                         setVirtualMouseEnabled(checked);
+1518:                                                                         updateSetting('virtual_mouse_enabled', checked);
+1519:                                                                         logSystemEvent(`Virtual Mouse set to: ${checked ? 'Enabled' : 'Disabled'}`);
+1520:                                                                     }}
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

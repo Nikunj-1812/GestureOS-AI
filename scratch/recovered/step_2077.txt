@@ -1,0 +1,32 @@
+Created At: 2026-06-12T05:19:16Z
+Completed At: 2026-06-12T05:19:16Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 2637
+Total Bytes: 183729
+Showing lines 957 to 980
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+957:                                     candidateStartTimeRef.current = null;
+958:                                     setHoverDuration(0.0);
+959:                                     setHoveredKey('None');
+960:                                 }
+961:                             }
+962: 
+963:                             // Phase 3.3 — Right Click
+964:                             const prevRC = prevRightClickStatusRef.current;
+965:                             const newRC = data.right_click_status || 'OPEN';
+966:                             setRightClickStatus(newRC);
+967:                             setRightClickCounter(data.right_click_counter || 0);
+968:                             setRightPinchDistance(data.right_pinch_distance || 0.0);
+969:                             // Log right-click event on transition into RIGHT_CLICK
+970:                             if (newRC === 'RIGHT_CLICK' && prevRC !== 'RIGHT_CLICK') {
+971:                                 const timeString = new Date().toLocaleTimeString();
+972:                                 eventIdCounterRef.current += 1;
+973:                                 const rcEvent = {
+974:                                     id: `${Date.now()}-${eventIdCounterRef.current}`,
+975:                                     timestamp: timeString,
+976:                                     gesture: 'Right Click',
+977:                                     confidence: 1.0,
+978:                                     action: `Right Click triggered | gesture=thumb_middle_pinch | dist=${(data.right_pinch_distance || 0).toFixed(4)}`
+979:                                 };
+980:                                 setEvents(prev => [rcEvent, ...prev].slice(0, 50));
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

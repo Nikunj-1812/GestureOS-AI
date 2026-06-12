@@ -18,8 +18,8 @@ class AppConfig:
 
     # Camera
     camera_index: int = 0
-    camera_width: int = 1280
-    camera_height: int = 720
+    camera_width: int = 640
+    camera_height: int = 360
     camera_fps: int = 30
     flip_horizontal: bool = True
 
@@ -62,6 +62,12 @@ class AppConfig:
     virtual_mouse_brightness_min_distance_px: float = 30.0 # Phase 3.5: distance for 0% brightness
     virtual_mouse_brightness_max_distance_px: float = 250.0 # Phase 3.5: distance for 100% brightness
     virtual_mouse_brightness_smoothing: float = 0.15       # Phase 3.5: EMA alpha for brightness smoothing
+    virtual_mouse_drag_threshold_ms: float = 200.0         # Phase 3.5: Drag & Drop pinch hold duration threshold in ms
+
+    # Keyboard (Phase 4.5)
+    keyboard_sound_enabled: bool = True
+    keyboard_system_typing_enabled: bool = False
+    keyboard_autocomplete_enabled: bool = True
 
     # Logging
     log_level: str = "INFO"
@@ -83,6 +89,7 @@ class AppConfig:
         ui = raw.get("ui", {})
         log = raw.get("logging", {})
         vm = raw.get("virtual_mouse", {})
+        kb = raw.get("virtual_keyboard", {})
 
         return cls(
             app_name=app.get("name", cls.app_name),
@@ -125,6 +132,10 @@ class AppConfig:
             virtual_mouse_brightness_min_distance_px=float(vm.get("brightness_min_distance_px", cls.virtual_mouse_brightness_min_distance_px)),
             virtual_mouse_brightness_max_distance_px=float(vm.get("brightness_max_distance_px", cls.virtual_mouse_brightness_max_distance_px)),
             virtual_mouse_brightness_smoothing=float(vm.get("brightness_smoothing", cls.virtual_mouse_brightness_smoothing)),
+            virtual_mouse_drag_threshold_ms=float(vm.get("drag_threshold_ms", cls.virtual_mouse_drag_threshold_ms)),
+            keyboard_sound_enabled=bool(kb.get("sound_enabled", cls.keyboard_sound_enabled)),
+            keyboard_system_typing_enabled=bool(kb.get("system_typing_enabled", cls.keyboard_system_typing_enabled)),
+            keyboard_autocomplete_enabled=bool(kb.get("autocomplete_enabled", cls.keyboard_autocomplete_enabled)),
             log_level=log.get("level", cls.log_level),
             log_dir=log.get("dir", cls.log_dir),
         )

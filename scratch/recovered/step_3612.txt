@@ -1,0 +1,34 @@
+Created At: 2026-06-12T11:01:22Z
+Completed At: 2026-06-12T11:01:23Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 4256
+Total Bytes: 294748
+Showing lines 3780 to 3805
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+3780:                                                         {/* Camera Video Stream (Background in Camera mode) */}
+3781:                                                         {backgroundMode === 'camera' && (
+3782:                                                             <img 
+3783:                                                                 id="drawing-camera-preview"
+3784:                                                                 src="" 
+3785:                                                                 alt="Camera Stream"
+3786:                                                                 className="absolute inset-0 w-full h-full object-cover select-none pointer-events-none"
+3787:                                                             />
+3788:                                                         )}
+3789: 
+3790:                                                         {/* HTML5 Canvas Drawing Overlay Layer */}
+3791:                                                         <canvas 
+3792:                                                             id="drawing-canvas"
+3793:                                                             width={canvasWidth}
+3794:                                                             height={canvasHeight}
+3795:                                                             className="absolute inset-0 w-full h-full cursor-crosshair select-none z-10"
+3796:                                                         />
+3797: 
+3798:                                                         {/* Floating PiP Camera Card (in Whiteboard mode) */}
+3799:                                                         {backgroundMode === 'whiteboard' && !pipHidden && (
+3800:                                                             <div 
+3801:                                                                 className={`absolute bottom-6 right-6 rounded-2xl overflow-hidden glass-panel border border-glass-border shadow-2xl z-20 transition-all duration-300 ${
+3802:                                                                     pipSize === 'sm' ? 'w-48' : pipSize === 'md' ? 'w-72' : 'w-96'
+3803:                                                                 } aspect-video`}
+3804:                                                             >
+3805:                                                                 {/* PiP Header controls */}
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

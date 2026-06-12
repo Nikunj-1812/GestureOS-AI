@@ -1,0 +1,79 @@
+Created At: 2026-06-11T09:57:40Z
+Completed At: 2026-06-11T09:57:40Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 1626
+Total Bytes: 105190
+Showing lines 270 to 340
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+270:             if config.flip_horizontal:
+271:                 frame = cv2.flip(frame, 1)
+272:                 
+273:             t_resize = time.perf_counter() - t0
+274: 
+275:             # Run MediaPipe hand detection
+276:             t_det_start = time.perf_counter()
+277:             detected_hands, mp_results = hand_detector.detect(frame)
+278:             t_detect = time.perf_counter() - t_det_start
+279:             
+280:             gesture_label = "unknown"
+281:             gesture_confidence = 0.0
+282:             
+283:             t_pred_start = time.perf_counter()
+284:             if detected_hands:
+285:                 primary_hand = detected_hands[0]
+286:                 if gesture_engine.is_loaded:
+287:                     gesture_label, gesture_confidence = gesture_engine.predict(primary_hand)
+288:                     if gesture_label != "unknown":
+289:                         action_dispatcher.dispatch(gesture_label, virtual_mouse_active=virtual_mouse.enabled)
+290:                 else:
+291:                     gesture_label = "No Model"
+292:             else:
+293:                 gesture_engine.reset()
+294:             t_predict = time.perf_counter() - t_pred_start
+295: 
+296:             # Log only on gesture change
+297:             if gesture_label != last_gesture:
+298:                 logger.info(f"Gesture changed: '{last_gesture}' -> '{gesture_label}'")
+299:                 last_gesture = gesture_label
+300: 
+301:             # Run Virtual Mouse coordinate mapping & pointer movement
+302:             vm_result = None
+303:             if virtual_mouse.enabled:
+304:                 if detected_hands:
+305:                     vm_result = virtual_mouse.process_hand(detected_hands[0])
+306:                 else:
+307:                     vm_result = virtual_mouse.process_hand(None)
+308:             else:
+309:                 virtual_mouse.reset()
+310: 
+311:             cursor_x = vm_result["cursor_x"] if vm_result else 0
+312:             cursor_y = vm_result["cursor_y"] if vm_result else 0
+313:             tracking_state = vm_result["tracking_state"] if vm_result else "Disabled"
+314:                 
+315:             # Render active Phase 1 overlays on the frame
+316:             t_vis_start = time.perf_counter()
+317:             from modules.visualizer import draw_visuals
+318:             frame = draw_visuals(
+319:                 frame=frame,
+320:                 detected_hands=detected_hands,
+321:                 mp_results=mp_results,
+322:                 config=config,
+323:                 fps=fps_smooth,
+324:                 gesture=gesture_label,
+325:                 confidence=gesture_confidence,
+326:                 click_state=vm_result
+327:             )
+328:             t_visuals = time.perf_counter() - t_vis_start
+329:                 
+330:             # Compress to JPEG and base64 encode
+331:             t_enc_start = time.perf_counter()
+332:             _, buffer = cv2.imencode('.jpg', frame)
+333:             frame_b64 = base64.b64encode(buffer).decode('utf-8')
+334:             t_encode = time.perf_counter() - t_enc_start
+335:             
+336:             # FPS Calculation
+337:             now = time.perf_counter()
+338:             delta = max(now - last_fps_tick, 1e-6)
+339:             instant_fps = 1.0 / delta
+340:             fps_smooth = instant_fps if fps_smooth == 0 else (fps_smooth * 0.85 + instant_fps * 0.15)
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

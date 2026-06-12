@@ -1,0 +1,68 @@
+Created At: 2026-06-12T10:59:48Z
+Completed At: 2026-06-12T10:59:48Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 4256
+Total Bytes: 294748
+Showing lines 950 to 1100
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+950:             const [virtualMouseDeadZone, setVirtualMouseDeadZone] = useState(0.15);
+951:             const [virtualMouseSmoothing, setVirtualMouseSmoothing] = useState(0.20);
+952:             const [virtualMouseClickThreshold, setVirtualMouseClickThreshold] = useState(0.05);
+953:             const [virtualMouseRightClickThreshold, setVirtualMouseRightClickThreshold] = useState(0.05);
+954:             
+955:             const [cursorX, setCursorX] = useState(0);
+956:             const [cursorY, setCursorY] = useState(0);
+957:             const [trackingState, setTrackingState] = useState('Disabled');
+958:             const [pinchDistance, setPinchDistance] = useState(0.0);
+959:             const [clickStatus, setClickStatus] = useState('OPEN');
+960:             const [clickCounter, setClickCounter] = useState(0);
+961:             const [currentAction, setCurrentAction] = useState('None');
+962:             // Phase 3.3 — Right Click
+963:             const [rightClickStatus, setRightClickStatus] = useState('OPEN');
+964:             const [rightClickCounter, setRightClickCounter] = useState(0);
+965:             const [rightPinchDistance, setRightPinchDistance] = useState(0.0);
+966:             const prevRightClickStatusRef = useRef('OPEN');
+967:             // Phase 3.4 — Scroll Control
+968:             const [scrollMode, setScrollMode] = useState(false);
+969:             const [scrollDirection, setScrollDirection] = useState('NONE');
+970:             const [scrollSpeed, setScrollSpeed] = useState(0.0);
+971:             const [scrollCounter, setScrollCounter
+<truncated 5564 bytes>
+       // Refs for drawing state machine
+1065:             const currentStrokeRef = useRef(null);
+1066:             const lastPointRef = useRef(null);
+1067:             const isDrawingStateRef = useRef(false);
+1068:             const webSmoothXRef = useRef(null);
+1069:             const webSmoothYRef = useRef(null);
+1070:             const activeMenuRef = useRef('dashboard');
+1071: 
+1072:             // Stable Pinch Detection Refs
+1073:             const smoothedPinchDistRef = useRef(0.0);
+1074:             const drawingPinchActiveRef = useRef(false);
+1075:             const consecutivePinchFramesRef = useRef(0);
+1076:             const consecutiveReleaseFramesRef = useRef(0);
+1077:             const gracePeriodTimeoutRef = useRef(null);
+1078:             const inGracePeriodRef = useRef(false);
+1079: 
+1080:             // Responsive & white board states
+1081:             const [fullScreenMode, setFullScreenMode] = useState(false);
+1082:             
+1083:             const [backgroundMode, _setBackgroundMode] = useState('camera'); // 'camera' | 'whiteboard'
+1084:             const backgroundModeRef = useRef('camera');
+1085:             const setBackgroundMode = (val) => {
+1086:                 _setBackgroundMode(val);
+1087:                 backgroundModeRef.current = val;
+1088:             };
+1089: 
+1090:             const [pipSize, setPipSize] = useState('md');
+1091:             const [pipHidden, setPipHidden] = useState(false);
+1092: 
+1093:             const [filterIntensity, _setFilterIntensity] = useState(3);
+1094:             const filterIntensityRef = useRef(3);
+1095:             const setFilterIntensity = (val) => {
+1096:                 _setFilterIntensity(val);
+1097:                 filterIntensityRef.current = val;
+1098:             };
+1099: 
+1100:             const [showHoverTrail, _setShowHoverTrail] = useState(true);
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

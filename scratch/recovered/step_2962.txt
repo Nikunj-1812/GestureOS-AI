@@ -1,0 +1,53 @@
+Created At: 2026-06-12T10:08:10Z
+Completed At: 2026-06-12T10:08:10Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 3194
+Total Bytes: 215157
+Showing lines 1401 to 1445
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1401:                                         id: `${Date.now()}-${eventIdCounterRef.current}`,
+1402:                                         timestamp: timeString,
+1403:                                         gesture: data.gesture,
+1404:                                         confidence: data.confidence,
+1405:                                         action: `Triggered mapped shortcut for [${data.gesture}]`
+1406:                                     };
+1407:                                     setEvents(prev => [newEvent, ...prev].slice(0, 50));
+1408:                                 }
+1409:                                 prevGestureRef.current = data.gesture;
+1410:                             }
+1411:                         } catch (err) {
+1412:                             console.error('Error decoding WebSocket JSON payload:', err);
+1413:                         }
+1414:                     };
+1415: 
+1416:                     ws.onclose = () => {
+1417:                         setSocketStatus('disconnected');
+1418:                         console.log('WebSocket connection lost, retrying in 3 seconds...');
+1419:                         setTimeout(connectWS, 3000);
+1420:                     };
+1421: 
+1422:                     ws.onerror = (error) => {
+1423:                         console.error('WebSocket encountered an error:', error);
+1424:                     };
+1425:                 };
+1426: 
+1427:                 connectWS();
+1428: 
+1429:                 // Fetch initial switches configuration from backend
+1430:                 fetch('/api/settings')
+1431:                     .then(res => res.json())
+1432:                     .then(data => {
+1433:                         setShowLandmarks(data.show_landmarks);
+1434:                         setShowConnections(data.show_connections);
+1435:                         setShowBoundingBox(data.show_bounding_box);
+1436:                         setShowFingerStates(data.show_finger_states);
+1437:                         setShowDistanceMeter(data.show_distance_meter);
+1438:                         setShowDebugPanel(data.show_debug_panel);
+1439:                         setShowHud(data.show_hud);
+1440:                         
+1441:                         setVirtualMouseEnabled(data.virtual_mouse_enabled);
+1442:                         setVirtualMouseSensitivity(data.virtual_mouse_sensitivity);
+1443:                         setVirtualMouseDeadZone(data.virtual_mouse_dead_zone);
+1444:                         setVirtualMouseSmoothing(data.virtual_mouse_smoothing);
+1445:                         if (data.virtual_mouse_click_threshold !== undefined) {
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

@@ -1,0 +1,34 @@
+Created At: 2026-06-11T10:08:49Z
+Completed At: 2026-06-11T10:08:50Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 1639
+Total Bytes: 106428
+Showing lines 785 to 810
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+785:                         console.error('WebSocket encountered an error:', error);
+786:                     };
+787:                 };
+788: 
+789:                 connectWS();
+790: 
+791:                 // Fetch initial switches configuration from backend
+792:                 fetch('/api/settings')
+793:                     .then(res => res.json())
+794:                     .then(data => {
+795:                         setShowLandmarks(data.show_landmarks);
+796:                         setShowConnections(data.show_connections);
+797:                         setShowBoundingBox(data.show_bounding_box);
+798:                         setShowFingerStates(data.show_finger_states);
+799:                         setShowDistanceMeter(data.show_distance_meter);
+800:                         setShowDebugPanel(data.show_debug_panel);
+801:                         setShowHud(data.show_hud);
+802:                         
+803:                         setVirtualMouseEnabled(data.virtual_mouse_enabled);
+804:                         setVirtualMouseSensitivity(data.virtual_mouse_sensitivity);
+805:                         setVirtualMouseDeadZone(data.virtual_mouse_dead_zone);
+806:                         setVirtualMouseSmoothing(data.virtual_mouse_smoothing);
+807:                         if (data.virtual_mouse_click_threshold !== undefined) {
+808:                             setVirtualMouseClickThreshold(data.virtual_mouse_click_threshold);
+809:                         }
+810:                         if (data.virtual_mouse_right_click_threshold !== undefined) {
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

@@ -1,0 +1,69 @@
+Created At: 2026-06-11T10:48:46Z
+Completed At: 2026-06-11T10:48:46Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 1987
+Total Bytes: 135200
+Showing lines 320 to 380
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+320:             # Log only on gesture change
+321:             if gesture_label != last_gesture:
+322:                 logger.info(f"Gesture changed: '{last_gesture}' -> '{gesture_label}'")
+323:                 last_gesture = gesture_label
+324: 
+325:             # Run Virtual Mouse coordinate mapping & pointer movement
+326:             vm_result = None
+327:             if virtual_mouse.enabled:
+328:                 if detected_hands:
+329:                     vm_result = virtual_mouse.process_hand(detected_hands[0], frame_w=w, frame_h=h)
+330:                 else:
+331:                     vm_result = virtual_mouse.process_hand(None, frame_w=w, frame_h=h)
+332:             else:
+333:                 virtual_mouse.reset()
+334: 
+335:             cursor_x = vm_result["cursor_x"] if vm_result else 0
+336:             cursor_y = vm_result["cursor_y"] if vm_result else 0
+337:             tracking_state = vm_result["tracking_state"] if vm_result else "Disabled"
+338:                 
+339:             # Render active Phase 1 overlays on the frame
+340:             t_vis_start = time.perf_counter()
+341:             from modules.visualizer import draw_visuals
+342:             frame = draw_visuals(
+343:                 frame=frame,
+344:                 detected_hands=detected_hands,
+345:                 mp_results=mp_results,
+346:                 config=config,
+347:                 fps=fps_smooth,
+348:                 gesture=gesture_label,
+349:                 confidence=gesture_confidence,
+350:                 click_state=vm_result
+351:             )
+352:             t_visuals = time.perf_counter() - t_vis_start
+353:                 
+354:             # Compress to JPEG and base64 encode
+355:             t_enc_start = time.perf_counter()
+356:             _, buffer = cv2.imencode('.jpg', frame)
+357:             frame_b64 = base64.b64encode(buffer).decode('utf-8')
+358:             t_encode = time.perf_counter() - t_enc_start
+359:             
+360:             # FPS Calculation
+361:             now = time.perf_counter()
+362:             delta = max(now - last_fps_tick, 1e-6)
+363:             instant_fps = 1.0 / delta
+364:             fps_smooth = instant_fps if fps_smooth == 0 else (fps_smooth * 0.85 + instant_fps * 0.15)
+365:             last_fps_tick = now
+366:             
+367:             # Send live telemetry + frame over WebSocket
+368:             payload = {
+369:                 "fps": float(round(fps_smooth, 1)),
+370:                 "hands": len(detected_hands),
+371:                 "gesture": gesture_label,
+372:                 "confidence": float(round(gesture_confidence, 3)),
+373:                 "camera_status": "Connected",
+374:                 "frame": f"data:image/jpeg;base64,{frame_b64}",
+375:                 "cursor_x": cursor_x,
+376:                 "cursor_y": cursor_y,
+377:                 "tracking_state": tracking_state,
+378:                 "pinch_distance": vm_result.get("pinch_distance", 0.0) if vm_result else 0.0,
+379:                 "click_status": vm_result.get("click_status", "OPEN") if vm_result else "OPEN",
+380:                 "click_counter": vm_result.get("click_counter", 0) if vm_result else 0,
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

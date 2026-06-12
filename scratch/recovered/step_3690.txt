@@ -1,0 +1,44 @@
+Created At: 2026-06-12T11:09:05Z
+Completed At: 2026-06-12T11:09:06Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 4482
+Total Bytes: 313447
+Showing lines 1030 to 1065
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1030:             const [activeMode, setActiveMode] = useState('CURSOR');
+1031:             const [brightnessMode, setBrightnessMode] = useState(false);
+1032:             const [brightnessLevel, setBrightnessLevel] = useState(0);
+1033:             const [brightnessDistance, setBrightnessDistance] = useState(0.0);
+1034:             const [virtualMouseBrightnessMinDistancePx, setVirtualMouseBrightnessMinDistancePx] = useState(30.0);
+1035:             const [virtualMouseBrightnessMaxDistancePx, setVirtualMouseBrightnessMaxDistancePx] = useState(250.0);
+1036:             const [virtualMouseBrightnessSmoothing, setVirtualMouseBrightnessSmoothing] = useState(0.15);
+1037:             const prevBrightnessLevelRef = useRef(-1);
+1038:             const prevActiveModeRef = useRef('CURSOR');
+1039:             
+1040:             // Phase 3.5 — Drag & Drop Control
+1041:             const [dragStatus, setDragStatus] = useState('IDLE');
+1042:             const [dragDuration, setDragDuration] = useState(0.0);
+1043:             const [dragCounter, setDragCounter] = useState(0);
+1044:             const [virtualMouseDragThresholdMs, setVirtualMouseDragThresholdMs] = useState(200.0);
+1045:             const prevDragStatusRef = useRef('IDLE');
+1046: 
+1047:             // Virtual Keyboard UI States
+1048:             const [hoveredKey, setHoveredKey] = useState('None');
+1049:             const [lastPressedKey, setLastPressedKey] = useState('None');
+1050:             const [typedText, setTypedText] = useState('');
+1051:             const [isShiftActive, setIsShiftActive] = useState(false);
+1052:             const [isCapsLockActive, setIsCapsLockActive] = useState(false);
+1053:             const [pressedKey, setPressedKey] = useState(null);
+1054:             const [hoverDuration, setHoverDuration] = useState(0.0);
+1055:             const [enableKeyboardSound, setEnableKeyboardSound] = useState(true);
+1056:             const [systemTypingEnabled, setSystemTypingEnabled] = useState(false);
+1057:             const [autocompleteEnabled, setAutocompleteEnabled] = useState(true);
+1058:             const [wpm, setWpm] = useState(0);
+1059:             const [accuracy, setAccuracy] = useState(100);
+1060:             const [currentWord, setCurrentWord] = useState('');
+1061:             const [recentWords, setRecentWords] = useState([]);
+1062:             const [predictions, setPredictions] = useState([]);
+1063:             const totalKeystrokesRef = useRef(0);
+1064:             const backspaceCountRef = useRef(0);
+1065:             const typingStartTimeRef = useRef(null);
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

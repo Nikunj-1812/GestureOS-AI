@@ -1,0 +1,59 @@
+Created At: 2026-06-12T11:14:52Z
+Completed At: 2026-06-12T11:14:52Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 2369
+Total Bytes: 129583
+Showing lines 1050 to 1100
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1050:             const [typedText, setTypedText] = useState('');
+1051:             const [isShiftActive, setIsShiftActive] = useState(false);
+1052:             const [isCapsLockActive, setIsCapsLockActive] = useState(false);
+1053:             const [pressedKey, setPressedKey] = useState(null);
+1054:             const [hoverDuration, setHoverDuration] = useState(0.0);
+1055:             const [enableKeyboardSound, setEnableKeyboardSound] = useState(true);
+1056:             const [systemTypingEnabled, setSystemTypingEnabled] = useState(false);
+1057:             const [autocompleteEnabled, setAutocompleteEnabled] = useState(true);
+1058:             const [wpm, setWpm] = useState(0);
+1059:             const [accuracy, setAccuracy] = useState(100);
+1060:             const [currentWord, setCurrentWord] = useState('');
+1061:             const [recentWords, setRecentWords] = useState([]);
+1062:             const [predictions, setPredictions] = useState([]);
+1063:             const totalKeystrokesRef = useRef(0);
+1064:             const backspaceCountRef = useRef(0);
+1065:             const typingStartTimeRef = useRef(null);
+1066: 
+1067:             // Air Drawing UI States
+1068:             const [drawingStatus, _setDrawingStatus] = useState('Idle');
+1069:             const drawingStatusRef = useRef('Idle');
+1070:             const setDrawingStatus = (val) => {
+1071:                 _setDrawingStatus(val);
+1072:                 drawingStatusRef.current = val;
+1073:             };
+1074: 
+1075:             const saveBrushSetting = (updates) => {
+1076:                 fetch('/api/settings/update', {
+1077:                     method: 'POST',
+1078:                     headers: { 'Content-Type': 'application/json' },
+1079:                     body: JSON.stringify(updates)
+1080:                 }).catch(err => console.error("Error saving brush settings:", err));
+1081:             };
+1082: 
+1083:             const [webBrushSize, _setWebBrushSize] = useState(15);
+1084:             const webBrushSizeRef = useRef(15);
+1085:             const setWebBrushSize = (val) => {
+1086:                 _setWebBrushSize(val);
+1087:                 webBrushSizeRef.current = val;
+1088:                 saveBrushSetting({ brush_size: val });
+1089:             };
+1090: 
+1091:             const [webBrushColor, _setWebBrushColor] = useState('#c6a0f6'); // Mauve
+1092:             const webBrushColorRef = useRef('#c6a0f6');
+1093:             const setWebBrushColor = (val) => {
+1094:                 _setWebBrushColor(val);
+1095:                 webBrushColorRef.current = val;
+1096:                 saveBrushSetting({ brush_color: val });
+1097:             };
+1098: 
+1099:             const [webBrushColorName, _setWebBrushColorName] = useState('Mauve');
+1100:             const setWebBrushColorName = (val) => {
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

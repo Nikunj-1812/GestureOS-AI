@@ -1,0 +1,55 @@
+Created At: 2026-06-12T09:43:24Z
+Completed At: 2026-06-12T09:43:24Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 2763
+Total Bytes: 190961
+Showing lines 1400 to 1446
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1400:             };
+1401: 
+1402:             // Virtual Keyboard UI event handlers
+1403:             const handleWebKeyPress = (key) => {
+1404:                 setPressedKey(key);
+1405:                 setTimeout(() => setPressedKey(null), 100);
+1406:                 setLastPressedKey(key);
+1407: 
+1408:                 if (systemTypingEnabled) {
+1409:                     fetch('/api/keyboard/type', {
+1410:                         method: 'POST',
+1411:                         headers: { 'Content-Type': 'application/json' },
+1412:                         body: JSON.stringify({
+1413:                             key: key,
+1414:                             shift: isShiftActive,
+1415:                             caps: isCapsLockActive
+1416:                         })
+1417:                     }).catch(err => console.error('Error posting keypress to backend:', err));
+1418:                 }
+1419: 
+1420:                 if (key === 'Shift') {
+1421:                     setIsShiftActive(!isShiftActive);
+1422:                 } else if (key === 'Caps Lock') {
+1423:                     setIsCapsLockActive(!isCapsLockActive);
+1424:                 } else if (key === 'Backspace') {
+1425:                     setTypedText(prev => prev.slice(0, -1));
+1426:                 } else if (key === 'Space') {
+1427:                     setTypedText(prev => prev + ' ');
+1428:                     autoReleaseShift();
+1429:                 } else if (key === 'Tab') {
+1430:                     setTypedText(prev => prev + '    ');
+1431:                     autoReleaseShift();
+1432:                 } else if (key === 'Enter') {
+1433:                     setTypedText(prev => prev + String.fromCharCode(10));
+1434:                     autoReleaseShift();
+1435:                 } else {
+1436:                     const isUpper = isCapsLockActive || isShiftActive;
+1437:                     const char = isUpper ? key.toUpperCase() : key.toLowerCase();
+1438:                     setTypedText(prev => prev + char);
+1439:                     autoReleaseShift();
+1440:                 }
+1441:             };
+1442: 
+1443:             const autoReleaseShift = () => {
+1444:                 setIsShiftActive(false);
+1445:             };
+1446: 
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

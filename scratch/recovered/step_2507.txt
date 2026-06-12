@@ -1,0 +1,75 @@
+Created At: 2026-06-12T09:40:59Z
+Completed At: 2026-06-12T09:40:59Z
+File Path: `file:///C:/Users/nikun/.gemini/antigravity/brain/f71acb1b-ab5a-4de9-85a5-1a298f3c313a/implementation_plan.md`
+Total Lines: 92
+Total Bytes: 4756
+Showing lines 1 to 92
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1: # Implementation Plan — Phase 4.5: Smart Keyboard
+2: 
+3: This document outlines the proposed changes to implement the Smart Keyboard feature set for GestureOS virtual keyboards (desktop and web dashboards).
+4: 
+5: ## Goal
+6: Enhance the virtual keyboard with productivity and analytics features:
+7: 1. **Predictive Text & Autocomplete**: Top 3 matching suggestions based on the current word prefix.
+8: 2. **Typing Speed (WPM)**: Real-time calculation of Words Per Minute.
+9: 3. **Accuracy Counter**: Percentage of correct keystrokes vs. total keystrokes (considering backspaces as correction cycles).
+10: 4. **Recent Words List**: Dynamic list of the last 5 typed words.
+11: 5. **Emoji Panel**: Dedicated row of common emojis for rapid input.
+12: 6. **Config Persistence**: Save system typing, sound feedback, and autocomplete preferences in the local JSON config.
+13: 
+14: ---
+15: 
+16: ## Proposed Changes
+17: 
+18: ### 1. Configuration & Settings Schema
+19: 
+20: We will add three configuration items to save keyboard preferences:
+21: * `keyboard_sound_enabled`: Persists audio feedback toggle.
+22: * `keyboard_system_typing_enabled`: Persists safety bypass toggle.
+23: * `keyboard_autocomplete_enabled`: Persists autocomplete/prediction toggle.
+24: 
+25: #### [MODIFY] [app_config.py](file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/config/app_config.py)
+26: * Add settings properties with default values.
+27: * Update parsing logic in `from_yaml`.
+28: 
+29: #### [MODIFY] [settings_manager.py](file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-
+<truncated 1590 bytes>
+ial prefix with full word + space).
+57: * **Emoji Panel**:
+58:   * Add a row of CTkButtons at the bottom of the keyboard grid mapping to emojis: `😊`, `😂`, `👍`, `🔥`, `❤️`, `🎉`, `✨`, `🚀`.
+59: * **Config Sync**:
+60:   * Load defaults from `self._settings_manager.state` upon initialization.
+61:   * Sync switch toggle changes back to `SettingsManager` to save to `settings.json`.
+62: 
+63: ---
+64: 
+65: ### 4. Web Dashboard & Backend Improvements
+66: 
+67: #### [MODIFY] [web_backend.py](file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py)
+68: * **Settings Endpoints**:
+69:   * Support updating `keyboard_sound_enabled`, `keyboard_system_typing_enabled`, and `keyboard_autocomplete_enabled` in `/api/settings/update` and `/api/settings`.
+70: * **Autocomplete API Endpoint**:
+71:   * Create `/api/keyboard/suggest` POST endpoint receiving current buffer text, returning predicted words, WPM, and Accuracy.
+72: * **React Web Frontend UI**:
+73:   * Add telemetry fields for WPM, Accuracy, and Recent Words in the virtual keyboard page.
+74:   * Add a row of 3 word suggestion buttons above the QWERTY grid.
+75:   * Add a row of emoji keys below the spacebar row.
+76:   * Connect suggestions to click/pinch event handlers (replaces prefix and types).
+77:   * Sync checkboxes to persist state toggles.
+78: 
+79: ---
+80: 
+81: ## Verification Plan
+82: 
+83: ### Automated Tests
+84: * Create `tests/test_word_predictor.py` testing autocomplete prefix lookup logic.
+85: * Add automated assertions to `tests/test_virtual_keyboard.py` validating WPM and Accuracy math on typing loops.
+86: 
+87: ### Manual Verification
+88: * Run both the CustomTkinter desktop app and FastAPI web app.
+89: * Type a sentence like `"hello ges"` and check that `"gesture"` is suggested.
+90: * Autocomplete the suggestion and verify that stats (WPM, Accuracy) calculate and show changes.
+91: * Verify settings persistence in `settings.json` after updates.
+92: 
+The above content shows the entire, complete file contents of the requested file.

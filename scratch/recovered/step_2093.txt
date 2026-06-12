@@ -1,0 +1,41 @@
+Created At: 2026-06-12T05:19:39Z
+Completed At: 2026-06-12T05:19:40Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 2680
+Total Bytes: 186125
+Showing lines 2355 to 2395
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+2355:                                                     
+2356:                                                     <div className="flex-1 my-4 flex items-center justify-center bg-black/45 rounded-xl overflow-hidden border border-glass-border relative">
+2357:                                                         {cameraStatus === 'Connected' && frame ? (
+2358:                                                             <img 
+2359:                                                                 src={frame} 
+2360:                                                                 alt="Camera Feed" 
+2361:                                                                 className="w-full h-full object-contain rounded-xl"
+2362:                                                             />
+2363:                                                         ) : (
+2364:                                                             <div className="flex flex-col items-center justify-center p-8 text-center max-w-sm">
+2365:                                                                 <div className="w-16 h-16 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-gray-500 mb-4 animate-pulse">
+2366:                                                                     <VideoOffIcon className="w-8 h-8" />
+2367:                                                                 </div>
+2368:                                                                 <h4 className="text-white font-medium mb-1">Camera Stream Inactive</h4>
+2369:                           
+<truncated 841 bytes>
+lex-col gap-4">
+2380:                                                 <div className="glass-card rounded-2xl p-6 border border-glass-border flex flex-col justify-between h-[400px] relative overflow-hidden">
+2381:                                                     <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 opacity-20" />
+2382:                                                     
+2383:                                                     <div>
+2384:                                                         <h3 className="text-sm font-semibold text-white pb-3 border-b border-glass-border mb-4">
+2385:                                                             Keyboard Telemetry
+2386:                                                         </h3>
+2387:                                                         
+2388:                                                         <div className="space-y-3">
+2389:                                                             <div className="flex justify-between items-center text-xs">
+2390:                                                                 <span className="text-gray-400">Current Hovered Key</span>
+2391:                                                                 <span className="px-2 py-1 rounded bg-zinc-800 text-white font-mono font-bold">{hoveredKey}</span>
+2392:                                                             </div>
+2393:                                                             <div className="flex justify-between items-center text-xs">
+2394:                                                                 <span className="text-gray-400">Hover Duration</span>
+2395:                                                                 <span className="text-accent-blue font-bold">{hoverDuration.toFixed(2)}s</span>
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

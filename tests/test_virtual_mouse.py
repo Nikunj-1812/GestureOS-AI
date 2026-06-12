@@ -173,7 +173,10 @@ def test_pinch_distance_calculation():
 
 @patch("modules.virtual_mouse.pyautogui")
 def test_click_state_machine_transitions(mock_pyautogui):
-    """Test: OPEN → PINCH (on first pinch trigger) → LEFT_CLICK → RELEASE → READY."""
+    """
+    New state machine: OPEN → PINCHING (on close) → click fires on release (RELEASE) → READY.
+    A quick pinch-release fires exactly one click.
+    """
     mock_pyautogui.size.return_value = (1920, 1080)
     vm = VirtualMouse(enabled=True, click_threshold=0.05, sensitivity=1.0, dead_zone=0.0, smoothing=1.0)
     vm.screen_w = 1920
@@ -184,31 +187,32 @@ def test_click_state_machine_transitions(mock_pyautogui):
     assert vm.click_status == "OPEN"
     assert vm.click_counter == 0
 
-    # Pinch close (distance < threshold) → triggers click
+    # Pinch close → enters PINCHING state (no click yet)
     lm = _default_landmarks()
     lm[4] = (0.5, 0.5, 0.0)
     lm[8] = (0.5, 0.5, 0.0)
     hand = _make_hand(lm)
     r = vm.process_hand(hand)
-    assert r["click_status"] == "LEFT_CLICK"
-    assert r["click_counter"] == 1
-    assert r["current_action"] == "Left Click"
-    mock_pyautogui.click.assert_called_once()
-
-    # Fingers still close → transitions to PINCH (no second click)
-    mock_pyautogui.click.reset_mock()
-    r2 = vm.process_hand(hand)
-    assert r2["click_status"] == "PINCH"
-    assert r2["click_counter"] == 1  # No additional click
+    assert r["click_status"] == "PINCH"
+    assert r["click_counter"] == 0
     mock_pyautogui.click.assert_not_called()
 
-    # Open fingers (release) → RELEASE
+    # Fingers still close → remains PINCHING (no second entry)
+    r2 = vm.process_hand(hand)
+    assert r2["click_status"] == "PINCH"
+    assert r2["click_counter"] == 0
+    mock_pyautogui.click.assert_not_called()
+
+    # Open fingers (release before drag threshold) → click fires → RELEASE
     lm_open = _default_landmarks()
     lm_open[4] = (0.1, 0.1, 0.0)
     lm_open[8] = (0.9, 0.9, 0.0)
     hand_open = _make_hand(lm_open)
     r3 = vm.process_hand(hand_open)
     assert r3["click_status"] == "RELEASE"
+    assert r3["click_counter"] == 1
+    assert r3["current_action"] == "Left Click"
+    mock_pyautogui.click.assert_called_once()
 
     # Stay open → READY
     r4 = vm.process_hand(hand_open)
@@ -217,9 +221,9 @@ def test_click_state_machine_transitions(mock_pyautogui):
 
 @patch("modules.virtual_mouse.pyautogui")
 def test_single_trigger_per_pinch(mock_pyautogui):
-    """Ensure only ONE click fires per pinch, even with many frames."""
+    """Ensure only ONE click fires per pinch-release cycle, even with many closed frames."""
     mock_pyautogui.size.return_value = (1920, 1080)
-    vm = VirtualMouse(enabled=True, click_threshold=0.05)
+    vm = VirtualMouse(enabled=True, click_threshold=0.05, drag_threshold_ms=5000.0)
     vm.screen_w = 1920
     vm.screen_h = 1080
     vm.debounce_ms = 0
@@ -230,11 +234,19 @@ def test_single_trigger_per_pinch(mock_pyautogui):
     lm[8] = (0.5, 0.5, 0.0)
     hand = _make_hand(lm)
 
-    # Process 10 frames with pinch closed
+    # Process 10 frames with pinch closed → stays in PINCHING, no click yet
     for _ in range(10):
         vm.process_hand(hand)
+    assert vm.click_counter == 0
+    mock_pyautogui.click.assert_not_called()
 
-    # Should have triggered exactly 1 click
+    # Release pinch → exactly 1 click fires
+    lm_open = _default_landmarks()
+    lm_open[4] = (0.1, 0.1, 0.0)
+    lm_open[8] = (0.9, 0.9, 0.0)
+    hand_open = _make_hand(lm_open)
+    vm.process_hand(hand_open)
+
     assert vm.click_counter == 1
     assert mock_pyautogui.click.call_count == 1
 
@@ -258,40 +270,44 @@ def test_debounce_protection(mock_pyautogui):
     lm_open[8] = (0.9, 0.9, 0.0)
     hand_open = _make_hand(lm_open)
 
-    # First click
+    # First pinch → PINCHING (no click yet)
     vm.process_hand(hand_close)
+    assert vm.click_counter == 0
+
+    # Release → click fires
+    vm.process_hand(hand_open)
     assert vm.click_counter == 1
 
-    # Release
-    vm.process_hand(hand_open)
+    # Return to open (ready state)
     vm.process_hand(hand_open)
 
-    # Try to click again immediately (within debounce window)
+    # Try to enter PINCHING again immediately (within debounce window)
+    # The debounce guard at IDLE → PINCHING transition should block this
     vm.process_hand(hand_close)
+    assert vm.drag_status == "IDLE"  # Debounce prevented re-entering PINCHING
+    # Release again → no additional click
+    vm.process_hand(hand_open)
     assert vm.click_counter == 1  # Should NOT increment due to debounce
 
 
 @patch("modules.virtual_mouse.pyautogui")
 def test_emergency_release_on_none_hand(mock_pyautogui):
-    """When hand is lost during a click, ensure mouseUp is called."""
+    """When hand is lost while DRAGGING, ensure mouseUp is called exactly once."""
     mock_pyautogui.size.return_value = (1920, 1080)
     vm = VirtualMouse(enabled=True, click_threshold=0.05)
     vm.screen_w = 1920
     vm.screen_h = 1080
     vm.debounce_ms = 0
 
-    # Trigger a click
-    lm = _default_landmarks()
-    lm[4] = (0.5, 0.5, 0.0)
-    lm[8] = (0.5, 0.5, 0.0)
-    hand = _make_hand(lm)
-    vm.process_hand(hand)
-    assert vm.click_status == "LEFT_CLICK"
+    # Manually force into DRAGGING state (simulating an active drag)
+    vm.drag_status = "DRAGGING"
+    vm.drag_start_time = time.monotonic() * 1000 - 500  # started 500ms ago
+    vm.click_status = "LEFT_CLICK"
 
-    # Hand lost
+    # Hand lost during drag
     result = vm.process_hand(None)
+    # _reset_drag_state should call mouseUp exactly once
     mock_pyautogui.mouseUp.assert_called_once()
-    assert result["click_status"] == "OPEN"
     assert result["tracking_state"] == "No Hand"
 
 
@@ -305,9 +321,11 @@ def test_return_dict_structure():
         "right_click_status", "right_click_counter", "right_pinch_distance",
         "scroll_mode", "scroll_direction", "scroll_speed", "scroll_counter",
         "volume_mode", "volume_level", "volume_distance",
-        "active_mode", "brightness_mode", "brightness_level", "brightness_distance"
+        "active_mode", "brightness_mode", "brightness_level", "brightness_distance",
+        "drag_status", "drag_duration", "drag_counter",
     }
     assert set(result.keys()) == expected_keys
+
 
 
 def test_volume_gesture_activation():
@@ -399,4 +417,81 @@ def test_brightness_gesture_activation():
         result = vm.process_hand(hand, frame_w=1000, frame_h=1000)
         assert result["brightness_mode"] is True
         assert result["current_action"].startswith("Brightness")
+
+
+@patch("modules.virtual_mouse.pyautogui")
+def test_drag_and_drop_quick_pinch(mock_pyautogui):
+    """Verify that a quick pinch and release triggers a normal left click, not a drag."""
+    mock_pyautogui.size.return_value = (1920, 1080)
+    vm = VirtualMouse(enabled=True, click_threshold=0.05, drag_threshold_ms=200.0)
+    vm.screen_w = 1920
+    vm.screen_h = 1080
+    vm.debounce_ms = 0
+
+    # Frame 1: Pinch start
+    lm = _default_landmarks()
+    lm[4] = (0.5, 0.5, 0.0)
+    lm[8] = (0.5, 0.5, 0.0)
+    hand = _make_hand(lm)
+    
+    r1 = vm.process_hand(hand)
+    assert r1["drag_status"] == "PINCHING"
+    assert r1["click_status"] == "PINCH"
+    mock_pyautogui.mouseDown.assert_not_called()
+    mock_pyautogui.click.assert_not_called()
+
+    # Frame 2: Release quickly (time didn't advance beyond 200ms)
+    lm_open = _default_landmarks()
+    lm_open[4] = (0.1, 0.1, 0.0)
+    lm_open[8] = (0.9, 0.9, 0.0)
+    hand_open = _make_hand(lm_open)
+    
+    r2 = vm.process_hand(hand_open)
+    assert r2["drag_status"] == "IDLE"
+    assert r2["click_status"] == "RELEASE"
+    mock_pyautogui.click.assert_called_once()
+    mock_pyautogui.mouseDown.assert_not_called()
+    mock_pyautogui.mouseUp.assert_not_called()
+
+
+@patch("modules.virtual_mouse.pyautogui")
+def test_drag_and_drop_long_hold_and_release(mock_pyautogui):
+    """Verify that holding the pinch past the threshold triggers mouseDown, and releasing it triggers mouseUp."""
+    mock_pyautogui.size.return_value = (1920, 1080)
+    vm = VirtualMouse(enabled=True, click_threshold=0.05, drag_threshold_ms=200.0)
+    vm.screen_w = 1920
+    vm.screen_h = 1080
+    vm.debounce_ms = 0
+
+    lm = _default_landmarks()
+    lm[4] = (0.5, 0.5, 0.0)
+    lm[8] = (0.5, 0.5, 0.0)
+    hand = _make_hand(lm)
+    
+    # Frame 1: Start pinch
+    t_start = time.monotonic() * 1000
+    with patch("time.monotonic", return_value=t_start / 1000.0):
+        r1 = vm.process_hand(hand)
+        assert r1["drag_status"] == "PINCHING"
+
+    # Frame 2: Still pinching after 250ms (threshold is 200ms)
+    with patch("time.monotonic", return_value=(t_start + 250.0) / 1000.0):
+        r2 = vm.process_hand(hand)
+        assert r2["drag_status"] == "DRAGGING"
+        assert r2["drag_counter"] == 1
+        mock_pyautogui.mouseDown.assert_called_once()
+        mock_pyautogui.click.assert_not_called()
+
+    # Frame 3: Released
+    lm_open = _default_landmarks()
+    lm_open[4] = (0.1, 0.1, 0.0)
+    lm_open[8] = (0.9, 0.9, 0.0)
+    hand_open = _make_hand(lm_open)
+    
+    with patch("time.monotonic", return_value=(t_start + 300.0) / 1000.0):
+        r3 = vm.process_hand(hand_open)
+        assert r3["drag_status"] == "IDLE"
+        mock_pyautogui.mouseUp.assert_called_once()
+        assert r3["drag_duration"] >= 0.25
+
 

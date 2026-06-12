@@ -1,0 +1,74 @@
+Created At: 2026-06-11T10:59:37Z
+Completed At: 2026-06-11T10:59:37Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 1192
+Total Bytes: 69773
+Showing lines 750 to 950
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+750:                 <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3" />
+751:             </svg>
+752:         );
+753: 
+754:         function ResourceChart({ label, dataPoints, color, maxVal = 100 }) {
+755:             const canvasRef = useRef(null);
+756: 
+757:             useEffect(() => {
+758:                 const canvas = canvasRef.current;
+759:                 if (!canvas) return;
+760:                 const ctx = canvas.getContext('2d');
+761:                 const width = canvas.width;
+762:                 const height = canvas.height;
+763: 
+764:                 ctx.clearRect(0, 0, width, height);
+765: 
+766:                 ctx.strokeStyle = 'rgba(255, 255, 255, 0.05)';
+767:                 ctx.lineWidth = 1;
+768:                 for (let i = 1; i < 4; i++) {
+769:                     const y = (height / 4) * i;
+770:                     ctx.beginPath();
+771:                     ctx.moveTo(0, y);
+772:                     ctx.lineTo(width, y);
+773:                     ctx.stroke();
+774:                 }
+775: 
+776:                 if (dataPoints.length === 0) return;
+777: 
+778:                 ctx.beginPath();
+779:                 ctx.strokeStyle = color;
+780:                 ctx.lineWidth = 2;
+781:                 ctx.lineJoin = 'round';
+782: 
+783:                 const step = width / 29;
+784:                 dataPoints.forEach((val, idx) => {
+785:                     const x = idx * step;
+786:                     const y = height - (val / maxVal) * (height - 12) - 6;
+787:                     if (idx === 0) {
+788:                         
+<truncated 9230 bytes>
+onopen = () => setSocketStatus('connected');
+926:                     ws.onmessage = (event) => {
+927:                         try {
+928:                             const data = JSON.parse(event.data);
+929:                             setFps(data.fps);
+930:                             setHands(data.hands);
+931:                             setGesture(data.gesture);
+932:                             setConfidence(data.confidence);
+933:                             setCameraStatus(data.camera_status);
+934:                             setFrame(data.frame);
+935:                             setCursorX(data.cursor_x || 0);
+936:                             setCursorY(data.cursor_y || 0);
+937:                             setTrackingState(data.tracking_state || 'Disabled');
+938:                             setPinchDistance(data.pinch_distance || 0.0);
+939:                             setClickStatus(data.click_status || 'OPEN');
+940:                             setClickCounter(data.click_counter || 0);
+941:                             setCurrentAction(data.current_action || 'None');
+942:                             setCpuUsage(data.cpu_usage || 0.0);
+943:                             setRamUsage(data.ram_usage || 0.0);
+944:                             setCpuHistory(prev => [...prev, data.cpu_usage || 0.0].slice(-30));
+945:                             setRamHistory(prev => [...prev, data.ram_usage || 0.0].slice(-30));
+946:                             setFpsHistory(prev => [...prev, data.fps || 0.0].slice(-30));
+947:                             setRightClickStatus(data.right_click_status || 'OPEN');
+948:                             setRightClickCounter(data.right_click_counter || 0);
+949:                             setRightPinchDistance(data.right_pinch_distance || 0.0);
+950:                             const newSM = data.scroll_mode || false;
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

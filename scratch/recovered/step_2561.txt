@@ -1,0 +1,71 @@
+Created At: 2026-06-12T09:42:31Z
+Completed At: 2026-06-12T09:42:31Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 2763
+Total Bytes: 190961
+Showing lines 2670 to 2763
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+2670:                                                                     pressedKey === key 
+2671:                                                                         ? 'bg-amber-500 text-black scale-95' 
+2672:                                                                         : hoveredKey === key
+2673:                                                                             ? 'bg-blue-600/40 text-white border border-blue-500/80 shadow-md shadow-blue-500/20'
+2674:                                                                             : 'bg-zinc-850 hover:bg-zinc-700 text-white active:scale-95 border border-zinc-750'
+2675:                                                                 }`}
+2676:                                                             >
+2677:                                                                 {label}
+2678:                                                             </button>
+2679:                                                         );
+2680:                                                     })}
+2681:                                                     <button 
+2682:                                                         data-key="Backspace"
+2683:                                                         onMouseEnter={() => setHoveredKey('Backspace')}
+2684:                                                         onMouseLeave={() => setHoveredKey('None')}
+2685:                                                         onClick={() => handleWebKeyPress('Backspace')}
+2686:                                           
+<truncated 2924 bytes>
+                             ) : (
+2720:                                     <div className="glass-card rounded-2xl p-8 text-center text-gray-400">
+2721:                                         <p>This page is currently under construction. Please use the Dashboard or Virtual Mouse navigation links.</p>
+2722:                                     </div>
+2723:                                 )}
+2724:                             </div>
+2725:                         </div>
+2726:                     </main>
+2727:                 </div>
+2728:             );
+2729:         }
+2730: 
+2731:         const root = ReactDOM.createRoot(document.getElementById('root'));
+2732:         root.render(<App />);
+2733:     </script>
+2734: </body>
+2735: </html>"""
+2736: 
+2737: @app.get("/static/react.min.js")
+2738: def get_react():
+2739:     from fastapi.responses import FileResponse
+2740:     return FileResponse("static/react.min.js", media_type="application/javascript")
+2741: 
+2742: @app.get("/static/react-dom.min.js")
+2743: def get_react_dom():
+2744:     from fastapi.responses import FileResponse
+2745:     return FileResponse("static/react-dom.min.js", media_type="application/javascript")
+2746: 
+2747: @app.get("/static/babel.min.js")
+2748: def get_babel():
+2749:     from fastapi.responses import FileResponse
+2750:     return FileResponse("static/babel.min.js", media_type="application/javascript")
+2751: 
+2752: @app.get("/static/tailwind.js")
+2753: def get_tailwind():
+2754:     from fastapi.responses import FileResponse
+2755:     return FileResponse("static/tailwind.js", media_type="application/javascript")
+2756: 
+2757: @app.get("/", response_class=HTMLResponse)
+2758: async def get_dashboard():
+2759:     return HTML_CONTENT
+2760: 
+2761: if __name__ == "__main__":
+2762:     uvicorn.run("web_backend:app", host="127.0.0.1", port=8000, log_level="info")
+2763: 
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

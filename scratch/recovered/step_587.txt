@@ -1,0 +1,39 @@
+Created At: 2026-06-11T10:27:26Z
+Completed At: 2026-06-11T10:27:26Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 1772
+Total Bytes: 117640
+Showing lines 150 to 180
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+150:     return {"status": "success"}
+151: 
+152: @app.get("/api/settings")
+153: def api_get_settings():
+154:     state = settings_manager.state
+155:     return {
+156:         "show_landmarks": state.show_landmarks,
+157:         "show_connections": state.show_connections,
+158:         "show_bounding_box": state.show_bounding_box,
+159:         "show_finger_states": state.show_finger_states,
+160:         "show_distance_meter": state.show_distance_meter,
+161:         "show_debug_panel": state.show_debug_panel,
+162:         "show_hud": state.show_hud,
+163:         "virtual_mouse_enabled": state.virtual_mouse_enabled,
+164:         "virtual_mouse_sensitivity": state.virtual_mouse_sensitivity,
+165:         "virtual_mouse_dead_zone": state.virtual_mouse_dead_zone,
+166:         "virtual_mouse_smoothing": state.virtual_mouse_smoothing,
+167:         "virtual_mouse_click_threshold": getattr(state, 'virtual_mouse_click_threshold', 0.05),
+168:         "virtual_mouse_right_click_threshold": getattr(state, 'virtual_mouse_right_click_threshold', 0.05),
+169:         "virtual_mouse_scroll_sensitivity": getattr(state, 'virtual_mouse_scroll_sensitivity', 5.0),
+170:         "virtual_mouse_scroll_dead_zone": getattr(state, 'virtual_mouse_scroll_dead_zone', 0.04),
+171:         "virtual_mouse_scroll_smoothing": getattr(state, 'virtual_mouse_scroll_smoothing', 0.25),
+172:         "virtual_mouse_volume_min_distance_px": getattr(state, 'virtual_mouse_volume_min_distance_px', 30.0),
+173:         "virtual_mouse_volume_max_distance_px": getattr(state, 'virtual_mouse_volume_max_distance_px', 250.0),
+174:         "virtual_mouse_volume_smoothing": getattr(state, 'virtual_mouse_volume_smoothing', 0.15),
+175:     }
+176: 
+177: @app.post("/api/settings/update")
+178: def api_update_settings(updates: dict):
+179:     params = {}
+180:     bool_keys = [
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

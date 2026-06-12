@@ -69,6 +69,7 @@ class HandLandmarks:
     landmarks:  list[tuple[float, float, float]]  # (x, y, z) normalised
     handedness: str                               # "Left" | "Right"
     bbox:       tuple[int, int, int, int]         # (x, y, w, h) in pixels
+    score:      float = 1.0                       # Detection score/confidence
 
 
 class HandDetector:
@@ -87,7 +88,7 @@ class HandDetector:
 
     def __init__(
         self,
-        max_hands: int = 2,
+        max_hands: int = 1,
         detection_confidence: float = 0.7,
         tracking_confidence:  float = 0.7,
     ) -> None:
@@ -118,7 +119,17 @@ class HandDetector:
             Raw output cached internally; also returned so callers can
             pass it directly to draw() without a second inference.
         """
-        rgb     = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+        h_orig, w_orig = frame.shape[:2]
+        
+        # Optimize: Downscale internally to 320w for fast inference
+        if w_orig > 320:
+            scale = 320.0 / w_orig
+            target_h = int(h_orig * scale)
+            small_frame = cv2.resize(frame, (320, target_h), interpolation=cv2.INTER_LINEAR)
+            rgb = cv2.cvtColor(small_frame, cv2.COLOR_BGR2RGB)
+        else:
+            rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+
         if self._first_detect:
             with silence_stderr():
                 results = self._hands.process(rgb)
@@ -138,6 +149,7 @@ class HandDetector:
         ):
             landmarks  = [(lm.x, lm.y, lm.z) for lm in hand_lm.landmark]
             handedness = hand_info.classification[0].label
+            score      = float(round(hand_info.classification[0].score, 4))
 
             # Bounding box from landmark extent with padding
             xs = [lm.x * w for lm in hand_lm.landmark]
@@ -153,6 +165,7 @@ class HandDetector:
                     landmarks=landmarks,
                     handedness=handedness,
                     bbox=bbox,
+                    score=score,
                 )
             )
 

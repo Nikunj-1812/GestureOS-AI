@@ -1,0 +1,55 @@
+Created At: 2026-06-11T11:02:02Z
+Completed At: 2026-06-11T11:02:02Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 1347
+Total Bytes: 88491
+Showing lines 840 to 1100
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+840:             const [virtualMouseDeadZone, setVirtualMouseDeadZone] = useState(0.15);
+841:             const [virtualMouseSmoothing, setVirtualMouseSmoothing] = useState(0.20);
+842:             const [virtualMouseClickThreshold, setVirtualMouseClickThreshold] = useState(0.05);
+843:             const [virtualMouseRightClickThreshold, setVirtualMouseRightClickThreshold] = useState(0.05);
+844:             const [virtualMouseScrollSensitivity, setVirtualMouseScrollSensitivity] = useState(5.0);
+845:             const [virtualMouseScrollDeadZone, setVirtualMouseScrollDeadZone] = useState(0.04);
+846:             const [virtualMouseScrollSmoothing, setVirtualMouseScrollSmoothing] = useState(0.25);
+847:             const [virtualMouseVolumeMinDistancePx, setVirtualMouseVolumeMinDistancePx] = useState(30.0);
+848:             const [virtualMouseVolumeMaxDistancePx, setVirtualMouseVolumeMaxDistancePx] = useState(250.0);
+849:             const [virtualMouseVolumeSmoothing, setVirtualMouseVolumeSmoothing] = useState(0.15);
+850:             const [virtualMouseBrightnessMinDistancePx, setVirtualMouseBrightnessMinDistancePx] = useState(30.0);
+851:             const [virtualMouseBrightnessMaxDistancePx, setVirtualMouseBrightnessMaxDistancePx] = useState(250.0);
+852:             const [virtualMouseBrightnessSmoothing, setVirtualMouseBrightnessSmoothing] = useState(0.15);
+853:             const [modeCursorEnabled, setModeCursorEnabled] = useState(true);
+854:             const [modeClickEnabled, setModeClickEnabled] = useState(true);
+855:             const [modeScrollEnabled, setM
+<truncated 17505 bytes>
+); } finally { setIsCameraLoading(false); }
+1072:             };
+1073: 
+1074:             const handleResetTracking = async () => {
+1075:                 setIsResetting(true);
+1076:                 try { await fetch('/api/camera/reset', { method: 'POST' }); } finally { setTimeout(() => setIsResetting(false), 800); }
+1077:             };
+1078: 
+1079:             const updateSetting = async (key, val) => {
+1080:                 try { await fetch('/api/settings/update', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ [key]: val }) }); } catch (err) { console.error(err); }
+1081:             };
+1082: 
+1083:             const clearEvents = () => { setEvents([]); logSystemEvent("Event log console cleared."); };
+1084:             const downloadCSV = () => {
+1085:                 const csvContent = ['Timestamp,Category,Details', ...events.map(e => `${e.timestamp},${e.gesture},"${e.action.replace(/"/g, '""')}"`)].join('\n');
+1086:                 const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+1087:                 const url = URL.createObjectURL(blob);
+1088:                 const link = document.createElement("a");
+1089:                 link.setAttribute("href", url); link.setAttribute("download", `gestureos_log_${Date.now()}.csv`);
+1090:                 document.body.appendChild(link); link.click(); document.body.removeChild(link);
+1091:             };
+1092: 
+1093:             const formatSessionTime = (seconds) => {
+1094:                 const h = Math.floor(seconds / 3600).toString().padStart(2, '0');
+1095:                 const m = Math.floor((seconds % 3600) / 60).toString().padStart(2, '0');
+1096:                 const s = (seconds % 60).toString().padStart(2, '0');
+1097:                 return `${h}:${m}:${s}`;
+1098:             };
+1099: 
+1100:             return (
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

@@ -1,0 +1,44 @@
+Created At: 2026-06-12T09:20:28Z
+Completed At: 2026-06-12T09:20:28Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 2694
+Total Bytes: 187527
+Showing lines 2200 to 2500
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+2200:                                                                 value={virtualMouseVolumeMaxDistancePx} 
+2201:                                                                 onChange={(e) => {
+2202:                                                                     const val = parseFloat(e.target.value);
+2203:                                                                     setVirtualMouseVolumeMaxDistancePx(val);
+2204:                                                                     updateSetting('virtual_mouse_volume_max_distance_px', val);
+2205:                                                                 }}
+2206:                                                                 className="w-full h-1.5 bg-zinc-700 rounded-lg appearance-none cursor-pointer accent-blue-500" 
+2207:                                                             />
+2208:                                                         </div>
+2209: 
+2210:                                                         {/* Volume Smoothing Slider */}
+2211:                                                         <div className="space-y-2">
+2212:                                                             <div className="flex justify-between text-xs">
+2213:                                                                 <span className="text-gray-400">Volume Smoothing</span>
+2214:                                                                 <span className="text-white font-mono">{virtualMouseVolumeSmoothing.toFixed(2)}</span>
+2215:                                                       
+<truncated 26198 bytes>
+          className={`w-16 h-12 rounded-lg text-xs font-bold transition-all duration-100 ${
+2483:                                                             pressedKey === 'Tab' 
+2484:                                                                 ? 'bg-amber-500 text-black scale-95' 
+2485:                                                                 : hoveredKey === 'Tab'
+2486:                                                                     ? 'bg-blue-600/40 text-white border border-blue-500/80 shadow-md shadow-blue-500/20'
+2487:                                                                     : 'bg-zinc-900 hover:bg-zinc-800 text-gray-300 border border-zinc-750'
+2488:                                                         }`}
+2489:                                                     >
+2490:                                                         Tab
+2491:                                                     </button>
+2492:                                                     {["Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P"].map(key => {
+2493:                                                         const label = isCapsLockActive || isShiftActive ? key.toUpperCase() : key.toLowerCase();
+2494:                                                         return (
+2495:                                                             <button 
+2496:                                                                 key={key}
+2497:                                                                 data-key={key}
+2498:                                                                 onMouseEnter={() => setHoveredKey(key)}
+2499:                                                                 onMouseLeave={() => setHoveredKey('None')}
+2500:                                                                 onClick={() => handleWebKeyPress(key)}
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

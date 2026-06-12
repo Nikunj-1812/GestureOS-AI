@@ -1,0 +1,34 @@
+Created At: 2026-06-11T10:27:40Z
+Completed At: 2026-06-11T10:27:40Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 1787
+Total Bytes: 119241
+Showing lines 660 to 685
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+660:             const [cursorY, setCursorY] = useState(0);
+661:             const [trackingState, setTrackingState] = useState('Disabled');
+662:             const [pinchDistance, setPinchDistance] = useState(0.0);
+663:             const [clickStatus, setClickStatus] = useState('OPEN');
+664:             const [clickCounter, setClickCounter] = useState(0);
+665:             const [currentAction, setCurrentAction] = useState('None');
+666:             // Phase 3.3 — Right Click
+667:             const [rightClickStatus, setRightClickStatus] = useState('OPEN');
+668:             const [rightClickCounter, setRightClickCounter] = useState(0);
+669:             const [rightPinchDistance, setRightPinchDistance] = useState(0.0);
+670:             const prevRightClickStatusRef = useRef('OPEN');
+671:             // Phase 3.4 — Scroll Control
+672:             const [scrollMode, setScrollMode] = useState(false);
+673:             const [scrollDirection, setScrollDirection] = useState('NONE');
+674:             const [scrollSpeed, setScrollSpeed] = useState(0.0);
+675:             const [scrollCounter, setScrollCounter] = useState(0);
+676:             const [virtualMouseScrollSensitivity, setVirtualMouseScrollSensitivity] = useState(5.0);
+677:             const [virtualMouseScrollDeadZone, setVirtualMouseScrollDeadZone] = useState(0.04);
+678:             const [virtualMouseScrollSmoothing, setVirtualMouseScrollSmoothing] = useState(0.25);
+679:             const prevScrollModeRef = useRef(false);
+680:             // Phase 3.4 — Volume Control
+681:             const [volumeMode, setVolumeMode] = useState(false);
+682:             const [volumeLevel, setVolumeLevel] = useState(0);
+683:             const [volumeDistance, setVolumeDistance] = useState(0.0);
+684:             const [virtualMouseVolumeMinDistancePx, setVirtualMouseVolumeMinDistancePx] = useState(30.0);
+685:             const [virtualMouseVolumeMaxDistancePx, setVirtualMouseVolumeMaxDistancePx] = useState(250.0);
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

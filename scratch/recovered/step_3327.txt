@@ -1,0 +1,43 @@
+Created At: 2026-06-12T10:41:55Z
+Completed At: 2026-06-12T10:41:55Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 4033
+Total Bytes: 278212
+Showing lines 3520 to 3560
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+3520:                                                 {/* Row 6 (Emojis) */}
+3521:                                                 <div className="flex gap-1.5 w-full justify-between mt-2">
+3522:                                                     {["😊", "😂", "👍", "🔥", "❤️", "🎉", "✨", "🚀", "👋", "👀"].map(emoji => (
+3523:                                                         <button
+3524:                                                             key={emoji}
+3525:                                                             data-key={emoji}
+3526:                                                             onMouseEnter={() => setHoveredKey(emoji)}
+3527:                                                             onMouseLeave={() => setHoveredKey('None')}
+3528:                                                             onClick={() => handleWebKeyPress(emoji)}
+3529:                                                             className={`flex-1 h-10 rounded-lg text-base transition-all duration-100 ${
+3530:                                                                 pressedKey === emoji
+3531:                                                                     ? 'bg-amber-500 text-black scale-95'
+3532:                                                                     : hoveredKey === emoji
+3533:                                                                         ? 'bg-blue-600/40 text-white border border-blue-500/80 shadow-md shadow-blue-500/20'
+3534:                                                                         : 'b
+<truncated 603 bytes>
+u === 'drawing' ? (
+3543:                                         <>
+3544:                                             {/* Hero Header Section - Hidden in fullscreen mode */}
+3545:                                             {!fullScreenMode && (
+3546:                                                 <div className="glass-panel rounded-3xl p-6 flex flex-col md:flex-row md:items-center justify-between border border-glass-border relative overflow-hidden">
+3547:                                                     <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 opacity-20" />
+3548:                                                     <div>
+3549:                                                         <h2 className="text-2xl font-bold tracking-wide text-white">Air Drawing Canvas</h2>
+3550:                                                         <p className="text-xs text-gray-400 mt-1 max-w-xl">
+3551:                                                             Draw in the air using finger pinch gestures. Customize brush size and color, and manage drawings.
+3552:                                                         </p>
+3553:                                                     </div>
+3554:                                                     <div className="mt-4 md:mt-0">
+3555:                                                         <span className="px-4 py-2 rounded-full text-xs font-semibold border bg-emerald-500/10 border-emerald-500/20 text-accent-green">
+3556:                                                             Live Canvas
+3557:                                                         </span>
+3558:                                                     </div>
+3559:                                                 </div>
+3560:                                             )}
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

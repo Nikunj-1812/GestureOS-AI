@@ -1,0 +1,69 @@
+Created At: 2026-06-12T09:55:46Z
+Completed At: 2026-06-12T09:55:46Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 3021
+Total Bytes: 207053
+Showing lines 920 to 1010
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+920:             const backspaceCountRef = useRef(0);
+921:             const typingStartTimeRef = useRef(null);
+922: 
+923:             const getCurrentWordJS = (text) => {
+924:                 if (!text) return "";
+925:                 const match = text.match(/[\w'-]+$/);
+926:                 return match ? match[0] : "";
+927:             };
+928:             
+929:             const smoothXRef = useRef(null);
+930:             const smoothYRef = useRef(null);
+931:             const candidateKeyRef = useRef(null);
+932:             const candidateStartTimeRef = useRef(null);
+933:             const lastHoverDetectTimeRef = useRef(null);
+934:             const hoveredKeyRef = useRef('None');
+935:             const pinchActiveRef = useRef(false);
+936: 
+937: 
+938:             // Switches State
+939:             const [showLandmarks, setShowLandmarks] = useState(true);
+940:             const [showConnections, setShowConnections] = useState(true);
+941:             const [showBoundingBox, setShowBoundingBox] = useState(true);
+942:             const [showFingerStates, setShowFingerStates] = useState(true);
+943:             const [showDistanceMeter, setShowDistanceMeter] = useState(true);
+944:             const [showDebugPanel, setShowDebugPanel] = useState(true);
+945:             const [showHud, setShowHud] = useState(true);
+946: 
+947:             const prevGestureRef = useRef('None');
+948:             const socketRef = useRef(null);
+949:             const eventIdCounterRef = useRef(0);
+950: 
+951:             // Connect to the WebSocket backend
+952:             useEffect(()
+<truncated 1785 bytes>
+                    // Key Hover Detection for Web Keyboard
+985:                             let detectedKey = null;
+986:                             const wsNow = Date.now();
+987: 
+988:                             if (data.index_tip_x !== undefined && data.index_tip_y !== undefined && data.index_tip_x !== null && data.index_tip_y !== null) {
+989:                                 const rawX = data.index_tip_x;
+990:                                 const rawY = data.index_tip_y;
+991:                                 const xMirrored = 1.0 - rawX; // Mirror horizontal to match screen direction
+992: 
+993:                                 // Smooth coordinates using exponential moving average (EMA)
+994:                                 const smoothing = 0.20;
+995:                                 if (smoothXRef.current === null || smoothYRef.current === null) {
+996:                                     smoothXRef.current = xMirrored;
+997:                                     smoothYRef.current = rawY;
+998:                                 } else {
+999:                                     smoothXRef.current += (xMirrored - smoothXRef.current) * smoothing;
+1000:                                     smoothYRef.current += (rawY - smoothYRef.current) * smoothing;
+1001:                                 }
+1002: 
+1003:                                 // Map to viewport coordinates
+1004:                                 const clientX = smoothXRef.current * window.innerWidth;
+1005:                                 const clientY = smoothYRef.current * window.innerHeight;
+1006: 
+1007:                                 // Resolve HTML element at the cursor point
+1008:                                 try {
+1009:                                     const element = document.elementFromPoint(clientX, clientY);
+1010:                                     if (element) {
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

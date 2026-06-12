@@ -1,0 +1,54 @@
+Created At: 2026-06-12T10:22:08Z
+Completed At: 2026-06-12T10:22:08Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 3488
+Total Bytes: 240174
+Showing lines 1990 to 2060
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1990:                                         {socketStatus === 'connected' ? 'Connected' : socketStatus === 'connecting' ? 'Connecting...' : 'Offline'}
+1991:                                     </span>
+1992:                                 </div>
+1993:                             </div>
+1994:                         </div>
+1995:                     </aside>
+1996: 
+1997:                     {/* Main Content Area */}
+1998:                     <main className="flex-1 flex flex-col h-full overflow-hidden bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-blue-950/15 via-[#080710] to-[#080710]">
+1999:                         
+2000:                         <header className="h-20 border-b border-glass-border px-8 flex items-center justify-between backdrop-blur-md z-10 shrink-0">
+2001:                             <div>
+2002:                                 <h2 className="text-xl font-bold tracking-wide text-white">
+2003:                                     {activeMenu === 'dashboard' ? 'System Monitor' : activeMenu === 'mouse' ? 'Virtual Mouse Monitor' : activeMenu === 'keyboard' ? 'Virtual Keyboard Monitor' : activeMenu === 'drawing' ? 'Air Drawing Canvas' : 'System Configuration'}
+2004:                                 </h2>
+2005:                                 <p className="text-xs text-gray-400 mt-0.5">
+2006:                                     {activeMenu === 'dashboard' 
+2007:                                         ? 'Telemetry overview and input gesture mapping controls.' 
+2008:                                         : activeMenu === 'mouse'
+<truncated 2019 bytes>
+v className="flex items-center gap-3 px-3 py-1.5 rounded-xl glass-card border border-glass-border text-left select-none">
+2036:                                     <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center text-white font-bold text-sm">
+2037:                                         <UserIcon className="w-4 h-4" />
+2038:                                     </div>
+2039:                                     <div className="hidden sm:block">
+2040:                                         <p className="text-xs font-semibold text-white">Operator</p>
+2041:                                         <p className="text-[10px] text-gray-400">Admin Role</p>
+2042:                                     </div>
+2043:                                 </div>
+2044: 
+2045:                                 <button 
+2046:                                     onClick={handleStopCamera}
+2047:                                     className="p-2.5 rounded-xl bg-red-500/10 hover:bg-red-500/20 border border-red-500/20 hover:border-red-500/30 text-red-400 hover:text-red-300 transition-all duration-300 group"
+2048:                                     title="Stop Engine"
+2049:                                 >
+2050:                                     <LogOutIcon className="w-5 h-5" />
+2051:                                 </button>
+2052:                             </div>
+2053:                         </header>
+2054: 
+2055:                         {/* Outer scrollable viewport */}
+2056:                         <div className="flex-1 overflow-y-auto p-8 scrollbar-thin">
+2057:                             <div className="max-w-6xl mx-auto space-y-6">
+2058:                                 
+2059:                                 {activeMenu === 'dashboard' ? (
+2060:                                     <>
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

@@ -1,0 +1,64 @@
+Created At: 2026-06-12T05:02:06Z
+Completed At: 2026-06-12T05:02:07Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 2483
+Total Bytes: 173395
+Showing lines 2430 to 2483
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+2430:                                                     })}
+2431:                                                     <button 
+2432:                                                         onMouseEnter={() => setHoveredKey('Backspace')}
+2433:                                                         onMouseLeave={() => setHoveredKey('None')}
+2434:                                                         onClick={() => handleWebKeyPress('Backspace')}
+2435:                                                         className={`w-28 h-12 rounded-lg text-xs font-bold transition-all duration-100 ${
+2436:                                                             pressedKey === 'Backspace' ? 'bg-amber-500 text-black scale-95' : 'bg-zinc-900 hover:bg-zinc-800 text-gray-300 border border-zinc-750'
+2437:                                                         }`}
+2438:                                                     >
+2439:                                                         Backspace
+2440:                                                     </button>
+2441:                                                 </div>
+2442: 
+2443:                                                 {/* Row 5 */}
+2444:                                                 <div className="flex gap-1.5 w-full justify-between">
+2445:                                                     <button 
+2446:                                                         onMouseEnter={() => setHoveredKey('Space')}
+2447:                                                         onMouseLeave={() => setHoveredKey('None')}
+2
+<truncated 94 bytes>
+'Space')}
+2449:                                                         className={`w-full h-12 rounded-lg text-sm font-semibold transition-all duration-100 ${
+2450:                                                             pressedKey === 'Space' ? 'bg-amber-500 text-black scale-95' : 'bg-zinc-905 hover:bg-zinc-800 text-gray-300 border border-zinc-750 active:scale-95'
+2451:                                                         }`}
+2452:                                                     >
+2453:                                                         Space
+2454:                                                     </button>
+2455:                                                 </div>
+2456:                                             </div>
+2457:                                         </div>
+2458:                                     </>
+2459:                                 ) : (
+2460:                                     <div className="glass-card rounded-2xl p-8 text-center text-gray-400">
+2461:                                         <p>This page is currently under construction. Please use the Dashboard or Virtual Mouse navigation links.</p>
+2462:                                     </div>
+2463:                                 )}
+2464:                             </div>
+2465:                         </div>
+2466:                     </main>
+2467:                 </div>
+2468:             );
+2469:         }
+2470: 
+2471:         const root = ReactDOM.createRoot(document.getElementById('root'));
+2472:         root.render(<App />);
+2473:     </script>
+2474: </body>
+2475: </html>"""
+2476: 
+2477: @app.get("/", response_class=HTMLResponse)
+2478: async def get_dashboard():
+2479:     return HTML_CONTENT
+2480: 
+2481: if __name__ == "__main__":
+2482:     uvicorn.run("web_backend:app", host="127.0.0.1", port=8000, log_level="info")
+2483: 
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

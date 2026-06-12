@@ -1,0 +1,39 @@
+Created At: 2026-06-11T10:47:08Z
+Completed At: 2026-06-11T10:47:08Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 1987
+Total Bytes: 135200
+Showing lines 50 to 80
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+50:     detection_confidence=0.5,
+51:     tracking_confidence=0.5
+52: )
+53: 
+54: model_path = str(Path(config.model_dir) / config.default_model)
+55: gesture_engine = GestureEngine(
+56:     model_path=model_path,
+57:     confidence_threshold=config.confidence_threshold,
+58:     smoothing_frames=config.smoothing_frames,
+59: )
+60: action_dispatcher = ActionDispatcher(cooldown_ms=800)
+61: 
+62: from modules.virtual_mouse import VirtualMouse
+63: virtual_mouse = VirtualMouse(
+64:     enabled=config.virtual_mouse_enabled,
+65:     sensitivity=config.virtual_mouse_sensitivity,
+66:     dead_zone=config.virtual_mouse_dead_zone,
+67:     smoothing=config.virtual_mouse_smoothing,
+68:     click_threshold=getattr(config, 'virtual_mouse_click_threshold', 0.05),
+69:     right_click_threshold=getattr(config, 'virtual_mouse_right_click_threshold', 0.05),
+70:     scroll_sensitivity=getattr(config, 'virtual_mouse_scroll_sensitivity', 5.0),
+71:     scroll_dead_zone=getattr(config, 'virtual_mouse_scroll_dead_zone', 0.04),
+72:     scroll_smoothing=getattr(config, 'virtual_mouse_scroll_smoothing', 0.25),
+73:     volume_min_distance_px=getattr(config, 'virtual_mouse_volume_min_distance_px', 30.0),
+74:     volume_max_distance_px=getattr(config, 'virtual_mouse_volume_max_distance_px', 250.0),
+75:     volume_smoothing=getattr(config, 'virtual_mouse_volume_smoothing', 0.15),
+76: )
+77: 
+78: camera_running = False
+79: 
+80: def start_camera_stream():
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

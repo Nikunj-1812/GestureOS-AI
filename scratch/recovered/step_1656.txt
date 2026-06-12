@@ -1,0 +1,29 @@
+Created At: 2026-06-12T04:54:24Z
+Completed At: 2026-06-12T04:54:24Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 2092
+Total Bytes: 142927
+Showing lines 525 to 545
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+525:                 <path d="M18 11V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v5" />
+526:                 <path d="M14 10V4a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v6" />
+527:                 <path d="M10 10.5V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v8.5" />
+528:                 <path d="M10 18H5a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2v0a2 2 0 0 1 2 2v2" />
+529:                 <path d="M6 14v0a6 6 0 0 0 12 0v-3" />
+530:                 <path d="M18 15h1a2 2 0 0 1 2 2v1a2 2 0 0 1-2 2h-9a6 6 0 0 1-6-6v0" />
+531:             </svg>
+532:         );
+533: 
+534:         const CameraIcon = (props) => (
+535:             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+536:                 <path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/>
+537:                 <circle cx="12" cy="13" r="3"/>
+538:             </svg>
+539:         );
+540: 
+541:         const VideoOffIcon = (props) => (
+542:             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+543:                 <path d="M10.66 6H14.5a2.5 2.5 0 0 1 2.5 2.5v3.84M2 2l20 20M3.5 8H4M18.5 8H19a2.5 2.5 0 0 1 2.5 2.5v3a2.5 2.5 0 0 1-.5 1.5M7.34 16H4.5A2.5 2.5 0 0 1 2 13.5v-5A2.5 2.5 0 0 1 4.5 6h.84M17 17H7a2.5 2.5 0 0 1-2.5-2.5V10.5"/>
+544:             </svg>
+545:         );
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

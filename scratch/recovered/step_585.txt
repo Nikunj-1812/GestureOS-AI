@@ -1,0 +1,50 @@
+Created At: 2026-06-11T10:27:22Z
+Completed At: 2026-06-11T10:27:23Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 1772
+Total Bytes: 117640
+Showing lines 1731 to 1772
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1731:                                                                 min="0.05" 
+1732:                                                                 max="0.50" 
+1733:                                                                 step="0.01"
+1734:                                                                 value={virtualMouseVolumeSmoothing} 
+1735:                                                                 onChange={(e) => {
+1736:                                                                     const val = parseFloat(e.target.value);
+1737:                                                                     setVirtualMouseVolumeSmoothing(val);
+1738:                                                                     updateSetting('virtual_mouse_volume_smoothing', val);
+1739:                                                                 }}
+1740:                                                                 className="w-full h-1.5 bg-zinc-700 rounded-lg appearance-none cursor-pointer accent-blue-500" 
+1741:                                                             />
+1742:                                                         </div>
+1743:                                                     </div>
+1744:                                                 </div>
+1745:                                             </div>
+1746:                                         </div>
+1747:                                     </>
+1748:                                 ) : (
+1749:                                     <div className="glass-card rounded-2xl p-8 text-center text-gray-400">
+1750:                                         <p>This page is currently under construction. Please use the Dashboard or Virtual Mouse navigation links.</p>
+1751:                                     </div>
+1752:                                 )}
+1753:                             </div>
+1754:                         </div>
+1755:                     </main>
+1756:                 </div>
+1757:             );
+1758:         }
+1759: 
+1760:         const root = ReactDOM.createRoot(document.getElementById('root'));
+1761:         root.render(<App />);
+1762:     </script>
+1763: </body>
+1764: </html>"""
+1765: 
+1766: @app.get("/", response_class=HTMLResponse)
+1767: async def get_dashboard():
+1768:     return HTML_CONTENT
+1769: 
+1770: if __name__ == "__main__":
+1771:     uvicorn.run("web_backend:app", host="127.0.0.1", port=8000, log_level="info")
+1772: 
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

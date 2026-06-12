@@ -1,0 +1,27 @@
+Created At: 2026-06-12T09:57:53Z
+Completed At: 2026-06-12T09:57:54Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 3021
+Total Bytes: 207053
+Showing lines 830 to 848
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+830:             </svg>
+831:         );
+832: 
+833:         function App() {
+834:             const [fps, setFps] = useState(0);
+835:             const [hands, setHands] = useState(0);
+836:             const [gesture, setGesture] = useState('None');
+837:             const [confidence, setConfidence] = useState(0);
+838:             const [cameraStatus, setCameraStatus] = useState('Disconnected');
+839:             const [frame, setFrame] = useState(null);
+840:             
+841:             const [socketStatus, setSocketStatus] = useState('disconnected');
+842:             const [events, setEvents] = useState([]);
+843:             const [activeMenu, setActiveMenu] = useState('dashboard');
+844:             const [isResetting, setIsResetting] = useState(false);
+845:             const [isCameraLoading, setIsCameraLoading] = useState(false);
+846: 
+847:             // Virtual Mouse States
+848:             const [virtualMouseEnabled, setVirtualMouseEnabled] = useState(false);
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

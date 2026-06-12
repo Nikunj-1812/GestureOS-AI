@@ -1,0 +1,29 @@
+Created At: 2026-06-12T10:21:11Z
+Completed At: 2026-06-12T10:21:12Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 3488
+Total Bytes: 240174
+Showing lines 2050 to 2070
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+2050:                                     <LogOutIcon className="w-5 h-5" />
+2051:                                 </button>
+2052:                             </div>
+2053:                         </header>
+2054: 
+2055:                         {/* Outer scrollable viewport */}
+2056:                         <div className="flex-1 overflow-y-auto p-8 scrollbar-thin">
+2057:                             <div className="max-w-6xl mx-auto space-y-6">
+2058:                                 
+2059:                                 {activeMenu === 'dashboard' ? (
+2060:                                     <>
+2061:                                         {/* Status Cards Grid */}
+2062:                                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-5">
+2063:                                             {/* FPS Card */}
+2064:                                             <div className="glass-card p-5 rounded-2xl flex items-center gap-4 relative overflow-hidden group">
+2065:                                                 <div className="p-3 bg-blue-500/10 rounded-xl border border-blue-500/20 text-accent-blue">
+2066:                                                     <ActivityIcon className="w-6 h-6" />
+2067:                                                 </div>
+2068:                                                 <div>
+2069:                                                     <p className="text-xs font-semibold uppercase tracking-wider text-gray-400">Frames Per Second</p>
+2070:                                                     <p className="text-2xl font-bold text-white mt-1 font-mono tracking-tight">
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

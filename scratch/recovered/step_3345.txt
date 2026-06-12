@@ -1,0 +1,22 @@
+Created At: 2026-06-12T10:42:22Z
+Completed At: 2026-06-12T10:42:23Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 4033
+Total Bytes: 278212
+Showing lines 3535 to 3548
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+3535:                                                             }`}
+3536:                                                         >
+3537:                                                             {emoji}
+3538:                                                         </button>
+3539:                                                     ))}
+3540:                                                 </div>
+3541:                                             </div>
+3542:                                                        ) : activeMenu === 'drawing' ? (
+3543:                                         <>
+3544:                                             {/* Hero Header Section - Hidden in fullscreen mode */}
+3545:                                             {!fullScreenMode && (
+3546:                                                 <div className="glass-panel rounded-3xl p-6 flex flex-col md:flex-row md:items-center justify-between border border-glass-border relative overflow-hidden">
+3547:                                                     <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 opacity-20" />
+3548:                                                     <div>
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

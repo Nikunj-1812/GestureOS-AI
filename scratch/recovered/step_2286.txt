@@ -1,0 +1,82 @@
+Created At: 2026-06-12T09:20:18Z
+Completed At: 2026-06-12T09:20:18Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 2694
+Total Bytes: 187527
+Showing lines 1 to 800
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1: import os
+2: import sys
+3: 
+4: # Suppress third-party logging / console spam (MediaPipe, TensorFlow, OpenCV)
+5: os.environ['GLOG_minloglevel'] = '2'          # Suppress MediaPipe info logs
+6: os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'       # Suppress TensorFlow info/warning logs
+7: os.environ['OPENCV_LOG_LEVEL'] = 'ERROR'       # Suppress OpenCV info/warning logs
+8: os.environ['OPENCV_FFMPEG_LOGLEVEL'] = '-8'    # Suppress OpenCV FFMPEG logs
+9: 
+10: import base64
+11: import cv2
+12: import json
+13: import asyncio
+14: import math
+15: from fastapi import FastAPI, WebSocket, WebSocketDisconnect
+16: from fastapi.middleware.cors import CORSMiddleware
+17: from fastapi.responses import HTMLResponse
+18: import uvicorn
+19: import time
+20: from pathlib import Path
+21: 
+22: from config.settings_manager import SettingsManager
+23: from modules.camera import CameraStream
+24: from modules.hand_detector import HandDetector
+25: from modules.gesture_engine import GestureEngine
+26: from modules.action_dispatcher import ActionDispatcher
+27: from loguru import logger
+28: 
+29: app = FastAPI(title="GestureOS AI Web Backend")
+30: 
+31: # Enable CORS
+32: app.add_middleware(
+33:     CORSMiddleware,
+34:     allow_origins=["*"],
+35:     allow_credentials=True,
+36:     allow_methods=["*"],
+37:     allow_headers=["*"],
+38: )
+39: 
+40: # Shared system states
+41: settings_manager = SettingsManager()
+42: config = settings_manager.build_app_config("config/settings.yaml")
+43: 
+44: # Configure logger level from settings
+45: logger.remove()
+46: logger.add(sys.stderr, level=config.log_level)
+47: 
+48: ca
+<truncated 39500 bytes>
+MouseEnabled, setVirtualMouseEnabled] = useState(false);
+777:             const [virtualMouseSensitivity, setVirtualMouseSensitivity] = useState(1.5);
+778:             const [virtualMouseDeadZone, setVirtualMouseDeadZone] = useState(0.15);
+779:             const [virtualMouseSmoothing, setVirtualMouseSmoothing] = useState(0.20);
+780:             const [virtualMouseClickThreshold, setVirtualMouseClickThreshold] = useState(0.05);
+781:             const [virtualMouseRightClickThreshold, setVirtualMouseRightClickThreshold] = useState(0.05);
+782:             
+783:             const [cursorX, setCursorX] = useState(0);
+784:             const [cursorY, setCursorY] = useState(0);
+785:             const [trackingState, setTrackingState] = useState('Disabled');
+786:             const [pinchDistance, setPinchDistance] = useState(0.0);
+787:             const [clickStatus, setClickStatus] = useState('OPEN');
+788:             const [clickCounter, setClickCounter] = useState(0);
+789:             const [currentAction, setCurrentAction] = useState('None');
+790:             // Phase 3.3 — Right Click
+791:             const [rightClickStatus, setRightClickStatus] = useState('OPEN');
+792:             const [rightClickCounter, setRightClickCounter] = useState(0);
+793:             const [rightPinchDistance, setRightPinchDistance] = useState(0.0);
+794:             const prevRightClickStatusRef = useRef('OPEN');
+795:             // Phase 3.4 — Scroll Control
+796:             const [scrollMode, setScrollMode] = useState(false);
+797:             const [scrollDirection, setScrollDirection] = useState('NONE');
+798:             const [scrollSpeed, setScrollSpeed] = useState(0.0);
+799:             const [scrollCounter, setScrollCounter] = useState(0);
+800:             const [virtualMouseScrollSensitivity, setVirtualMouseScrollSensitivity] = useState(5.0);
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

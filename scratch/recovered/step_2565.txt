@@ -1,0 +1,58 @@
+Created At: 2026-06-12T09:42:41Z
+Completed At: 2026-06-12T09:42:41Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 2763
+Total Bytes: 190961
+Showing lines 1 to 50
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1: import os
+2: import sys
+3: 
+4: # Suppress third-party logging / console spam (MediaPipe, TensorFlow, OpenCV)
+5: os.environ['GLOG_minloglevel'] = '2'          # Suppress MediaPipe info logs
+6: os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'       # Suppress TensorFlow info/warning logs
+7: os.environ['OPENCV_LOG_LEVEL'] = 'ERROR'       # Suppress OpenCV info/warning logs
+8: os.environ['OPENCV_FFMPEG_LOGLEVEL'] = '-8'    # Suppress OpenCV FFMPEG logs
+9: 
+10: import base64
+11: import cv2
+12: import json
+13: import asyncio
+14: import math
+15: import pyautogui
+16: from fastapi import FastAPI, WebSocket, WebSocketDisconnect
+17: from fastapi.middleware.cors import CORSMiddleware
+18: from fastapi.responses import HTMLResponse
+19: import uvicorn
+20: import time
+21: from pathlib import Path
+22: 
+23: from config.settings_manager import SettingsManager
+24: from modules.camera import CameraStream
+25: from modules.hand_detector import HandDetector
+26: from modules.gesture_engine import GestureEngine
+27: from modules.action_dispatcher import ActionDispatcher
+28: from modules import word_predictor
+29: from loguru import logger
+30: 
+31: app = FastAPI(title="GestureOS AI Web Backend")
+32: 
+33: # Enable CORS
+34: app.add_middleware(
+35:     CORSMiddleware,
+36:     allow_origins=["*"],
+37:     allow_credentials=True,
+38:     allow_methods=["*"],
+39:     allow_headers=["*"],
+40: )
+41: 
+42: # Shared system states
+43: settings_manager = SettingsManager()
+44: config = settings_manager.build_app_config("config/settings.yaml")
+45: 
+46: # Configure logger level from settings
+47: logger.remove()
+48: logger.add(sys.stderr, level=config.log_level)
+49: 
+50: camera_stream = None
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

@@ -1,0 +1,29 @@
+Created At: 2026-06-12T09:43:22Z
+Completed At: 2026-06-12T09:43:22Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 2763
+Total Bytes: 190961
+Showing lines 1255 to 1275
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1255:                         }
+1256:                         if (data.virtual_mouse_brightness_min_distance_px !== undefined) {
+1257:                             setVirtualMouseBrightnessMinDistancePx(data.virtual_mouse_brightness_min_distance_px);
+1258:                         }
+1259:                         if (data.virtual_mouse_brightness_max_distance_px !== undefined) {
+1260:                             setVirtualMouseBrightnessMaxDistancePx(data.virtual_mouse_brightness_max_distance_px);
+1261:                         }
+1262:                         if (data.virtual_mouse_brightness_smoothing !== undefined) {
+1263:                             setVirtualMouseBrightnessSmoothing(data.virtual_mouse_brightness_smoothing);
+1264:                         }
+1265:                         if (data.virtual_mouse_drag_threshold_ms !== undefined) {
+1266:                             setVirtualMouseDragThresholdMs(data.virtual_mouse_drag_threshold_ms);
+1267:                         }
+1268:                     })
+1269: 
+1270:                     .catch(err => console.error('Error loading config settings:', err));
+1271: 
+1272:                 // Escape key emergency stop listener
+1273:                 const handleEscape = (e) => {
+1274:                     if (e.key === 'Escape') {
+1275:                         setVirtualMouseEnabled(false);
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

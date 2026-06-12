@@ -1,0 +1,48 @@
+Created At: 2026-06-12T10:06:46Z
+Completed At: 2026-06-12T10:06:46Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 3040
+Total Bytes: 208293
+Showing lines 2971 to 3010
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+2971: 
+2972:                                                 {/* Row 6 (Emojis) */}
+2973:                                                 <div className="flex gap-1.5 w-full justify-between mt-2">
+2974:                                                     {["😊", "😂", "👍", "🔥", "❤️", "🎉", "✨", "🚀", "👋", "👀"].map(emoji => (
+2975:                                                         <button
+2976:                                                             key={emoji}
+2977:                                                             data-key={emoji}
+2978:                                                             onMouseEnter={() => setHoveredKey(emoji)}
+2979:                                                             onMouseLeave={() => setHoveredKey('None')}
+2980:                                                             onClick={() => handleWebKeyPress(emoji)}
+2981:                                                             className={`flex-1 h-10 rounded-lg text-base transition-all duration-100 ${
+2982:                                                                 pressedKey === emoji
+2983:                                                                     ? 'bg-amber-500 text-black scale-95'
+2984:                                                                     : hoveredKey === emoji
+2985:                                                                         ? 'bg-blue-600/40 text-white border border-blue-500/80 shadow-md shadow-blue-500/20'
+2986:                                                                         : 'bg-zinc-850 hover:bg-zinc-700 active:scale-95 border border-zinc-750'
+2987:                                                             }`}
+2988:                                                         >
+2989:                                                             {emoji}
+2990:                                                         </button>
+2991:                                                     ))}
+2992:                                                 </div>
+2993:                                             </div>
+2994:                                         </div>
+2995:                                     </>
+2996:                                 ) : (
+2997:                                     <div className="glass-card rounded-2xl p-8 text-center text-gray-400">
+2998:                                         <p>This page is currently under construction. Please use the Dashboard or Virtual Mouse navigation links.</p>
+2999:                                     </div>
+3000:                                 )}
+3001:                             </div>
+3002:                         </div>
+3003:                     </main>
+3004:                 </div>
+3005:             );
+3006:         }
+3007: 
+3008:         const root = ReactDOM.createRoot(document.getElementById('root'));
+3009:         root.render(<App />);
+3010:     </script>
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

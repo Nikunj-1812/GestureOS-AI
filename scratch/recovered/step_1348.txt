@@ -1,0 +1,46 @@
+Created At: 2026-06-11T13:00:23Z
+Completed At: 2026-06-11T13:00:24Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 2071
+Total Bytes: 141023
+Showing lines 1930 to 1987
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1930:                                                                     const val = parseFloat(e.target.value);
+1931:                                                                     setVirtualMouseVolumeMinDistancePx(val);
+1932:                                                                     updateSetting('virtual_mouse_volume_min_distance_px', val);
+1933:                                                                 }}
+1934:                                                                 className="w-full h-1.5 bg-zinc-700 rounded-lg appearance-none cursor-pointer accent-blue-500" 
+1935:                                                             />
+1936:                                                         </div>
+1937: 
+1938:                                                         {/* Volume Max Distance Slider */}
+1939:                                                         <div className="space-y-2">
+1940:                                                             <div className="flex justify-between text-xs">
+1941:                                                                 <span className="text-gray-400">Volume Max Distance</span>
+1942:                                                                 <span className="text-white font-mono">{virtualMouseVolumeMaxDistancePx.toFixed(0)} px</span>
+1943:                                                             </div>
+1944:                                                             <input 
+1945:                                                                 type="range" 
+1946:           
+<truncated 2137 bytes>
+ax="0.50" 
+1969:                                                                 step="0.01"
+1970:                                                                 value={virtualMouseVolumeSmoothing} 
+1971:                                                                 onChange={(e) => {
+1972:                                                                     const val = parseFloat(e.target.value);
+1973:                                                                     setVirtualMouseVolumeSmoothing(val);
+1974:                                                                     updateSetting('virtual_mouse_volume_smoothing', val);
+1975:                                                                 }}
+1976:                                                                 className="w-full h-1.5 bg-zinc-700 rounded-lg appearance-none cursor-pointer accent-blue-500" 
+1977:                                                             />
+1978:                                                         </div>
+1979: 
+1980:                                                         {/* Brightness Min Distance Slider */}
+1981:                                                         <div className="space-y-2">
+1982:                                                             <div className="flex justify-between text-xs">
+1983:                                                                 <span className="text-gray-400">Brightness Min Distance</span>
+1984:                                                                 <span className="text-white font-mono">{virtualMouseBrightnessMinDistancePx.toFixed(0)} px</span>
+1985:                                                             </div>
+1986:                                                             <input 
+1987:                                                                 type="range" 
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

@@ -1,0 +1,49 @@
+Created At: 2026-06-12T05:10:56Z
+Completed At: 2026-06-12T05:10:56Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 2630
+Total Bytes: 183310
+Showing lines 810 to 850
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+810:             const [virtualMouseBrightnessMinDistancePx, setVirtualMouseBrightnessMinDistancePx] = useState(30.0);
+811:             const [virtualMouseBrightnessMaxDistancePx, setVirtualMouseBrightnessMaxDistancePx] = useState(250.0);
+812:             const [virtualMouseBrightnessSmoothing, setVirtualMouseBrightnessSmoothing] = useState(0.15);
+813:             const prevBrightnessLevelRef = useRef(-1);
+814:             const prevActiveModeRef = useRef('CURSOR');
+815:             
+816:             // Phase 3.5 — Drag & Drop Control
+817:             const [dragStatus, setDragStatus] = useState('IDLE');
+818:             const [dragDuration, setDragDuration] = useState(0.0);
+819:             const [dragCounter, setDragCounter] = useState(0);
+820:             const [virtualMouseDragThresholdMs, setVirtualMouseDragThresholdMs] = useState(200.0);
+821:             const prevDragStatusRef = useRef('IDLE');
+822: 
+823:             // Virtual Keyboard UI States
+824:             const [hoveredKey, setHoveredKey] = useState('None');
+825:             const [lastPressedKey, setLastPressedKey] = useState('None');
+826:             const [typedText, setTypedText] = useState('');
+827:             const [isShiftActive, setIsShiftActive] = useState(false);
+828:             const [isCapsLockActive, setIsCapsLockActive] = useState(false);
+829:             const [pressedKey, setPressedKey] = useState(null);
+830:             const [hoverDuration, setHoverDuration] = useState(0.0);
+831:             
+832:             const smoothXRef = useRef(null);
+833:             const smoothYRef = useRef(null);
+834:             const candidateKeyRef = useRef(null);
+835:             const candidateStartTimeRef = useRef(null);
+836:             const lastHoverDetectTimeRef = useRef(null);
+837: 
+838: 
+839:             // Switches State
+840:             const [showLandmarks, setShowLandmarks] = useState(true);
+841:             const [showConnections, setShowConnections] = useState(true);
+842:             const [showBoundingBox, setShowBoundingBox] = useState(true);
+843:             const [showFingerStates, setShowFingerStates] = useState(true);
+844:             const [showDistanceMeter, setShowDistanceMeter] = useState(true);
+845:             const [showDebugPanel, setShowDebugPanel] = useState(true);
+846:             const [showHud, setShowHud] = useState(true);
+847: 
+848:             const prevGestureRef = useRef('None');
+849:             const socketRef = useRef(null);
+850:             const eventIdCounterRef = useRef(0);
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

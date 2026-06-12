@@ -1,0 +1,79 @@
+Created At: 2026-06-12T11:15:07Z
+Completed At: 2026-06-12T11:15:07Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 2369
+Total Bytes: 129583
+Showing lines 1350 to 1420
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1350:             const redrawCanvas = (strokes) => {
+1351:                 renderAll();
+1352:             };
+1353: 
+1354:             const handleWebUndo = () => {
+1355:                 if (undoStack.length === 0) return;
+1356:                 const nextUndo = [...undoStack];
+1357:                 const popped = nextUndo.pop();
+1358:                 setUndoStack(nextUndo);
+1359:                 setRedoStack(prev => [...prev, popped]);
+1360:                 redrawCanvas(nextUndo);
+1361:             };
+1362: 
+1363:             const handleWebRedo = () => {
+1364:                 if (redoStack.length === 0) return;
+1365:                 const nextRedo = [...redoStack];
+1366:                 const popped = nextRedo.pop();
+1367:                 setRedoStack(nextRedo);
+1368:                 setUndoStack(prev => [...prev, popped]);
+1369:                 redrawCanvas([...undoStack, popped]);
+1370:             };
+1371: 
+1372:             const handleWebClear = () => {
+1373:                 setUndoStack([]);
+1374:                 setRedoStack([]);
+1375:                 const canvas = document.getElementById('drawing-canvas');
+1376:                 if (canvas) {
+1377:                     const ctx = canvas.getContext('2d');
+1378:                     ctx.clearRect(0, 0, canvas.width, canvas.height);
+1379:                 }
+1380:             };
+1381: 
+1382:             const handleWebSave = () => {
+1383:                 if (undoStack.length === 0) return;
+1384:                 const tempCanvas = document.createElement('canvas');
+1385:                 tempCanvas.width = 640;
+1386:                 tempCanvas.height = 360;
+1387:                 const tempCtx = tempCanvas.getContext('2d');
+1388:                 tempCtx.fillStyle = '#ffffff';
+1389:                 tempCtx.fillRect(0, 0, 640, 360);
+1390:                 
+1391:                 const mainCanvas = document.getElementById('drawing-canvas');
+1392:                 if (mainCanvas) {
+1393:                     tempCtx.drawImage(mainCanvas, 0, 0);
+1394:                 }
+1395:                 
+1396:                 const dataUrl = tempCanvas.toDataURL('image/png');
+1397:                 fetch('/api/drawing/save', {
+1398:                     method: 'POST',
+1399:                     headers: { 'Content-Type': 'application/json' },
+1400:                     body: JSON.stringify({ image: dataUrl })
+1401:                 })
+1402:                 .then(res => res.json())
+1403:                 .then(data => {
+1404:                     if (data.status === 'success') {
+1405:                         logSystemEvent(`Saved web drawing to: ${data.filepath}`);
+1406:                         alert(`Drawing saved successfully to ${data.filepath}`);
+1407:                     } else {
+1408:                         logSystemEvent(`Failed to save web drawing: ${data.message}`);
+1409:                         alert(`Failed to save drawing: ${data.message}`);
+1410:                     }
+1411:                 })
+1412:                 .catch(err => {
+1413:                     console.error('Error saving drawing:', err);
+1414:                     alert('Error saving drawing.');
+1415:                 });
+1416:             };
+1417: 
+1418:             useEffect(() => {
+1419:                 if (activeMenu === 'drawing') {
+1420:                     setTimeout(() => {
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

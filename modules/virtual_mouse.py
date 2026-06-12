@@ -50,7 +50,9 @@ class VirtualMouse:
         brightness_min_distance_px: float = 30.0,
         brightness_max_distance_px: float = 250.0,
         brightness_smoothing: float = 0.15,
+        drag_threshold_ms: float = 200.0,
     ) -> None:
+
         self.enabled = enabled
         self.sensitivity = sensitivity
         self.dead_zone = dead_zone          # Padding fraction from camera edges [0.0, 0.35]
@@ -121,6 +123,15 @@ class VirtualMouse:
         self._last_hand_y: float | None = None      # previous frame index-MCP Y
         self._scroll_accumulator = 0.0      # fractional scroll accumulator
         self._scroll_active_logged = False  # for start/stop logging
+        
+        # ── Drag & Drop State Machine (Phase 3.5) ─────────────────────────
+        # States: IDLE | PINCHING | DRAGGING
+        self.drag_threshold_ms = drag_threshold_ms
+        self.drag_status = "IDLE"
+        self.drag_start_time = None
+        self.drag_counter = 0
+        self.drag_duration = 0.0
+
 
         # Optimize PyAutoGUI for real-time cursor updates
         pyautogui.PAUSE = 0.0
@@ -166,6 +177,25 @@ class VirtualMouse:
         self.scroll_vel_smooth = 0.0
         self._last_hand_y = None
         self._scroll_accumulator = 0.0
+        
+    def _reset_drag_state(self) -> None:
+        """Resets drag-and-drop state machine, ensuring mouse button is released if dragging."""
+        if hasattr(self, 'drag_status') and self.drag_status == "DRAGGING":
+            try:
+                pyautogui.mouseUp()
+                if hasattr(self, 'drag_start_time') and self.drag_start_time is not None:
+                    self.drag_duration = (time.monotonic() * 1000 - self.drag_start_time) / 1000.0
+                else:
+                    self.drag_duration = 0.0
+                logger.info(
+                    f"[{datetime.now().strftime('%H:%M:%S.%f')[:-3]}] "
+                    f"[DRAG] Drag End (Reset/Safety) | Duration = {self.drag_duration:.2f}s"
+                )
+            except Exception as e:
+                logger.error(f"Failed to execute mouseUp on drag reset: {e}")
+        self.drag_status = "IDLE"
+        self.drag_start_time = None
+
 
     # ── Main processing method ────────────────────────────────────────────
     def process_hand(self, hand_landmarks: HandLandmarks | None, frame_w: int = 1280, frame_h: int = 720) -> dict:
@@ -179,15 +209,13 @@ class VirtualMouse:
             self._reset_scroll_state()
             self._reset_volume_state()
             self._reset_brightness_state()
+            self._reset_drag_state()  # calls mouseUp if DRAGGING
             self.active_mode = "CURSOR"
-            if self.click_status == "LEFT_CLICK":
-                try:
-                    pyautogui.mouseUp()
-                except Exception:
-                    pass
             self.click_status = "OPEN"
             self.current_action = "None"
             return self._build_result(0, 0, "Disabled", 0.0)
+
+
 
         if hand_landmarks is None:
             self.reset()
@@ -195,15 +223,13 @@ class VirtualMouse:
             self._reset_scroll_state()
             self._reset_volume_state()
             self._reset_brightness_state()
+            self._reset_drag_state()  # calls mouseUp if DRAGGING
             self.active_mode = "CURSOR"
-            if self.click_status == "LEFT_CLICK":
-                try:
-                    pyautogui.mouseUp()
-                except Exception:
-                    pass
             self.click_status = "OPEN"
             self.current_action = "None"
             return self._build_result(0, 0, "No Hand", 0.0)
+
+
 
         # Need at least Landmark 20 for full finger detection
         if len(hand_landmarks.landmarks) < 21:
@@ -212,15 +238,12 @@ class VirtualMouse:
             self._reset_scroll_state()
             self._reset_volume_state()
             self._reset_brightness_state()
+            self._reset_drag_state()  # calls mouseUp if DRAGGING
             self.active_mode = "CURSOR"
-            if self.click_status == "LEFT_CLICK":
-                try:
-                    pyautogui.mouseUp()
-                except Exception:
-                    pass
             self.click_status = "OPEN"
             self.current_action = "None"
             return self._build_result(0, 0, "No Index Tip", 0.0)
+
 
         lm = hand_landmarks.landmarks
 
@@ -276,12 +299,12 @@ class VirtualMouse:
         self.active_mode = active_mode
 
         # Safety: release left click if we transitioned out of CLICK mode
-        if active_mode != "CLICK" and self.click_status == "LEFT_CLICK":
-            try:
-                pyautogui.mouseUp()
-            except Exception:
-                pass
-            self.click_status = "OPEN"
+        if active_mode != "CLICK":
+            # _reset_drag_state already calls mouseUp if drag_status == "DRAGGING"
+            self._reset_drag_state()
+            if self.click_status == "LEFT_CLICK":
+                self.click_status = "OPEN"
+
 
         # ── Mode Routing Execution ───────────────────────────────────────
         if active_mode == "BRIGHTNESS":
@@ -374,41 +397,75 @@ class VirtualMouse:
             self._reset_volume_state()
             self._reset_brightness_state()
 
-            # Left Click State Machine
+            # Left Click & Drag State Machine
             if pinch_dist <= self.click_threshold:
-                if self.click_status in ("OPEN", "READY"):
+                if self.drag_status == "IDLE":
                     if now - self.last_click_time >= self.debounce_ms:
+                        self.drag_status = "PINCHING"
+                        self.drag_start_time = now
+                        self.click_status = "PINCH"
+                        self.current_action = "Pinching"
+                elif self.drag_status == "PINCHING":
+                    duration = now - self.drag_start_time
+                    if duration >= self.drag_threshold_ms:
                         try:
-                            pyautogui.click()
+                            pyautogui.mouseDown()
+                            self.drag_status = "DRAGGING"
+                            self.drag_counter += 1
                             self.click_status = "LEFT_CLICK"
-                            self.click_counter += 1
-                            self.last_click_time = now
-                            self.current_action = "Left Click"
+                            self.current_action = "DRAGGING"
                             logger.info(
                                 f"[{datetime.now().strftime('%H:%M:%S.%f')[:-3]}] "
-                                f"Left Click triggered | Pinch={pinch_dist:.4f} | "
-                                f"Count={self.click_counter}"
+                                f"[DRAG] Drag Start | Pinch={pinch_dist:.4f} | "
+                                f"Count={self.drag_counter}"
                             )
                         except Exception as e:
-                            logger.error(f"Failed to execute left click: {e}")
-                            self.click_status = "PINCH"
-                            self.current_action = "Move"
-                    else:
-                        self.click_status = "PINCH"
-                        self.current_action = "Move"
-                elif self.click_status == "LEFT_CLICK":
-                    self.click_status = "PINCH"
-                    self.current_action = "Move"
-                else:
-                    self.click_status = "PINCH"
-                    self.current_action = "Move"
+                            logger.error(f"Failed to execute mouseDown for drag: {e}")
+                            self.drag_status = "IDLE"
+                            self.drag_start_time = None
+                elif self.drag_status == "DRAGGING":
+                    self.drag_duration = (now - self.drag_start_time) / 1000.0
+                    self.click_status = "LEFT_CLICK"
+                    self.current_action = "DRAGGING"
             else:
-                if self.click_status in ("LEFT_CLICK", "PINCH"):
+                if self.drag_status == "PINCHING":
+                    # Released before threshold: standard quick left click
+                    try:
+                        pyautogui.click()
+                        self.click_counter += 1
+                        self.last_click_time = now
+                        self.click_status = "RELEASE"
+                        self.current_action = "Left Click"
+                        logger.info(
+                            f"[{datetime.now().strftime('%H:%M:%S.%f')[:-3]}] "
+                            f"Left Click triggered (quick pinch release) | Pinch={pinch_dist:.4f} | "
+                            f"Count={self.click_counter}"
+                        )
+                    except Exception as e:
+                        logger.error(f"Failed to execute left click: {e}")
+                    self.drag_status = "IDLE"
+                    self.drag_start_time = None
+                elif self.drag_status == "DRAGGING":
+                    # Drag finished
+                    try:
+                        pyautogui.mouseUp()
+                        self.drag_duration = (now - self.drag_start_time) / 1000.0
+                        logger.info(
+                            f"[{datetime.now().strftime('%H:%M:%S.%f')[:-3]}] "
+                            f"[DRAG] Drag End | Duration = {self.drag_duration:.2f}s"
+                        )
+                    except Exception as e:
+                        logger.error(f"Failed to execute mouseUp: {e}")
+                    self.drag_status = "IDLE"
+                    self.drag_start_time = None
                     self.click_status = "RELEASE"
                     self.current_action = "Move"
                 else:
+                    self.drag_status = "IDLE"
                     self.click_status = "READY"
-                    self.current_action = "Move"
+                    if self.current_action in ("DRAGGING", "Pinching", "Left Click"):
+                        self.current_action = "Move"
+
 
             # Right Click State Machine
             if right_pinch_dist <= self.right_click_threshold and pinch_dist > self.click_threshold:
@@ -490,12 +547,17 @@ class VirtualMouse:
             smoothed_x = int(self.last_x + (target_x - self.last_x) * self.smoothing)
             smoothed_y = int(self.last_y + (target_y - self.last_y) * self.smoothing)
 
-        # Move cursor only in CURSOR or CLICK modes
+        # Move cursor only in CURSOR or CLICK modes, freeze position during PINCHING
         if active_mode in ("CURSOR", "CLICK"):
-            try:
-                pyautogui.moveTo(smoothed_x, smoothed_y)
-            except Exception as e:
-                logger.warning(f"Failed to move mouse: {e}")
+            if self.drag_status == "PINCHING" and self.last_x is not None and self.last_y is not None:
+                smoothed_x = self.last_x
+                smoothed_y = self.last_y
+            else:
+                try:
+                    pyautogui.moveTo(smoothed_x, smoothed_y)
+                except Exception as e:
+                    logger.warning(f"Failed to move mouse: {e}")
+
 
         self.last_x = smoothed_x
         self.last_y = smoothed_y
@@ -537,4 +599,9 @@ class VirtualMouse:
             "brightness_mode": self.brightness_mode,
             "brightness_level": self.brightness_level,
             "brightness_distance": float(round(self.brightness_distance, 2)),
+            # Phase 3.5 — Drag & Drop telemetry
+            "drag_status": self.drag_status,
+            "drag_duration": float(round(self.drag_duration, 2)),
+            "drag_counter": self.drag_counter,
         }
+

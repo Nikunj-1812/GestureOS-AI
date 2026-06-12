@@ -1,0 +1,46 @@
+Created At: 2026-06-12T10:06:39Z
+Completed At: 2026-06-12T10:06:40Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 3040
+Total Bytes: 208293
+Showing lines 2880 to 2920
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+2880:                                                         data-key="Enter"
+2881:                                                         onMouseEnter={() => setHoveredKey('Enter')}
+2882:                                                         onMouseLeave={() => setHoveredKey('None')}
+2883:                                                         onClick={() => handleWebKeyPress('Enter')}
+2884:                                                         className={`w-20 h-12 rounded-lg text-xs font-bold transition-all duration-100 ${
+2885:                                                             pressedKey === 'Enter' 
+2886:                                                                 ? 'bg-amber-500 text-black scale-95' 
+2887:                                                                 : hoveredKey === 'Enter'
+2888:                                                                     ? 'bg-blue-600/40 text-white border border-blue-500/80 shadow-md shadow-blue-500/20'
+2889:                                                                     : 'bg-zinc-900 hover:bg-zinc-800 text-gray-300 border border-zinc-750'
+2890:                                                         }`}
+2891:                                                     >
+2892:                                                         Enter
+2893:                                                     </button>
+2894:                                                 </div>
+2895: 
+2896:                                                 {/* Row 4 */}
+2897:                                                
+<truncated 447 bytes>
+                           onClick={() => handleWebKeyPress('Shift')}
+2903:                                                         className={`w-24 h-12 rounded-lg text-xs font-bold transition-all duration-100 ${
+2904:                                                             pressedKey === 'Shift' 
+2905:                                                                 ? 'bg-amber-500 text-black scale-95' 
+2906:                                                                 : hoveredKey === 'Shift'
+2907:                                                                     ? 'bg-blue-600/40 text-white border border-blue-500/80 shadow-md shadow-blue-500/20'
+2908:                                                                     : isShiftActive 
+2909:                                                                         ? 'bg-blue-600 hover:bg-blue-500 text-white' 
+2910:                                                                         : 'bg-zinc-900 hover:bg-zinc-800 text-gray-300 border border-zinc-750'
+2911:                                                         }`}
+2912:                                                     >
+2913:                                                         Shift
+2914:                                                     </button>
+2915:                                                     {["Z", "X", "C", "V", "B", "N", "M"].map(key => {
+2916:                                                         const label = isCapsLockActive || isShiftActive ? key.toUpperCase() : key.toLowerCase();
+2917:                                                         return (
+2918:                                                             <button 
+2919:                                                                 key={key}
+2920:                                                                 data-key={key}
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

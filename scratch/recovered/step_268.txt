@@ -1,0 +1,34 @@
+Created At: 2026-06-11T10:03:23Z
+Completed At: 2026-06-11T10:03:23Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 1626
+Total Bytes: 105190
+Showing lines 190 to 215
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+190:     
+191:     changed = settings_manager.update(**params)
+192:     if changed:
+193:         settings_manager.save()
+194:         settings_manager.apply_to_config(config)
+195:         # Apply to live instance
+196:         virtual_mouse.enabled = config.virtual_mouse_enabled
+197:         virtual_mouse.sensitivity = config.virtual_mouse_sensitivity
+198:         virtual_mouse.dead_zone = config.virtual_mouse_dead_zone
+199:         virtual_mouse.smoothing = config.virtual_mouse_smoothing
+200:         if hasattr(config, 'virtual_mouse_click_threshold'):
+201:             virtual_mouse.click_threshold = config.virtual_mouse_click_threshold
+202:         if hasattr(config, 'virtual_mouse_right_click_threshold'):
+203:             virtual_mouse.right_click_threshold = config.virtual_mouse_right_click_threshold
+204:         if hasattr(config, 'virtual_mouse_scroll_sensitivity'):
+205:             virtual_mouse.scroll_sensitivity = config.virtual_mouse_scroll_sensitivity
+206:         if hasattr(config, 'virtual_mouse_scroll_dead_zone'):
+207:             virtual_mouse.scroll_dead_zone = config.virtual_mouse_scroll_dead_zone
+208:         if hasattr(config, 'virtual_mouse_scroll_smoothing'):
+209:             virtual_mouse.scroll_smoothing = config.virtual_mouse_scroll_smoothing
+210:     return {"status": "success"}
+211: 
+212: @app.websocket("/ws")
+213: async def websocket_endpoint(websocket: WebSocket):
+214:     await websocket.accept()
+215:     logger.info("WebSocket client connected")
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

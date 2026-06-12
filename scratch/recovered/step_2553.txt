@@ -1,0 +1,59 @@
+Created At: 2026-06-12T09:42:19Z
+Completed At: 2026-06-12T09:42:19Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 2763
+Total Bytes: 190961
+Showing lines 1250 to 1300
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1250:                         if (data.virtual_mouse_volume_max_distance_px !== undefined) {
+1251:                             setVirtualMouseVolumeMaxDistancePx(data.virtual_mouse_volume_max_distance_px);
+1252:                         }
+1253:                         if (data.virtual_mouse_volume_smoothing !== undefined) {
+1254:                             setVirtualMouseVolumeSmoothing(data.virtual_mouse_volume_smoothing);
+1255:                         }
+1256:                         if (data.virtual_mouse_brightness_min_distance_px !== undefined) {
+1257:                             setVirtualMouseBrightnessMinDistancePx(data.virtual_mouse_brightness_min_distance_px);
+1258:                         }
+1259:                         if (data.virtual_mouse_brightness_max_distance_px !== undefined) {
+1260:                             setVirtualMouseBrightnessMaxDistancePx(data.virtual_mouse_brightness_max_distance_px);
+1261:                         }
+1262:                         if (data.virtual_mouse_brightness_smoothing !== undefined) {
+1263:                             setVirtualMouseBrightnessSmoothing(data.virtual_mouse_brightness_smoothing);
+1264:                         }
+1265:                         if (data.virtual_mouse_drag_threshold_ms !== undefined) {
+1266:                             setVirtualMouseDragThresholdMs(data.virtual_mouse_drag_threshold_ms);
+1267:                         }
+1268:                     })
+1269: 
+1270:                     .catch(err => console.error('Error loading config settings:', err));
+1271: 
+1272:                 // Escape key emergency stop listener
+1273:                 const handleEscape = (e) => {
+1274:                     if (e.key === 'Escape') {
+1275:                         setVirtualMouseEnabled(false);
+1276:                         updateSetting('virtual_mouse_enabled', false);
+1277:                         setRightClickStatus('OPEN');
+1278:                         setScrollMode(false);
+1279:                         setScrollDirection('NONE');
+1280:                         setDragStatus('IDLE');
+1281:                         setDragDuration(0.0);
+1282:                         logSystemEvent('\u26a0 EMERGENCY STOP: Virtual mouse disabled via ESC key.');
+1283:                     }
+1284: 
+1285:                 };
+1286:                 window.addEventListener('keydown', handleEscape);
+1287: 
+1288:                 return () => {
+1289:                     window.removeEventListener('keydown', handleEscape);
+1290:                     if (socketRef.current) {
+1291:                         socketRef.current.close();
+1292:                     }
+1293:                 };
+1294:             }, []);
+1295: 
+1296:             const logSystemEvent = (msg) => {
+1297:                 const timeString = new Date().toLocaleTimeString();
+1298:                 eventIdCounterRef.current += 1;
+1299:                 const newEvent = {
+1300:                     id: `${Date.now()}-${eventIdCounterRef.current}`,
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

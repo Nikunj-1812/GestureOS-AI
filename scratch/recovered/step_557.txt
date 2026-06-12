@@ -1,0 +1,64 @@
+Created At: 2026-06-11T10:26:56Z
+Completed At: 2026-06-11T10:26:56Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 1772
+Total Bytes: 117640
+Showing lines 750 to 820
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+750:                                 setEvents(prev => [{
+751:                                     id: `${Date.now()}-${eventIdCounterRef.current}`,
+752:                                     timestamp: timeString,
+753:                                     gesture: 'Scroll Start',
+754:                                     confidence: 1.0,
+755:                                     action: 'Scroll Mode activated | gesture=index_middle_up'
+756:                                 }, ...prev].slice(0, 50));
+757:                             } else if (!newSM && prevSM) {
+758:                                 const timeString = new Date().toLocaleTimeString();
+759:                                 eventIdCounterRef.current += 1;
+760:                                 setEvents(prev => [{
+761:                                     id: `${Date.now()}-${eventIdCounterRef.current}`,
+762:                                     timestamp: timeString,
+763:                                     gesture: 'Scroll Stop',
+764:                                     confidence: 1.0,
+765:                                     action: `Scroll Mode deactivated | total events=${data.scroll_counter || 0}`
+766:                                 }, ...prev].slice(0, 50));
+767:                             }
+768:                             prevScrollModeRef.current = newSM;
+769: 
+770:                             // Phase 3.4 — Volume
+771:                             const newVM = data.volume_mode || false;
+772:                             setVolumeMode(newVM);
+773:                             setVolumeLevel(data.v
+<truncated 1300 bytes>
+               } else if (!newVM) {
+791:                                 prevVolumeLevelRef.current = -1;
+792:                             }
+793: 
+794:                             // Trigger logs on gesture change (ignoring empty/None/unknown)
+795:                             if (data.gesture !== prevGestureRef.current) {
+796:                                 if (data.gesture && data.gesture !== 'None' && data.gesture !== 'unknown') {
+797:                                     const timeString = new Date().toLocaleTimeString();
+798:                                     eventIdCounterRef.current += 1;
+799:                                     const newEvent = {
+800:                                         id: `${Date.now()}-${eventIdCounterRef.current}`,
+801:                                         timestamp: timeString,
+802:                                         gesture: data.gesture,
+803:                                         confidence: data.confidence,
+804:                                         action: `Triggered mapped shortcut for [${data.gesture}]`
+805:                                     };
+806:                                     setEvents(prev => [newEvent, ...prev].slice(0, 50));
+807:                                 }
+808:                                 prevGestureRef.current = data.gesture;
+809:                             }
+810:                         } catch (err) {
+811:                             console.error('Error decoding WebSocket JSON payload:', err);
+812:                         }
+813:                     };
+814: 
+815:                     ws.onclose = () => {
+816:                         setSocketStatus('disconnected');
+817:                         console.log('WebSocket connection lost, retrying in 3 seconds...');
+818:                         setTimeout(connectWS, 3000);
+819:                     };
+820: 
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

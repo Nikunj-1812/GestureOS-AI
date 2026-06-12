@@ -1,0 +1,57 @@
+Created At: 2026-06-12T11:14:05Z
+Completed At: 2026-06-12T11:14:05Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 2369
+Total Bytes: 129583
+Showing lines 1800 to 2000
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1800:                                     const curCanvasWidth = canvasWidthRef.current;
+1801:                                     const curCanvasHeight = canvasHeightRef.current;
+1802:                                     
+1803:                                     if (backgroundModeRef.current === 'camera') {
+1804:                                         const scale = Math.max(curCanvasWidth / 640.0, curCanvasHeight / 360.0);
+1805:                                         const wScaled = 640.0 * scale;
+1806:                                         const hScaled = 360.0 * scale;
+1807:                                         const dx = (curCanvasWidth - wScaled) / 2.0;
+1808:                                         const dy = (curCanvasHeight - hScaled) / 2.0;
+1809:                                         mappedX = rawX * wScaled + dx;
+1810:                                         mappedY = rawY * hScaled + dy;
+1811:                                     } else {
+1812:                                         mappedX = rawX * curCanvasWidth;
+1813:                                         mappedY = rawY * curCanvasHeight;
+1814:                                     }
+1815:                                     
+1816:                                     // Smooth coordinates using One Euro Filter
+1817:                                     const nowMs = Date.now();
+1818:                                     let smoothedX = mappedX;
+1819:                                     let smoothedY = mappedY;
+1820:                                     
+1821:                                 
+<truncated 12589 bytes>
+                           }, 250);
+1976:                                             }
+1977:                                             
+1978:                                             // During grace period, continue stroke coordinates so path remains seamless
+1979:                                             if (currentStrokeRef.current) {
+1980:                                                 currentStrokeRef.current.points.push({ x: smoothedX, y: smoothedY });
+1981:                                             }
+1982:                                             lastPointRef.current = { x: smoothedX, y: smoothedY };
+1983:                                         } else {
+1984:                                             setDrawingStatus('Hovering');
+1985:                                             
+1986:                                             // Track hover trail preview
+1987:                                             if (showHoverTrailRef.current) {
+1988:                                                 hoverTrailRef.current.push({ x: smoothedX, y: smoothedY });
+1989:                                                 if (hoverTrailRef.current.length > 12) {
+1990:                                                     hoverTrailRef.current.shift();
+1991:                                                 }
+1992:                                             } else {
+1993:                                                 hoverTrailRef.current = [];
+1994:                                             }
+1995:                                             lastPointRef.current = { x: smoothedX, y: smoothedY };
+1996:                                         }
+1997:                                     }
+1998:                                     
+1999:                                     renderAll();
+2000:                                     
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

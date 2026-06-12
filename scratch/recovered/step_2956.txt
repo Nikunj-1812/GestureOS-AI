@@ -1,0 +1,60 @@
+Created At: 2026-06-12T10:08:00Z
+Completed At: 2026-06-12T10:08:01Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 3194
+Total Bytes: 215157
+Showing lines 1215 to 1270
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1215:                                 }
+1216:                             } else {
+1217:                                 let debounceElapsed = 0;
+1218:                                 if (lastHoverDetectTimeRef.current) {
+1219:                                     debounceElapsed = (wsNow - lastHoverDetectTimeRef.current) / 1000;
+1220:                                 }
+1221:                                 if (debounceElapsed >= 0.100 || !lastHoverDetectTimeRef.current) {
+1222:                                     candidateKeyRef.current = null;
+1223:                                     candidateStartTimeRef.current = null;
+1224:                                     setHoverDuration(0.0);
+1225:                                     setHoveredKey('None');
+1226:                                     hoveredKeyRef.current = 'None';
+1227:                                 }
+1228:                             }
+1229: 
+1230:                             // Virtual Keyboard Pinch-to-Type Logic (Phase 4.3)
+1231:                             const pinchThreshold = 0.05;
+1232:                             const isPinching = data.hands > 0 && data.pinch_distance > 0 && data.pinch_distance <= pinchThreshold;
+1233:                             if (isPinching) {
+1234:                                 if (!pinchActiveRef.current) {
+1235:                                     pinchActiveRef.current = true;
+1236:                                     const keyToPress = hoveredKeyRef.current;
+1237:                                     if (keyToPress && keyToPress !== 'None') {
+1238:                
+<truncated 373 bytes>
+else {
+1245:                                 if (data.pinch_distance > 0.05 || data.hands === 0) {
+1246:                                     pinchActiveRef.current = false;
+1247:                                 }
+1248:                             }
+1249: 
+1250:                             // Phase 3.3 — Right Click
+1251:                             const prevRC = prevRightClickStatusRef.current;
+1252:                             const newRC = data.right_click_status || 'OPEN';
+1253:                             setRightClickStatus(newRC);
+1254:                             setRightClickCounter(data.right_click_counter || 0);
+1255:                             setRightPinchDistance(data.right_pinch_distance || 0.0);
+1256:                             // Log right-click event on transition into RIGHT_CLICK
+1257:                             if (newRC === 'RIGHT_CLICK' && prevRC !== 'RIGHT_CLICK') {
+1258:                                 const timeString = new Date().toLocaleTimeString();
+1259:                                 eventIdCounterRef.current += 1;
+1260:                                 const rcEvent = {
+1261:                                     id: `${Date.now()}-${eventIdCounterRef.current}`,
+1262:                                     timestamp: timeString,
+1263:                                     gesture: 'Right Click',
+1264:                                     confidence: 1.0,
+1265:                                     action: `Right Click triggered | gesture=thumb_middle_pinch | dist=${(data.right_pinch_distance || 0).toFixed(4)}`
+1266:                                 };
+1267:                                 setEvents(prev => [rcEvent, ...prev].slice(0, 50));
+1268:                             }
+1269:                             prevRightClickStatusRef.current = newRC;
+1270:                             // Phase 3.4 — Scroll
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

@@ -1,0 +1,69 @@
+Created At: 2026-06-11T11:00:12Z
+Completed At: 2026-06-11T11:00:12Z
+File Path: `file:///C:/Users/nikun/.gemini/antigravity/brain/f71acb1b-ab5a-4de9-85a5-1a298f3c313a/implementation_plan.md`
+Total Lines: 98
+Total Bytes: 5465
+Showing lines 1 to 98
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1: # Implementation Plan — Phase 3.6: Feature Management, Advanced Settings, Telemetry Dashboard & Drag & Drop
+2: 
+3: This plan outlines the architecture and execution steps for implementing the advanced settings manager, feature toggle engine, telemetry widgets, event logging system, UI dashboard redesign, and the **Drag & Drop** mode.
+4: 
+5: ## User Review Required
+6: 
+7: > [!IMPORTANT]
+8: > **Drag & Drop Gesture & State Machine**:
+9: > - We will use the **Thumb + Index Pinch Hold** gesture.
+10: > - To avoid accidental clicks/drags, we implement a **Configurable Hold Threshold** (default: `300ms`).
+11: > - **State Machine**:
+12: >   - On Pinch: Enter `PINCH_PREP` state and record timestamp.
+13: >   - If released before `300ms`: Trigger a single `pyautogui.click()` (standard Left Click).
+14: >   - If held $\ge$ `300ms`: Trigger `pyautogui.mouseDown()` and transition to the `DRAGGING` state.
+15: >   - While in `DRAGGING` state: The cursor continues to move (dragging target). Visual feed overlay displays **`DRAGGING`** feedback.
+16: >   - On Release: Trigger `pyautogui.mouseUp()` (drop target) and transition back to `OPEN`/`READY`.
+17: >
+18: > **Safety (ESC Key)**: Pressing ESC will immediately call `pyautogui.mouseUp()` in addition to disabling the virtual mouse to ensure the mouse cursor never gets stuck in a dragging state.
+19: 
+20: ## Proposed Changes
+21: 
+22: ### 1. Persistent Storage & Configuration
+23: 
+24: #### [MODIFY] [config/settings_manager.py](file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/config/settings_mana
+<truncated 2323 bytes>
+tes
+64: 
+65: #### [MODIFY] [dashboard/pages/virtual_mouse_page.py](file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/dashboard/pages/virtual_mouse_page.py)
+66: - Update desktop GUI widgets to allow configuring Drag & Drop thresholds and toggling the drag feature.
+67: - Render Drag status indicators (State, Duration, Counter) inside the Telemetry Dashboard card.
+68: 
+69: #### [MODIFY] [dashboard/shell/window.py](file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/dashboard/shell/window.py)
+70: - Pull drag telemetry keys out of the virtual mouse dictionary and pass them to page updates.
+71: 
+72: ---
+73: 
+74: ### 5. Backend Server & Web Dashboard Redesign
+75: 
+76: #### [MODIFY] [web_backend.py](file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py)
+77: - Add CPU and RAM retrieval using `psutil`.
+78: - Pack drag and drop metrics into the WebSocket frame payload.
+79: - In the React dashboard:
+80:   - **Dashboard Tab**: Include CPU/RAM charts, and telemetry grids containing Drag metrics.
+81:   - **Event Logs Tab**: Intercept `Drag Start`, `Drag End`, and `Drag Duration` log patterns and display them in the monitoring console with CSV exporting.
+82:   - **Settings Panel Tab**: Add a Click & Drag configuration card with drag toggle and hold duration threshold slider.
+83: 
+84: ---
+85: 
+86: ## Verification Plan
+87: 
+88: ### Automated Tests
+89: - Run `pytest tests/test_virtual_mouse.py`.
+90: - Add test cases verifying:
+91:   - Short pinch holding (< threshold) triggers a single Left Click on release.
+92:   - Long pinch holding ($\ge$ threshold) triggers MouseDown and enters Dragging state.
+93:   - Releasing pinch after Dragging triggers MouseUp and returns correct duration.
+94: 
+95: ### Manual Verification
+96: - Start the server using `python web_backend.py`.
+97: - Open settings, adjust drag hold threshold slider, pinch-hold items on screen, move hand, and verify dragging behavior works without conflicts.
+98: 
+The above content shows the entire, complete file contents of the requested file.

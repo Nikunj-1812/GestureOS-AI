@@ -29,9 +29,15 @@ def draw_shadow_text(frame, text: str, pos: tuple, scale: float, color: tuple, t
     cv2.putText(frame, text, pos, cv2.FONT_HERSHEY_SIMPLEX, scale, color, thickness, cv2.LINE_AA)
 
 def draw_alpha_rect(frame, x1: int, y1: int, x2: int, y2: int, color: tuple, alpha: float = 0.5):
-    overlay = frame.copy()
-    cv2.rectangle(overlay, (x1, y1), (x2, y2), color, -1, cv2.LINE_AA)
-    cv2.addWeighted(overlay, alpha, frame, 1.0 - alpha, 0, frame)
+    h, w = frame.shape[:2]
+    rx1, rx2 = max(0, min(x1, w)), max(0, min(x2, w))
+    ry1, ry2 = max(0, min(y1, h)), max(0, min(y2, h))
+    if rx1 >= rx2 or ry1 >= ry2:
+        return
+    roi = frame[ry1:ry2, rx1:rx2]
+    overlay = roi.copy()
+    cv2.rectangle(overlay, (0, 0), (rx2 - rx1, ry2 - ry1), color, -1, cv2.LINE_AA)
+    cv2.addWeighted(overlay, alpha, roi, 1.0 - alpha, 0, roi)
 
 def draw_corner_bracket(frame, x1: int, y1: int, x2: int, y2: int, color: tuple, arm: int = 15, thick: int = 2):
     # Top-Left
@@ -111,7 +117,12 @@ def draw_visuals(frame, detected_hands, mp_results, config, fps: float, gesture:
     bright_mode      = click_state.get("brightness_mode", False) if click_state else False
     bright_level     = click_state.get("brightness_level", 0) if click_state else 0
     bright_distance  = click_state.get("brightness_distance", 0.0) if click_state else 0.0
+    # Phase 3.5 drag fields
+    drag_status      = click_state.get("drag_status", "IDLE") if click_state else "IDLE"
+    drag_duration    = click_state.get("drag_duration", 0.0) if click_state else 0.0
+    drag_counter     = click_state.get("drag_counter", 0) if click_state else 0
     vm_enabled       = getattr(config, "virtual_mouse_enabled", False)
+
     
     # Render skeletons (connections and landmarks)
     for hand in detected_hands:
@@ -209,7 +220,11 @@ def draw_visuals(frame, detected_hands, mp_results, config, fps: float, gesture:
 
         # Draw a cursor-tracking indicator on the index fingertip (landmark 8)
         if vm_enabled and len(lm_px) > 8:
-            if cs_status == "LEFT_CLICK":
+            if drag_status == "DRAGGING":
+                cv2.circle(frame, lm_px[8], 20, C_CLICK_GREEN, -1, cv2.LINE_AA)
+                cv2.circle(frame, lm_px[8], 20, C_WHITE, 2, cv2.LINE_AA)
+                draw_shadow_text(frame, "DRAGGING", (lm_px[8][0] - 35, lm_px[8][1] - 30), 0.45, C_CLICK_GREEN, 1)
+            elif cs_status == "LEFT_CLICK":
                 # Flash a bright filled green circle on left-click
                 cv2.circle(frame, lm_px[8], 20, C_CLICK_GREEN, -1, cv2.LINE_AA)
                 cv2.circle(frame, lm_px[8], 20, C_WHITE, 2, cv2.LINE_AA)
@@ -221,6 +236,7 @@ def draw_visuals(frame, detected_hands, mp_results, config, fps: float, gesture:
                 # Normal cursor ring
                 cv2.circle(frame, lm_px[8], 15, C_PURPLE, 2, cv2.LINE_AA)
                 cv2.circle(frame, lm_px[8], 4, C_PURPLE, -1, cv2.LINE_AA)
+
 
         # Phase 3.3: Right-click visual indicator on middle fingertip (landmark 12)
         if vm_enabled and len(lm_px) > 12:
@@ -327,10 +343,11 @@ def draw_visuals(frame, detected_hands, mp_results, config, fps: float, gesture:
         # Expand panel height based on available virtual mouse click info
         has_click_info = vm_enabled and click_state is not None
         panel_w = 240
-        # Extra rows: left-click + right-click + scroll + volume + brightness
-        panel_h = 390 if has_click_info else 180
+        # Extra rows: left-click + right-click + scroll + volume + brightness + drag
+        panel_h = 432 if has_click_info else 180
         draw_alpha_rect(frame, 15, 15, 15 + panel_w, 15 + panel_h, (30, 20, 20), 0.8)
         cv2.rectangle(frame, (15, 15), (15 + panel_w, 15 + panel_h), C_GREY, 1, cv2.LINE_AA)
+
         
         # System Info
         draw_shadow_text(frame, "SYSTEM HUD OVERLAY", (25, 35), 0.42, C_WHITE, 1)
@@ -406,6 +423,15 @@ def draw_visuals(frame, detected_hands, mp_results, config, fps: float, gesture:
             draw_shadow_text(frame, bright_label, (25, y_bright + 10), 0.33, bright_color, 1)
             draw_shadow_text(frame, f"Bri: {bright_level}%", (150, y_bright + 10), 0.33, C_CYAN, 1)
             draw_shadow_text(frame, f"Dist: {bright_distance:.1f}px", (25, y_bright + 26), 0.33, C_WHITE, 1)
+            
+            # Drag row
+            y_drag = y_bright + 42
+            cv2.line(frame, (25, y_drag - 5), (15 + panel_w - 10, y_drag - 5), C_GREY, 1)
+            drag_color = C_CLICK_GREEN if drag_status == "DRAGGING" else (C_AMBER if drag_status == "PINCHING" else C_GREY)
+            draw_shadow_text(frame, f"Drag: {drag_status}", (25, y_drag + 10), 0.33, drag_color, 1)
+            draw_shadow_text(frame, f"Cnt: {drag_counter}", (150, y_drag + 10), 0.33, C_CLICK_GREEN, 1)
+            draw_shadow_text(frame, f"Dur: {drag_duration:.1f}s", (25, y_drag + 26), 0.33, C_WHITE, 1)
+
 
     # 9. Gesture Debugger Overlay
     if getattr(config, "show_debug_panel", True):

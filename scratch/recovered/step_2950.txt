@@ -1,0 +1,44 @@
+Created At: 2026-06-12T10:07:50Z
+Completed At: 2026-06-12T10:07:50Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 3194
+Total Bytes: 215157
+Showing lines 1090 to 1125
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1090:             const pinchActiveRef = useRef(false);
+1091: 
+1092: 
+1093:             // Switches State
+1094:             const [showLandmarks, setShowLandmarks] = useState(true);
+1095:             const [showConnections, setShowConnections] = useState(true);
+1096:             const [showBoundingBox, setShowBoundingBox] = useState(true);
+1097:             const [showFingerStates, setShowFingerStates] = useState(true);
+1098:             const [showDistanceMeter, setShowDistanceMeter] = useState(true);
+1099:             const [showDebugPanel, setShowDebugPanel] = useState(true);
+1100:             const [showHud, setShowHud] = useState(true);
+1101: 
+1102:             const prevGestureRef = useRef('None');
+1103:             const socketRef = useRef(null);
+1104:             const eventIdCounterRef = useRef(0);
+1105: 
+1106:             // Connect to the WebSocket backend
+1107:             useEffect(() => {
+1108:                 const connectWS = () => {
+1109:                     setSocketStatus('connecting');
+1110:                     const wsProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+1111:                     const wsUrl = `${wsProtocol}//${window.location.host}/ws`;
+1112:                     console.log(`Connecting to WebSocket: ${wsUrl}`);
+1113:                     
+1114:                     const ws = new WebSocket(wsUrl);
+1115:                     socketRef.current = ws;
+1116: 
+1117:                     ws.onopen = () => {
+1118:                         setSocketStatus('connected');
+1119:                         console.log('WebSocket connection established');
+1120:                     };
+1121: 
+1122:                     ws.onmessage = (event) => {
+1123:                         try {
+1124:                             const data = JSON.parse(event.data);
+1125:                             setFps(data.fps);
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

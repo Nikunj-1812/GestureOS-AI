@@ -140,6 +140,12 @@ class VirtualMousePage(BasePage):
         self._lbl_brightness_mode = self._create_data_label(telemetry_card, "Brightness Mode", "INACTIVE", 12)
         self._lbl_brightness_level = self._create_data_label(telemetry_card, "Brightness Level", "0%", 13)
         self._lbl_brightness_distance = self._create_data_label(telemetry_card, "Brightness Distance", "-- px", 14)
+        
+        # Drag & Drop telemetry fields (Phase 3.5)
+        self._lbl_drag_status = self._create_data_label(telemetry_card, "Drag Status", "IDLE", 15)
+        self._lbl_drag_duration = self._create_data_label(telemetry_card, "Drag Duration", "0.0s", 16)
+        self._lbl_drag_counter = self._create_data_label(telemetry_card, "Drag Counter", "0", 17)
+
 
         # 2. Settings Controls Card
         settings_card = ctk.CTkFrame(
@@ -322,7 +328,11 @@ class VirtualMousePage(BasePage):
         brightness_mode=False,
         brightness_level=0,
         brightness_distance=0.0,
+        drag_status="IDLE",
+        drag_duration=0.0,
+        drag_counter=0,
     ) -> None:
+
         """Receives live camera frame and telemetry from the central window loop."""
         self._camera_feed.set_frame(
             frame, fps=fps, gesture=gesture, confidence=confidence, hands_detected=hands_detected
@@ -391,6 +401,18 @@ class VirtualMousePage(BasePage):
 
         self._lbl_brightness_level.configure(text=f"{brightness_level}%")
         self._lbl_brightness_distance.configure(text=f"{brightness_distance:.1f} px" if brightness_mode else "-- px")
+        
+        # Update drag telemetry labels
+        self._lbl_drag_status.configure(text=drag_status)
+        if drag_status == "DRAGGING":
+            self._lbl_drag_status.configure(text_color=COLORS["green"])
+        elif drag_status == "PINCHING":
+            self._lbl_drag_status.configure(text_color=COLORS["yellow"])
+        else:
+            self._lbl_drag_status.configure(text_color=COLORS["text"])
+        self._lbl_drag_duration.configure(text=f"{drag_duration:.1f}s")
+        self._lbl_drag_counter.configure(text=str(drag_counter))
+
 
     def clear_camera_frame(self) -> None:
         self._camera_feed.clear()
@@ -408,6 +430,10 @@ class VirtualMousePage(BasePage):
         self._lbl_brightness_mode.configure(text="INACTIVE", text_color=COLORS["overlay1"])
         self._lbl_brightness_level.configure(text="0%")
         self._lbl_brightness_distance.configure(text="-- px")
+        self._lbl_drag_status.configure(text="IDLE", text_color=COLORS["text"])
+        self._lbl_drag_duration.configure(text="0.0s")
+        self._lbl_drag_counter.configure(text="0")
+
 
     def _navigate(self, key: str) -> None:
         if self._on_navigate is not None:

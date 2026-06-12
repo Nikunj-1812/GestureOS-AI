@@ -1,0 +1,42 @@
+Created At: 2026-06-12T10:55:02Z
+Completed At: 2026-06-12T10:55:02Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 4238
+Total Bytes: 292582
+Showing lines 4000 to 4048
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+4000:                                                         </div>
+4001:                                                     )}
+4002:                                                 </div>
+4003: 
+4004:                                                 {/* Right Column: Telemetry & Controls Panel - Hidden in fullscreen mode */}
+4005:                                                 {!fullScreenMode && (
+4006:                                                     <div className="space-y-6">
+4007:                                                         {/* Telemetry Card */}
+4008:                                                         <div className="glass-panel rounded-3xl p-6 border border-glass-border">
+4009:                                                             <h3 className="text-lg font-bold text-white mb-4">Drawing Telemetry</h3>
+4010:                                                             <div className="space-y-3">
+4011:                                                                 <div className="flex justify-between items-center py-2 border-b border-white/5">
+4012:                                                                     <span className="text-xs text-gray-400">Drawing Status</span>
+4013:                                                                     <span className={`text-sm font-bold ${drawingStatus === 'Drawing' ? 'text-accent-green' : drawingStatus === 'Hovering' ? 'text-accent-yellow' : 'text-gray-450'}`}>
+4014:                                                                         {drawingStatus}
+4015:                   
+<truncated 2157 bytes>
+                                                              <span className="text-xs text-gray-400">Active Brush Size</span>
+4033:                                                                     <span className="text-sm font-bold text-white font-mono">{webBrushSize} px</span>
+4034:                                                                 </div>
+4035:                                                                 <div className="flex justify-between items-center py-2 border-b border-white/5">
+4036:                                                                     <span className="text-xs text-gray-400">Active Brush Color</span>
+4037:                                                                     <span className="text-sm font-bold text-white flex items-center gap-1.5">
+4038:                                                                         <span className="w-2.5 h-2.5 rounded-full inline-block" style={{ backgroundColor: webBrushColor }} />
+4039:                                                                         {webBrushColorName}
+4040:                                                                     </span>
+4041:                                                                 </div>
+4042:                                                             </div>
+4043:                                                         </div>
+4044: 
+4045:                                                         {/* Settings Controls Card */}
+4046:                                                         <div className="glass-panel rounded-3xl p-6 border border-glass-border space-y-5">
+4047:                                                             <h3 className="text-lg font-bold text-white pb-3 border-b border-glass-border mb-0">Drawing Controls</h3>
+4048:                                                             
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

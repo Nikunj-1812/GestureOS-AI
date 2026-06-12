@@ -1,0 +1,54 @@
+Created At: 2026-06-11T10:27:28Z
+Completed At: 2026-06-11T10:27:28Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 1772
+Total Bytes: 117640
+Showing lines 181 to 226
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+181:         "show_landmarks", "show_connections", "show_bounding_box",
+182:         "show_finger_states", "show_distance_meter", "show_debug_panel",
+183:         "show_hud", "virtual_mouse_enabled"
+184:     ]
+185:     float_keys = [
+186:         "virtual_mouse_sensitivity", "virtual_mouse_dead_zone", "virtual_mouse_smoothing",
+187:         "virtual_mouse_click_threshold", "virtual_mouse_right_click_threshold",
+188:         "virtual_mouse_scroll_sensitivity", "virtual_mouse_scroll_dead_zone", "virtual_mouse_scroll_smoothing",
+189:         "virtual_mouse_volume_min_distance_px", "virtual_mouse_volume_max_distance_px", "virtual_mouse_volume_smoothing"
+190:     ]
+191:     for key in bool_keys:
+192:         if key in updates:
+193:             params[key] = bool(updates[key])
+194:     for key in float_keys:
+195:         if key in updates:
+196:             params[key] = float(updates[key])
+197:     
+198:     changed = settings_manager.update(**params)
+199:     if changed:
+200:         settings_manager.save()
+201:         settings_manager.apply_to_config(config)
+202:         # Apply to live instance
+203:         virtual_mouse.enabled = config.virtual_mouse_enabled
+204:         virtual_mouse.sensitivity = config.virtual_mouse_sensitivity
+205:         virtual_mouse.dead_zone = config.virtual_mouse_dead_zone
+206:         virtual_mouse.smoothing = config.virtual_mouse_smoothing
+207:         if hasattr(config, 'virtual_mouse_click_threshold'):
+208:             virtual_mouse.click_threshold = config.virtual_mouse_click_threshold
+209:         if hasattr(config, 'virtual_mouse_right_click_threshold'):
+210:             virtual_mouse.right_click_threshold = config.virtual_mouse_right_click_threshold
+211:         if hasattr(config, 'virtual_mouse_scroll_sensitivity'):
+212:             virtual_mouse.scroll_sensitivity = config.virtual_mouse_scroll_sensitivity
+213:         if hasattr(config, 'virtual_mouse_scroll_dead_zone'):
+214:             virtual_mouse.scroll_dead_zone = config.virtual_mouse_scroll_dead_zone
+215:         if hasattr(config, 'virtual_mouse_scroll_smoothing'):
+216:             virtual_mouse.scroll_smoothing = config.virtual_mouse_scroll_smoothing
+217:         if hasattr(config, 'virtual_mouse_volume_min_distance_px') and virtual_mouse._volume_controller:
+218:             virtual_mouse._volume_controller.min_distance = config.virtual_mouse_volume_min_distance_px
+219:         if hasattr(config, 'virtual_mouse_volume_max_distance_px') and virtual_mouse._volume_controller:
+220:             virtual_mouse._volume_controller.max_distance = config.virtual_mouse_volume_max_distance_px
+221:         if hasattr(config, 'virtual_mouse_volume_smoothing') and virtual_mouse._volume_controller:
+222:             virtual_mouse._volume_controller.smoothing = config.virtual_mouse_volume_smoothing
+223:     return {"status": "success"}
+224: 
+225: @app.websocket("/ws")
+226: async def websocket_endpoint(websocket: WebSocket):
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

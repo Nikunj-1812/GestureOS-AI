@@ -1,0 +1,34 @@
+Created At: 2026-06-12T10:08:20Z
+Completed At: 2026-06-12T10:08:20Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 3194
+Total Bytes: 215157
+Showing lines 870 to 895
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+870: 
+871:         function App() {
+872:             const [fps, setFps] = useState(0);
+873:             const [hands, setHands] = useState(0);
+874:             const [gesture, setGesture] = useState('None');
+875:             const [confidence, setConfidence] = useState(0);
+876:             const [cameraStatus, setCameraStatus] = useState('Disconnected');
+877:             const [hasFrameState, setHasFrameState] = useState(false);
+878:             const hasFrameRef = useRef(false);
+879:             
+880:             const [socketStatus, setSocketStatus] = useState('disconnected');
+881:             const [events, setEvents] = useState([]);
+882:             const [activeMenu, setActiveMenu] = useState('dashboard');
+883:             const [isResetting, setIsResetting] = useState(false);
+884:             const [isCameraLoading, setIsCameraLoading] = useState(false);
+885: 
+886:             // Virtual Mouse States
+887:             const [virtualMouseEnabled, setVirtualMouseEnabled] = useState(false);
+888:             const [virtualMouseSensitivity, setVirtualMouseSensitivity] = useState(1.5);
+889:             const [virtualMouseDeadZone, setVirtualMouseDeadZone] = useState(0.15);
+890:             const [virtualMouseSmoothing, setVirtualMouseSmoothing] = useState(0.20);
+891:             const [virtualMouseClickThreshold, setVirtualMouseClickThreshold] = useState(0.05);
+892:             const [virtualMouseRightClickThreshold, setVirtualMouseRightClickThreshold] = useState(0.05);
+893:             
+894:             const [cursorX, setCursorX] = useState(0);
+895:             const [cursorY, setCursorY] = useState(0);
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

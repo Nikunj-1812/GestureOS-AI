@@ -1,0 +1,28 @@
+Created At: 2026-06-12T05:27:17Z
+Completed At: 2026-06-12T05:27:17Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 2693
+Total Bytes: 187515
+Showing lines 1 to 20
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1: import os
+2: import sys
+3: 
+4: # Suppress third-party logging / console spam (MediaPipe, TensorFlow, OpenCV)
+5: os.environ['GLOG_minloglevel'] = '2'          # Suppress MediaPipe info logs
+6: os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'       # Suppress TensorFlow info/warning logs
+7: os.environ['OPENCV_LOG_LEVEL'] = 'ERROR'       # Suppress OpenCV info/warning logs
+8: os.environ['OPENCV_FFMPEG_LOGLEVEL'] = '-8'    # Suppress OpenCV FFMPEG logs
+9: 
+10: import base64
+11: import cv2
+12: import json
+13: import asyncio
+14: from fastapi import FastAPI, WebSocket, WebSocketDisconnect
+15: from fastapi.middleware.cors import CORSMiddleware
+16: from fastapi.responses import HTMLResponse
+17: import uvicorn
+18: import time
+19: from pathlib import Path
+20: 
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

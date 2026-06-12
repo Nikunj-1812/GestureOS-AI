@@ -1,0 +1,44 @@
+Created At: 2026-06-12T11:00:25Z
+Completed At: 2026-06-12T11:00:25Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 4256
+Total Bytes: 294748
+Showing lines 4001 to 4100
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+4001:                                                     )}
+4002:                                                 </div>
+4003: 
+4004:                                                 {/* Right Column: Telemetry & Controls Panel - Hidden in fullscreen mode */}
+4005:                                                 {!fullScreenMode && (
+4006:                                                     <div className="space-y-6">
+4007:                                                         {/* Telemetry Card */}
+4008:                                                         <div className="glass-panel rounded-3xl p-6 border border-glass-border">
+4009:                                                             <h3 className="text-lg font-bold text-white mb-4">Drawing Telemetry</h3>
+4010:                                                             <div className="space-y-3">
+4011:                                                                 <div className="flex justify-between items-center py-2 border-b border-white/5">
+4012:                                                                     <span className="text-xs text-gray-400">Drawing Status</span>
+4013:                                                                     <span id="telemetry-drawing-status" className={`text-sm font-bold ${drawingStatus === 'Drawing' ? 'text-accent-green' : drawingStatus === 'Hovering' ? 'text-accent-yellow' : 'text-gray-450'}`}>
+4014:                                                                         {drawingStatus}
+4015:                                                          
+<truncated 8062 bytes>
+ 'camera' ? '✏️ Whiteboard' : '📷 Camera'}
+4082:                                                                     </button>
+4083:                                                                 </div>
+4084:                                                             </div>
+4085: 
+4086:                                                             {/* Jitter Reduction Filter */}
+4087:                                                             <div className="space-y-2">
+4088:                                                                 <div className="flex justify-between text-xs text-gray-400">
+4089:                                                                     <span>Jitter Filter</span>
+4090:                                                                     <span>{filterIntensity === 1 ? 'Off' : filterIntensity === 2 ? 'Low' : filterIntensity === 3 ? 'Medium' : filterIntensity === 4 ? 'High' : 'Super'}</span>
+4091:                                                                 </div>
+4092:                                                                 <input 
+4093:                                                                     type="range"
+4094:                                                                     min="1"
+4095:                                                                     max="5"
+4096:                                                                     value={filterIntensity}
+4097:                                                                     onChange={(e) => {
+4098:                                                                         const val = parseInt(e.target.value);
+4099:                                                                         setFilterIntensity(val);
+4100:                                                                         updateFilterParams(val);
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

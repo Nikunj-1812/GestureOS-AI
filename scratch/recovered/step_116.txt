@@ -1,0 +1,41 @@
+Created At: 2026-06-11T09:51:57Z
+Completed At: 2026-06-11T09:51:58Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 1626
+Total Bytes: 105146
+Showing lines 278 to 310
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+278:             t_detect = time.perf_counter() - t_det_start
+279:             
+280:             gesture_label = "unknown"
+281:             gesture_confidence = 0.0
+282:             
+283:             t_pred_start = time.perf_counter()
+284:             if detected_hands:
+285:                 primary_hand = detected_hands[0]
+286:                 if gesture_engine.is_loaded:
+287:                     gesture_label, gesture_confidence = gesture_engine.predict(primary_hand)
+288:                     if gesture_label != "unknown":
+289:                         action_dispatcher.dispatch(gesture_label)
+290:                 else:
+291:                     gesture_label = "No Model"
+292:             else:
+293:                 gesture_engine.reset()
+294:             t_predict = time.perf_counter() - t_pred_start
+295: 
+296:             # Log only on gesture change
+297:             if gesture_label != last_gesture:
+298:                 logger.info(f"Gesture changed: '{last_gesture}' -> '{gesture_label}'")
+299:                 last_gesture = gesture_label
+300: 
+301:             # Run Virtual Mouse coordinate mapping & pointer movement
+302:             vm_result = None
+303:             if virtual_mouse.enabled:
+304:                 if detected_hands:
+305:                     vm_result = virtual_mouse.process_hand(detected_hands[0])
+306:                 else:
+307:                     vm_result = virtual_mouse.process_hand(None)
+308:             else:
+309:                 virtual_mouse.reset()
+310: 
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

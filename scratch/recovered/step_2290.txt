@@ -1,0 +1,56 @@
+Created At: 2026-06-12T09:20:22Z
+Completed At: 2026-06-12T09:20:22Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 2694
+Total Bytes: 187527
+Showing lines 800 to 1100
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+800:             const [virtualMouseScrollSensitivity, setVirtualMouseScrollSensitivity] = useState(5.0);
+801:             const [virtualMouseScrollDeadZone, setVirtualMouseScrollDeadZone] = useState(0.04);
+802:             const [virtualMouseScrollSmoothing, setVirtualMouseScrollSmoothing] = useState(0.25);
+803:             const prevScrollModeRef = useRef(false);
+804:             // Phase 3.4 — Volume Control
+805:             const [volumeMode, setVolumeMode] = useState(false);
+806:             const [volumeLevel, setVolumeLevel] = useState(0);
+807:             const [volumeDistance, setVolumeDistance] = useState(0.0);
+808:             const [virtualMouseVolumeMinDistancePx, setVirtualMouseVolumeMinDistancePx] = useState(30.0);
+809:             const [virtualMouseVolumeMaxDistancePx, setVirtualMouseVolumeMaxDistancePx] = useState(250.0);
+810:             const [virtualMouseVolumeSmoothing, setVirtualMouseVolumeSmoothing] = useState(0.15);
+811:             const prevVolumeLevelRef = useRef(-1);
+812: 
+813:             // Phase 3.5 — Mode Manager & Brightness Control
+814:             const [activeMode, setActiveMode] = useState('CURSOR');
+815:             const [brightnessMode, setBrightnessMode] = useState(false);
+816:             const [brightnessLevel, setBrightnessLevel] = useState(0);
+817:             const [brightnessDistance, setBrightnessDistance] = useState(0.0);
+818:             const [virtualMouseBrightnessMinDistancePx, setVirtualMouseBrightnessMinDistancePx] = useState(30.0);
+819:             const [virtualMouseBrightnessMaxDistancePx, setVirtual
+<truncated 16736 bytes>
+
+1075:                                         id: `${Date.now()}-${eventIdCounterRef.current}`,
+1076:                                         timestamp: timeString,
+1077:                                         gesture: 'Brightness',
+1078:                                         confidence: 1.0,
+1079:                                         action: `[BRIGHTNESS] ${data.brightness_level}% (Distance: ${(data.brightness_distance || 0).toFixed(1)}px)`
+1080:                                     };
+1081:                                     setEvents(prev => [brightnessEvent, ...prev].slice(0, 50));
+1082:                                     prevBrightnessLevelRef.current = data.brightness_level;
+1083:                                 }
+1084:                             } else if (!newBM) {
+1085:                                 prevBrightnessLevelRef.current = -1;
+1086:                             }
+1087: 
+1088:                             // Phase 3.5 — Drag & Drop
+1089:                             const newDS = data.drag_status || 'IDLE';
+1090:                             setDragStatus(newDS);
+1091:                             setDragDuration(data.drag_duration || 0.0);
+1092:                             setDragCounter(data.drag_counter || 0);
+1093:                             const prevDS = prevDragStatusRef.current;
+1094:                             if (newDS === 'DRAGGING' && prevDS !== 'DRAGGING') {
+1095:                                 const timeString = new Date().toLocaleTimeString();
+1096:                                 eventIdCounterRef.current += 1;
+1097:                                 setEvents(prev => [{
+1098:                                     id: `${Date.now()}-${eventIdCounterRef.current}`,
+1099:                                     timestamp: timeString,
+1100:                                     gesture: 'Drag Start',
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

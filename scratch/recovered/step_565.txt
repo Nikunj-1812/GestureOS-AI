@@ -1,0 +1,38 @@
+Created At: 2026-06-11T10:27:03Z
+Completed At: 2026-06-11T10:27:03Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 1772
+Total Bytes: 117640
+Showing lines 861 to 890
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+861:                         }
+862:                         if (data.virtual_mouse_volume_max_distance_px !== undefined) {
+863:                             setVirtualMouseVolumeMaxDistancePx(data.virtual_mouse_volume_max_distance_px);
+864:                         }
+865:                         if (data.virtual_mouse_volume_smoothing !== undefined) {
+866:                             setVirtualMouseVolumeSmoothing(data.virtual_mouse_volume_smoothing);
+867:                         }
+868:                     })
+869:                     .catch(err => console.error('Error loading config settings:', err));
+870: 
+871:                 // Escape key emergency stop listener
+872:                 const handleEscape = (e) => {
+873:                     if (e.key === 'Escape') {
+874:                         setVirtualMouseEnabled(false);
+875:                         updateSetting('virtual_mouse_enabled', false);
+876:                         setRightClickStatus('OPEN');
+877:                         setScrollMode(false);
+878:                         setScrollDirection('NONE');
+879:                         logSystemEvent('\u26a0 EMERGENCY STOP: Virtual mouse disabled via ESC key.');
+880:                     }
+881:                 };
+882:                 window.addEventListener('keydown', handleEscape);
+883: 
+884:                 return () => {
+885:                     window.removeEventListener('keydown', handleEscape);
+886:                     if (socketRef.current) {
+887:                         socketRef.current.close();
+888:                     }
+889:                 };
+890:             }, []);
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

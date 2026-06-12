@@ -1,0 +1,24 @@
+Created At: 2026-06-12T11:09:49Z
+Completed At: 2026-06-12T11:09:49Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 4482
+Total Bytes: 313447
+Showing lines 1770 to 1785
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1770:                                     
+1771:                                     if (filterIntensityRef.current > 1) {
+1772:                                         smoothedX = filterXRef.current.filter(mappedX, nowMs);
+1773:                                         smoothedY = filterYRef.current.filter(mappedY, nowMs);
+1774:                                     }
+1775:                                     
+1776:                                     const rawPinchDist = data.index_pinch_distance !== undefined ? data.index_pinch_distance : (data.pinch_distance || 0.0);
+1777:                                     
+1778:                                     // Smooth pinch distance
+1779:                                     if (smoothedPinchDistRef.current === 0.0) {
+1780:                                         smoothedPinchDistRef.current = rawPinchDist;
+1781:                                     } else {
+1782:                                         const alpha = 0.4;
+1783:                                         smoothedPinchDistRef.current = (smoothedPinchDistRef.current * (1 - alpha)) + (rawPinchDist * alpha);
+1784:                                     }
+1785:                                     const ipDist = smoothedPinchDistRef.current;
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

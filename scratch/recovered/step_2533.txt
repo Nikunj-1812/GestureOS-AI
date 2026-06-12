@@ -1,0 +1,39 @@
+Created At: 2026-06-12T09:41:43Z
+Completed At: 2026-06-12T09:41:44Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 2763
+Total Bytes: 190961
+Showing lines 280 to 310
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+280:             is_upper = caps or shift
+281:             char = key.upper() if is_upper else key.lower()
+282:             pyautogui.write(char)
+283:         return {"status": "success"}
+284:     except Exception as e:
+285:         logger.error(f"Error executing pyautogui keypress from web backend: {e}")
+286:         return {"status": "error", "message": str(e)}
+287: 
+288: @app.post("/api/keyboard/suggest")
+289: def api_keyboard_suggest(payload: dict):
+290:     text = payload.get("text", "")
+291:     curr_word = word_predictor.get_current_word(text)
+292:     suggestions = word_predictor.get_suggestions(curr_word)
+293:     return {
+294:         "status": "success",
+295:         "current_word": curr_word,
+296:         "suggestions": suggestions
+297:     }
+298: 
+299: @app.websocket("/ws")
+300: async def websocket_endpoint(websocket: WebSocket):
+301:     await websocket.accept()
+302:     logger.info("WebSocket client connected")
+303:     
+304:     last_fps_tick = time.perf_counter()
+305:     fps_smooth = 0.0
+306:     last_frame_id = -1
+307:     last_gesture = "unknown"
+308:     
+309:     try:
+310:         while True:
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

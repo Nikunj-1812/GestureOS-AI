@@ -1,0 +1,100 @@
+Created At: 2026-06-11T10:57:29Z
+Completed At: 2026-06-11T10:57:29Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 1192
+Total Bytes: 69773
+Showing lines 1 to 100
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1: import os
+2: import sys
+3: import psutil
+4: 
+5: # Suppress third-party logging / console spam (MediaPipe, TensorFlow, OpenCV)
+6: os.environ['GLOG_minloglevel'] = '2'          # Suppress MediaPipe info logs
+7: os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'       # Suppress TensorFlow info/warning logs
+8: os.environ['OPENCV_LOG_LEVEL'] = 'ERROR'       # Suppress OpenCV info/warning logs
+9: os.environ['OPENCV_FFMPEG_LOGLEVEL'] = '-8'    # Suppress OpenCV FFMPEG logs
+10: 
+11: import base64
+12: import cv2
+13: import json
+14: import asyncio
+15: from fastapi import FastAPI, WebSocket, WebSocketDisconnect
+16: from fastapi.middleware.cors import CORSMiddleware
+17: from fastapi.responses import HTMLResponse
+18: import uvicorn
+19: import time
+20: from pathlib import Path
+21: 
+22: from config.settings_manager import SettingsManager
+23: from modules.camera import CameraStream
+24: from modules.hand_detector import HandDetector
+25: from modules.gesture_engine import GestureEngine
+26: from modules.action_dispatcher import ActionDispatcher
+27: from loguru import logger
+28: 
+29: app = FastAPI(title="GestureOS AI Web Backend")
+30: 
+31: # Enable CORS
+32: app.add_middleware(
+33:     CORSMiddleware,
+34:     allow_origins=["*"],
+35:     allow_credentials=True,
+36:     allow_methods=["*"],
+37:     allow_headers=["*"],
+38: )
+39: 
+40: # Shared system states
+41: settings_manager = SettingsManager()
+42: config = settings_manager.build_app_config("config/settings.yaml")
+43: 
+44: # Configure logger level from settings
+45: logger.remove()
+46: logger.add(sys.stderr, level=config.log_level)
+47: 
+48: c
+<truncated 328 bytes>
+dence_threshold,
+59:     smoothing_frames=config.smoothing_frames,
+60: )
+61: action_dispatcher = ActionDispatcher(cooldown_ms=800)
+62: 
+63: from modules.virtual_mouse import VirtualMouse
+64: virtual_mouse = VirtualMouse(
+65:     enabled=config.virtual_mouse_enabled,
+66:     sensitivity=config.virtual_mouse_sensitivity,
+67:     dead_zone=config.virtual_mouse_dead_zone,
+68:     smoothing=config.virtual_mouse_smoothing,
+69:     click_threshold=getattr(config, 'virtual_mouse_click_threshold', 0.05),
+70:     right_click_threshold=getattr(config, 'virtual_mouse_right_click_threshold', 0.05),
+71:     scroll_sensitivity=getattr(config, 'virtual_mouse_scroll_sensitivity', 5.0),
+72:     scroll_dead_zone=getattr(config, 'virtual_mouse_scroll_dead_zone', 0.04),
+73:     scroll_smoothing=getattr(config, 'virtual_mouse_scroll_smoothing', 0.25),
+74:     volume_min_distance_px=getattr(config, 'virtual_mouse_volume_min_distance_px', 30.0),
+75:     volume_max_distance_px=getattr(config, 'virtual_mouse_volume_max_distance_px', 250.0),
+76:     volume_smoothing=getattr(config, 'virtual_mouse_volume_smoothing', 0.15),
+77: )
+78: 
+79: camera_running = False
+80: 
+81: def start_camera_stream():
+82:     global camera_stream, camera_running
+83:     if camera_stream is not None:
+84:         try:
+85:             camera_stream.stop()
+86:         except Exception:
+87:             pass
+88:     try:
+89:         camera_stream = CameraStream(
+90:             index=config.camera_index,
+91:             width=config.camera_width,
+92:             height=config.camera_height,
+93:             fps=config.camera_fps,
+94:         ).start()
+95:         camera_running = True
+96:         logger.info(f"Camera stream started on index {config.camera_index}.")
+97:         return True
+98:     except Exception as e:
+99:         camera_stream = None
+100:         camera_running = False
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

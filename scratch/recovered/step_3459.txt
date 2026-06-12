@@ -1,0 +1,29 @@
+Created At: 2026-06-12T10:52:47Z
+Completed At: 2026-06-12T10:52:48Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 4034
+Total Bytes: 278198
+Showing lines 500 to 520
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+500:                 "hands": len(detected_hands),
+501:                 "index_tip_x": index_tip_x,
+502:                 "index_tip_y": index_tip_y,
+503:                 "gesture": gesture_label,
+504:                 "confidence": float(round(gesture_confidence, 3)),
+505:                 "camera_status": "Connected",
+506:                 "frame": f"data:image/jpeg;base64,{frame_b64}",
+507:                 "cursor_x": cursor_x,
+508:                 "cursor_y": cursor_y,
+509:                 "tracking_state": tracking_state,
+510:                 "pinch_distance": vm_result.get("pinch_distance", float(round(live_pinch_dist, 4))) if vm_result else float(round(live_pinch_dist, 4)),
+511:                 "index_pinch_distance": float(round(index_pinch_dist, 4)),
+512:                 "click_status": vm_result.get("click_status", "OPEN") if vm_result else "OPEN",
+513:                 "click_counter": vm_result.get("click_counter", 0) if vm_result else 0,
+514:                 "current_action": vm_result.get("current_action", "None") if vm_result else "None",
+515:                 # Phase 3.3 — Right Click telemetry
+516:                 "right_click_status": vm_result.get("right_click_status", "OPEN") if vm_result else "OPEN",
+517:                 "right_click_counter": vm_result.get("right_click_counter", 0) if vm_result else 0,
+518:                 "right_pinch_distance": vm_result.get("right_pinch_distance", 0.0) if vm_result else 0.0,
+519:                 # Phase 3.4 — Scroll telemetry
+520:                 "scroll_mode": vm_result.get("scroll_mode", False) if vm_result else False,
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

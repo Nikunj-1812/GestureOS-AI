@@ -1,0 +1,22 @@
+Created At: 2026-06-12T11:12:45Z
+Completed At: 2026-06-12T11:12:45Z
+File Path: `file:///C:/Users/nikun/.gemini/antigravity/brain/f71acb1b-ab5a-4de9-85a5-1a298f3c313a/task.md`
+Total Lines: 14
+Total Bytes: 1018
+Showing lines 1 to 14
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1: # Task List — Phase 5.4: Brush System
+2: 
+3: - [ ] Add brush fields (`brush_size`, `brush_color`, `brush_color_name`, `brush_tool`) to `SettingsState` in `config/settings_manager.py`
+4: - [ ] Update `load()`, `save()`, and `update()` methods in `config/settings_manager.py` to persist brush configurations
+5: - [ ] Expose new brush configurations in `/api/settings` GET and `/api/settings/update` POST routes in `web_backend.py`
+6: - [ ] Initialize frontend states with values loaded from `/api/settings`
+7: - [ ] Integrate brush settings update calls to `/api/settings/update` upon user modification
+8: - [ ] Add Pen, Highlighter, and Eraser buttons to the Tool Menu overlay
+9: - [ ] Add Small, Medium, and Large brush size preset buttons
+10: - [ ] Add an HTML5 Color Picker next to the predefined color swatches
+11: - [ ] Update canvas stroke data structure to save the active `tool`
+12: - [ ] Update canvas drawing logic to support Eraser (`destination-out`) and Highlighter (alpha composition)
+13: - [ ] Verify using check_jsx.py and pytest test suite
+14: 
+The above content shows the entire, complete file contents of the requested file.

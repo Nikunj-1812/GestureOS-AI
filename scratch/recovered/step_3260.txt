@@ -1,0 +1,78 @@
+Created At: 2026-06-12T10:35:17Z
+Completed At: 2026-06-12T10:35:18Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 3501
+Total Bytes: 240552
+Showing lines 380 to 510
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+380:                     "camera_status": "Starting",
+381:                     "frame": None
+382:                 })
+383:                 await asyncio.sleep(0.05)
+384:                 continue
+385:                 
+386:             # Avoid duplicate frame processing
+387:             current_frame_id = camera_stream.frame_id
+388:             if current_frame_id == last_frame_id:
+389:                 await asyncio.sleep(0.001)
+390:                 continue
+391:             last_frame_id = current_frame_id
+392:             
+393:             loop_start = time.perf_counter()
+394: 
+395:             # Profiling steps
+396:             t0 = time.perf_counter()
+397:             
+398:             # Optimize: Downscale processing resolution to 640w for ~4x performance boost
+399:             h_orig, w_orig = frame.shape[:2]
+400:             if w_orig > 640:
+401:                 scale = 640.0 / w_orig
+402:                 target_h = int(h_orig * scale)
+403:                 frame = cv2.resize(frame, (640, target_h), interpolation=cv2.INTER_LINEAR)
+404: 
+405:             if config.flip_horizontal:
+406:                 frame = cv2.flip(frame, 1)
+407:                 
+408:             h, w = frame.shape[:2]
+409:             t_resize = time.perf_counter() - t0
+410: 
+411:             # Run MediaPipe hand detection
+412:             t_det_start = time.perf_counter()
+413:             detected_hands, mp_results = hand_detector.detect(frame)
+414:             t_detect = time.perf_counter() - t_det_start
+415:             
+416:             gesture_label = "unknown"
+417:             gesture
+<truncated 3286 bytes>
+se None
+481:             index_tip_y = float(round(primary_hand.landmarks[8][1], 4)) if (primary_hand and len(primary_hand.landmarks) > 8) else None
+482: 
+483:             # Compute live pinch distance for virtual keyboard: Middle Finger (12) and Thumb (4)
+484:             live_pinch_dist = 0.0
+485:             if primary_hand and len(primary_hand.landmarks) > 12:
+486:                 mx, my, mz = primary_hand.landmarks[12]
+487:                 tx, ty, tz = primary_hand.landmarks[4]
+488:                 live_pinch_dist = math.sqrt((mx - tx)**2 + (my - ty)**2 + (mz - tz)**2)
+489: 
+490:             # Compute live index-thumb pinch distance for Air Drawing
+491:             index_pinch_dist = 0.0
+492:             if primary_hand and len(primary_hand.landmarks) > 8:
+493:                 ix_3d, iy_3d, iz_3d = primary_hand.landmarks[8]
+494:                 tx_3d, ty_3d, tz_3d = primary_hand.landmarks[4]
+495:                 index_pinch_dist = math.sqrt((ix_3d - tx_3d)**2 + (iy_3d - ty_3d)**2 + (iz_3d - tz_3d)**2)
+496: 
+497:             # Send live telemetry + frame over WebSocket
+498:             payload = {
+499:                 "fps": float(round(fps_smooth, 1)),
+500:                 "hands": len(detected_hands),
+501:                 "index_tip_x": index_tip_x,
+502:                 "index_tip_y": index_tip_y,
+503:                 "gesture": gesture_label,
+504:                 "confidence": float(round(gesture_confidence, 3)),
+505:                 "camera_status": "Connected",
+506:                 "frame": f"data:image/jpeg;base64,{frame_b64}",
+507:                 "cursor_x": cursor_x,
+508:                 "cursor_y": cursor_y,
+509:                 "tracking_state": tracking_state,
+510:                 "pinch_distance": vm_result.get("pinch_distance", float(round(live_pinch_dist, 4))) if vm_result else float(round(live_pinch_dist, 4)),
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

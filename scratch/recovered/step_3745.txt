@@ -1,0 +1,61 @@
+Created At: 2026-06-12T11:13:48Z
+Completed At: 2026-06-12T11:13:48Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 2369
+Total Bytes: 129583
+Showing lines 1500 to 1580
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1500:                             setCursorX(data.cursor_x || 0);
+1501:                             setCursorY(data.cursor_y || 0);
+1502:                             setTrackingState(data.tracking_state || 'Disabled');
+1503:                             setPinchDistance(data.pinch_distance || 0.0);
+1504:                             setClickStatus(data.click_status || 'OPEN');
+1505:                             setClickCounter(data.click_counter || 0);
+1506:                             setCurrentAction(data.current_action || 'None');
+1507: 
+1508:                             // Key Hover Detection for Web Keyboard
+1509:                             let detectedKey = null;
+1510:                             const wsNow = Date.now();
+1511: 
+1512:                             if (data.index_tip_x !== undefined && data.index_tip_y !== undefined && data.index_tip_x !== null && data.index_tip_y !== null) {
+1513:                                 const rawX = data.index_tip_x;
+1514:                                 const rawY = data.index_tip_y;
+1515:                                 const xMirrored = 1.0 - rawX; // Mirror horizontal to match screen direction
+1516: 
+1517:                                 // Smooth coordinates using exponential moving average (EMA)
+1518:                                 const smoothing = 0.20;
+1519:                                 if (smoothXRef.current === null || smoothYRef.current === null) {
+1520:                                     smoothXRef.current = xMirrored;
+1521:                                     smoothYRef.current = rawY;
+1522:       
+<truncated 1935 bytes>
+cing (100ms)
+1553:                             if (detectedKey) {
+1554:                                 lastHoverDetectTimeRef.current = wsNow;
+1555:                                 if (detectedKey === candidateKeyRef.current) {
+1556:                                     const elapsed = (wsNow - candidateStartTimeRef.current) / 1000;
+1557:                                     setHoverDuration(elapsed);
+1558:                                     if (elapsed >= 0.150) {
+1559:                                         setHoveredKey(detectedKey);
+1560:                                         hoveredKeyRef.current = detectedKey;
+1561:                                     }
+1562:                                 } else {
+1563:                                     candidateKeyRef.current = detectedKey;
+1564:                                     candidateStartTimeRef.current = wsNow;
+1565:                                     setHoverDuration(0.0);
+1566:                                 }
+1567:                             } else {
+1568:                                 let debounceElapsed = 0;
+1569:                                 if (lastHoverDetectTimeRef.current) {
+1570:                                     debounceElapsed = (wsNow - lastHoverDetectTimeRef.current) / 1000;
+1571:                                 }
+1572:                                 if (debounceElapsed >= 0.100 || !lastHoverDetectTimeRef.current) {
+1573:                                     candidateKeyRef.current = null;
+1574:                                     candidateStartTimeRef.current = null;
+1575:                                     setHoverDuration(0.0);
+1576:                                     setHoveredKey('None');
+1577:                                     hoveredKeyRef.current = 'None';
+1578:                                 }
+1579:                             }
+1580: 
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

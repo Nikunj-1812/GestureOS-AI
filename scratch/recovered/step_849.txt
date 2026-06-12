@@ -1,0 +1,44 @@
+Created At: 2026-06-11T10:48:41Z
+Completed At: 2026-06-11T10:48:42Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 1987
+Total Bytes: 135200
+Showing lines 240 to 275
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+240:     last_fps_tick = time.perf_counter()
+241:     fps_smooth = 0.0
+242:     last_frame_id = -1
+243:     last_gesture = "unknown"
+244:     
+245:     try:
+246:         while True:
+247:             # Capture frame & run pipeline if running
+248:             if not camera_running or camera_stream is None:
+249:                 # Send empty / disconnected state
+250:                 await websocket.send_json({
+251:                     "fps": 0.0,
+252:                     "hands": 0,
+253:                     "gesture": "None",
+254:                     "confidence": 0.0,
+255:                     "camera_status": "Disconnected",
+256:                     "frame": None
+257:                 })
+258:                 await asyncio.sleep(0.1)
+259:                 continue
+260:                 
+261:             frame = camera_stream.read()
+262:             if frame is None:
+263:                 await websocket.send_json({
+264:                     "fps": 0.0,
+265:                     "hands": 0,
+266:                     "gesture": "None",
+267:                     "confidence": 0.0,
+268:                     "camera_status": "Starting",
+269:                     "frame": None
+270:                 })
+271:                 await asyncio.sleep(0.05)
+272:                 continue
+273:                 
+274:             # Avoid duplicate frame processing
+275:             current_frame_id = camera_stream.frame_id
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

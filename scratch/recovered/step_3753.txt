@@ -1,0 +1,60 @@
+Created At: 2026-06-12T11:13:57Z
+Completed At: 2026-06-12T11:13:57Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 2369
+Total Bytes: 129583
+Showing lines 2200 to 2260
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+2200: 
+2201:                     ws.onerror = (error) => {
+2202:                         console.error('WebSocket encountered an error:', error);
+2203:                     };
+2204:                 };
+2205: 
+2206:                 connectWS();
+2207: 
+2208:                 // Fetch initial switches configuration from backend
+2209:                 fetch('/api/settings')
+2210:                     .then(res => res.json())
+2211:                     .then(data => {
+2212:                         setShowLandmarks(data.show_landmarks);
+2213:                         setShowConnections(data.show_connections);
+2214:                         setShowBoundingBox(data.show_bounding_box);
+2215:                         setShowFingerStates(data.show_finger_states);
+2216:                         setShowDistanceMeter(data.show_distance_meter);
+2217:                         setShowDebugPanel(data.show_debug_panel);
+2218:                         setShowHud(data.show_hud);
+2219:                         
+2220:                         setVirtualMouseEnabled(data.virtual_mouse_enabled);
+2221:                         setVirtualMouseSensitivity(data.virtual_mouse_sensitivity);
+2222:                         setVirtualMouseDeadZone(data.virtual_mouse_dead_zone);
+2223:                         setVirtualMouseSmoothing(data.virtual_mouse_smoothing);
+2224:                         if (data.virtual_mouse_click_threshold !== undefined) {
+2225:                             setVirtualMouseClickThreshold(data.virtual_mouse_click_threshold);
+2226:                         }
+2227:                         if 
+<truncated 842 bytes>
+2238:                         }
+2239:                         if (data.virtual_mouse_volume_min_distance_px !== undefined) {
+2240:                             setVirtualMouseVolumeMinDistancePx(data.virtual_mouse_volume_min_distance_px);
+2241:                         }
+2242:                         if (data.virtual_mouse_volume_max_distance_px !== undefined) {
+2243:                             setVirtualMouseVolumeMaxDistancePx(data.virtual_mouse_volume_max_distance_px);
+2244:                         }
+2245:                         if (data.virtual_mouse_volume_smoothing !== undefined) {
+2246:                             setVirtualMouseVolumeSmoothing(data.virtual_mouse_volume_smoothing);
+2247:                         }
+2248:                         if (data.virtual_mouse_brightness_min_distance_px !== undefined) {
+2249:                             setVirtualMouseBrightnessMinDistancePx(data.virtual_mouse_brightness_min_distance_px);
+2250:                         }
+2251:                         if (data.virtual_mouse_brightness_max_distance_px !== undefined) {
+2252:                             setVirtualMouseBrightnessMaxDistancePx(data.virtual_mouse_brightness_max_distance_px);
+2253:                         }
+2254:                         if (data.virtual_mouse_brightness_smoothing !== undefined) {
+2255:                             setVirtualMouseBrightnessSmoothing(data.virtual_mouse_brightness_smoothing);
+2256:                         }
+2257:                         if (data.virtual_mouse_drag_threshold_ms !== undefined) {
+2258:                             setVirtualMouseDragThresholdMs(data.virtual_mouse_drag_threshold_ms);
+2259:                                     if (data.keyboard_system_typing_enabled !== undefined) {
+2260:                                         setSystemTypingEnabled(data.keyboard_system_typing_enabled);
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

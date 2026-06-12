@@ -1,0 +1,29 @@
+Created At: 2026-06-12T10:10:32Z
+Completed At: 2026-06-12T10:10:32Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 3321
+Total Bytes: 223716
+Showing lines 3270 to 3290
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+3270:                                                             {emoji}
+3271:                                                         </button>
+3272:                                                     ))}
+3273:                                                 </div>
+3274:                                             </div>
+3275:                                         </div>
+3276:                                     </>
+3277:                                 ) : (
+3278:                                     <div className="glass-card rounded-2xl p-8 text-center text-gray-400">
+3279:                                         <p>This page is currently under construction. Please use the Dashboard or Virtual Mouse navigation links.</p>
+3280:                                     </div>
+3281:                                 )}
+3282:                             </div>
+3283:                         </div>
+3284:                     </main>
+3285:                 </div>
+3286:             );
+3287:         }
+3288: 
+3289:         const root = ReactDOM.createRoot(document.getElementById('root'));
+3290:         root.render(<App />);
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

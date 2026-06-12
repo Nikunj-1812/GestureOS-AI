@@ -1,0 +1,42 @@
+Created At: 2026-06-12T10:42:04Z
+Completed At: 2026-06-12T10:42:05Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 4033
+Total Bytes: 278212
+Showing lines 3560 to 3620
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+3560:                                             )}
+3561: 
+3562:                                             {/* Drawing Page Layout */}
+3563:                                             <div className={`grid grid-cols-1 ${fullScreenMode ? '' : 'lg:grid-cols-3 gap-6 mt-6'}`}>
+3564:                                                 {/* Canvas Workspace Column */}
+3565:                                                 <div className={`relative ${
+3566:                                                     fullScreenMode 
+3567:                                                         ? 'fixed inset-0 w-screen h-screen z-50 p-0 m-0 overflow-hidden bg-[#0b0a15]' 
+3568:                                                         : 'lg:col-span-2 glass-panel rounded-3xl p-6 border border-glass-border flex flex-col relative bg-black/40 min-h-[500px]'
+3569:                                                 }`} id="drawing-view-container">
+3570:                                                     <div 
+3571:                                                         id="drawing-canvas-wrapper" 
+3572:                                                         className={`relative w-full h-full overflow-hidden rounded-2xl ${
+3573:                                                             fullScreenMode ? 'rounded-none' : 'border border-glass-border'
+3574:                                                         } ${backgroundMode === 'whiteboard' ? 'whiteboard-grid' : 'bg-zinc-950'}`}
+3575:                                                         style={{ minHeight: fullScreenMode ? '100vh
+<truncated 2824 bytes>
+                           <span className="text-[10px] text-gray-400 font-semibold">Camera Feed</span>
+3605:                                                                     <div className="flex items-center gap-1.5">
+3606:                                                                         <button 
+3607:                                                                             onClick={() => setPipSize(prev => prev === 'sm' ? 'md' : prev === 'md' ? 'lg' : 'sm')}
+3608:                                                                             className="text-[10px] text-white hover:text-blue-400 bg-white/5 px-1.5 py-0.5 rounded border border-white/5"
+3609:                                                                             title="Resize Preview"
+3610:                                                                         >
+3611:                                                                             ⤢
+3612:                                                                         </button>
+3613:                                                                         <button 
+3614:                                                                             onClick={() => setPipHidden(true)}
+3615:                                                                             className="text-[10px] text-white hover:text-red-400 bg-white/5 px-1.5 py-0.5 rounded border border-white/5"
+3616:                                                                             title="Hide Preview"
+3617:                                                                         >
+3618:                                                                             ✕
+3619:                                                                         </button>
+3620:                                                                     </div>
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

@@ -1,0 +1,39 @@
+Created At: 2026-06-12T05:02:03Z
+Completed At: 2026-06-12T05:02:03Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 2483
+Total Bytes: 173395
+Showing lines 2400 to 2430
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+2400:                                                         onMouseEnter={() => setHoveredKey('Shift')}
+2401:                                                         onMouseLeave={() => setHoveredKey('None')}
+2402:                                                         onClick={() => handleWebKeyPress('Shift')}
+2403:                                                         className={`w-24 h-12 rounded-lg text-xs font-bold transition-all duration-100 ${
+2404:                                                             pressedKey === 'Shift' 
+2405:                                                                 ? 'bg-amber-500 text-black scale-95' 
+2406:                                                                 : isShiftActive 
+2407:                                                                     ? 'bg-blue-600 hover:bg-blue-500 text-white' 
+2408:                                                                     : 'bg-zinc-900 hover:bg-zinc-800 text-gray-300 border border-zinc-750'
+2409:                                                         }`}
+2410:                                                     >
+2411:                                                         Shift
+2412:                                                     </button>
+2413:                                                     {["Z", "X", "C", "V", "B", "N", "M"].map(key => {
+2414:                                                         const label = isCapsLockActive || isShiftActive ? key.toUpperCase() : key.toLowerCase();
+2415:                                                         return (
+2416:                                                             <button 
+2417:                                                                 key={key}
+2418:                                                                 onMouseEnter={() => setHoveredKey(key)}
+2419:                                                                 onMouseLeave={() => setHoveredKey('None')}
+2420:                                                                 onClick={() => handleWebKeyPress(key)}
+2421:                                                                 className={`flex-1 h-12 rounded-lg text-sm font-semibold transition-all duration-100 ${
+2422:                                                                     pressedKey === key 
+2423:                                                                         ? 'bg-amber-500 text-black scale-95' 
+2424:                                                                         : 'bg-zinc-850 hover:bg-zinc-700 text-white active:scale-95 border border-zinc-750'
+2425:                                                                 }`}
+2426:                                                             >
+2427:                                                                 {label}
+2428:                                                             </button>
+2429:                                                         );
+2430:                                                     })}
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

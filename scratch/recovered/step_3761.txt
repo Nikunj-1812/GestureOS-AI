@@ -1,0 +1,48 @@
+Created At: 2026-06-12T11:14:07Z
+Completed At: 2026-06-12T11:14:07Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 2369
+Total Bytes: 129583
+Showing lines 2240 to 2295
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+2240:                             setVirtualMouseVolumeMinDistancePx(data.virtual_mouse_volume_min_distance_px);
+2241:                         }
+2242:                         if (data.virtual_mouse_volume_max_distance_px !== undefined) {
+2243:                             setVirtualMouseVolumeMaxDistancePx(data.virtual_mouse_volume_max_distance_px);
+2244:                         }
+2245:                         if (data.virtual_mouse_volume_smoothing !== undefined) {
+2246:                             setVirtualMouseVolumeSmoothing(data.virtual_mouse_volume_smoothing);
+2247:                         }
+2248:                         if (data.virtual_mouse_brightness_min_distance_px !== undefined) {
+2249:                             setVirtualMouseBrightnessMinDistancePx(data.virtual_mouse_brightness_min_distance_px);
+2250:                         }
+2251:                         if (data.virtual_mouse_brightness_max_distance_px !== undefined) {
+2252:                             setVirtualMouseBrightnessMaxDistancePx(data.virtual_mouse_brightness_max_distance_px);
+2253:                         }
+2254:                         if (data.virtual_mouse_brightness_smoothing !== undefined) {
+2255:                             setVirtualMouseBrightnessSmoothing(data.virtual_mouse_brightness_smoothing);
+2256:                         }
+2257:                         if (data.virtual_mouse_drag_threshold_ms !== undefined) {
+2258:                             setVirtualMouseDragThresholdMs(data.virtual_mouse_drag_threshold_ms);
+2259:                                     if (data.keybo
+<truncated 1348 bytes>
+                            setWebBrushTool(data.brush_tool);
+2278:                                         webBrushToolRef.current = data.brush_tool;
+2279:                                     }
+2280:                                 })
+2281:                                                                     onClick={handleWebUndo}
+2282:                                                                     disabled={undoStack.length === 0}
+2283:                                                                     className={`py-2 px-3 rounded-xl font-semibold text-xs border transition-all ${
+2284:                                                                         undoStack.length === 0
+2285:                                                                             ? 'bg-zinc-850/40 border-zinc-900/10 text-zinc-650 cursor-not-allowed'
+2286:                                                                             : 'bg-zinc-800 hover:bg-zinc-700 border-zinc-700 text-white active:scale-95'
+2287:                                                                     }`}
+2288:                                                                 >
+2289:                                                                     ↶ Undo
+2290:                                                                 </button>
+2291:                                                                 <button 
+2292:                                                                     onClick={handleWebRedo}
+2293:                                                                     disabled={redoStack.length === 0}
+2294:                                                                     className={`py-2 px-3 rounded-xl font-semibold text-xs border transition-all ${
+2295:                                                                         redoStack.length === 0
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

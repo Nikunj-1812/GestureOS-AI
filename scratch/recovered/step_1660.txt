@@ -1,0 +1,34 @@
+Created At: 2026-06-12T04:54:36Z
+Completed At: 2026-06-12T04:54:36Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 2105
+Total Bytes: 143754
+Showing lines 740 to 765
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+740:             // Phase 3.5 — Mode Manager & Brightness Control
+741:             const [activeMode, setActiveMode] = useState('CURSOR');
+742:             const [brightnessMode, setBrightnessMode] = useState(false);
+743:             const [brightnessLevel, setBrightnessLevel] = useState(0);
+744:             const [brightnessDistance, setBrightnessDistance] = useState(0.0);
+745:             const [virtualMouseBrightnessMinDistancePx, setVirtualMouseBrightnessMinDistancePx] = useState(30.0);
+746:             const [virtualMouseBrightnessMaxDistancePx, setVirtualMouseBrightnessMaxDistancePx] = useState(250.0);
+747:             const [virtualMouseBrightnessSmoothing, setVirtualMouseBrightnessSmoothing] = useState(0.15);
+748:             const prevBrightnessLevelRef = useRef(-1);
+749:             const prevActiveModeRef = useRef('CURSOR');
+750:             
+751:             // Phase 3.5 — Drag & Drop Control
+752:             const [dragStatus, setDragStatus] = useState('IDLE');
+753:             const [dragDuration, setDragDuration] = useState(0.0);
+754:             const [dragCounter, setDragCounter] = useState(0);
+755:             const [virtualMouseDragThresholdMs, setVirtualMouseDragThresholdMs] = useState(200.0);
+756:             const prevDragStatusRef = useRef('IDLE');
+757: 
+758: 
+759:             // Switches State
+760:             const [showLandmarks, setShowLandmarks] = useState(true);
+761:             const [showConnections, setShowConnections] = useState(true);
+762:             const [showBoundingBox, setShowBoundingBox] = useState(true);
+763:             const [showFingerStates, setShowFingerStates] = useState(true);
+764:             const [showDistanceMeter, setShowDistanceMeter] = useState(true);
+765:             const [showDebugPanel, setShowDebugPanel] = useState(true);
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

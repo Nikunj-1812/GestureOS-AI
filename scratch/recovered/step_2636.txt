@@ -1,0 +1,68 @@
+Created At: 2026-06-12T09:50:36Z
+Completed At: 2026-06-12T09:50:36Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 3013
+Total Bytes: 206760
+Showing lines 450 to 520
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+450:             index_tip_y = float(round(primary_hand.landmarks[8][1], 4)) if (primary_hand and len(primary_hand.landmarks) > 8) else None
+451: 
+452:             # Compute live pinch distance for virtual keyboard: Middle Finger (12) and Thumb (4)
+453:             live_pinch_dist = 0.0
+454:             if primary_hand and len(primary_hand.landmarks) > 12:
+455:                 mx, my, mz = primary_hand.landmarks[12]
+456:                 tx, ty, tz = primary_hand.landmarks[4]
+457:                 live_pinch_dist = math.sqrt((mx - tx)**2 + (my - ty)**2 + (mz - tz)**2)
+458: 
+459:             # Send live telemetry + frame over WebSocket
+460:             payload = {
+461:                 "fps": float(round(fps_smooth, 1)),
+462:                 "hands": len(detected_hands),
+463:                 "index_tip_x": index_tip_x,
+464:                 "index_tip_y": index_tip_y,
+465:                 "gesture": gesture_label,
+466:                 "confidence": float(round(gesture_confidence, 3)),
+467:                 "camera_status": "Connected",
+468:                 "frame": f"data:image/jpeg;base64,{frame_b64}",
+469:                 "cursor_x": cursor_x,
+470:                 "cursor_y": cursor_y,
+471:                 "tracking_state": tracking_state,
+472:                 "pinch_distance": vm_result.get("pinch_distance", float(round(live_pinch_dist, 4))) if vm_result else float(round(live_pinch_dist, 4)),
+473:                 "click_status": vm_result.get("click_status", "OPEN") if vm_result else "OPEN",
+474:                 "click_counter": vm_result.get("click_counter", 0) if 
+<truncated 1152 bytes>
+result.get("volume_level", 0) if vm_result else 0,
+488:                 "volume_distance": vm_result.get("volume_distance", 0.0) if vm_result else 0.0,
+489:                 # Phase 3.5 — Mode Manager & Brightness telemetry
+490:                 "active_mode": vm_result.get("active_mode", "CURSOR") if vm_result else "CURSOR",
+491:                 "brightness_mode": vm_result.get("brightness_mode", False) if vm_result else False,
+492:                 "brightness_level": vm_result.get("brightness_level", 0) if vm_result else 0,
+493:                 "brightness_distance": vm_result.get("brightness_distance", 0.0) if vm_result else 0.0,
+494:                 "drag_status": vm_result.get("drag_status", "IDLE") if vm_result else "IDLE",
+495:                 "drag_duration": vm_result.get("drag_duration", 0.0) if vm_result else 0.0,
+496:                 "drag_counter": vm_result.get("drag_counter", 0) if vm_result else 0,
+497:             }
+498: 
+499:             
+500:             t_send_start = time.perf_counter()
+501:             await websocket.send_json(payload)
+502:             t_send = time.perf_counter() - t_send_start
+503:             
+504:             t_total = time.perf_counter() - t0
+505:             
+506:             # Maintain roughly target frame rate
+507:             elapsed = time.perf_counter() - loop_start
+508:             interval = max(0.001, 1.0 / max(config.camera_fps, 1) - elapsed)
+509:             await asyncio.sleep(interval)
+510:             
+511:     except WebSocketDisconnect:
+512:         logger.info("WebSocket client disconnected")
+513:     except Exception as e:
+514:         logger.error(f"Error in websocket loop: {e}")
+515: 
+516: HTML_CONTENT = """<!DOCTYPE html>
+517: <html lang="en">
+518: <head>
+519:     <meta charset="UTF-8">
+520:     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

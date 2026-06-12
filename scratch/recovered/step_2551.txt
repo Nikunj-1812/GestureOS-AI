@@ -1,0 +1,49 @@
+Created At: 2026-06-12T09:42:07Z
+Completed At: 2026-06-12T09:42:07Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 2763
+Total Bytes: 190961
+Showing lines 1210 to 1250
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1210:                         console.error('WebSocket encountered an error:', error);
+1211:                     };
+1212:                 };
+1213: 
+1214:                 connectWS();
+1215: 
+1216:                 // Fetch initial switches configuration from backend
+1217:                 fetch('/api/settings')
+1218:                     .then(res => res.json())
+1219:                     .then(data => {
+1220:                         setShowLandmarks(data.show_landmarks);
+1221:                         setShowConnections(data.show_connections);
+1222:                         setShowBoundingBox(data.show_bounding_box);
+1223:                         setShowFingerStates(data.show_finger_states);
+1224:                         setShowDistanceMeter(data.show_distance_meter);
+1225:                         setShowDebugPanel(data.show_debug_panel);
+1226:                         setShowHud(data.show_hud);
+1227:                         
+1228:                         setVirtualMouseEnabled(data.virtual_mouse_enabled);
+1229:                         setVirtualMouseSensitivity(data.virtual_mouse_sensitivity);
+1230:                         setVirtualMouseDeadZone(data.virtual_mouse_dead_zone);
+1231:                         setVirtualMouseSmoothing(data.virtual_mouse_smoothing);
+1232:                         if (data.virtual_mouse_click_threshold !== undefined) {
+1233:                             setVirtualMouseClickThreshold(data.virtual_mouse_click_threshold);
+1234:                         }
+1235:                         if (data.virtual_mouse_right_click_threshold !== undefined) {
+1236:                             setVirtualMouseRightClickThreshold(data.virtual_mouse_right_click_threshold);
+1237:                         }
+1238:                         if (data.virtual_mouse_scroll_sensitivity !== undefined) {
+1239:                             setVirtualMouseScrollSensitivity(data.virtual_mouse_scroll_sensitivity);
+1240:                         }
+1241:                         if (data.virtual_mouse_scroll_dead_zone !== undefined) {
+1242:                             setVirtualMouseScrollDeadZone(data.virtual_mouse_scroll_dead_zone);
+1243:                         }
+1244:                         if (data.virtual_mouse_scroll_smoothing !== undefined) {
+1245:                             setVirtualMouseScrollSmoothing(data.virtual_mouse_scroll_smoothing);
+1246:                         }
+1247:                         if (data.virtual_mouse_volume_min_distance_px !== undefined) {
+1248:                             setVirtualMouseVolumeMinDistancePx(data.virtual_mouse_volume_min_distance_px);
+1249:                         }
+1250:                         if (data.virtual_mouse_volume_max_distance_px !== undefined) {
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

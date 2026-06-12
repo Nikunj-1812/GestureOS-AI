@@ -1,0 +1,56 @@
+Created At: 2026-06-12T10:59:54Z
+Completed At: 2026-06-12T10:59:54Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 4256
+Total Bytes: 294748
+Showing lines 1801 to 1850
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1801:                                                     lastPointRef.current = null;
+1802:                                                     renderAll();
+1803:                                                     
+1804:                                                     // Update UI status text
+1805:                                                     const statusEl = document.getElementById('telemetry-drawing-status');
+1806:                                                     if (statusEl) {
+1807:                                                         statusEl.textContent = 'Hovering';
+1808:                                                         statusEl.className = 'text-sm font-bold text-accent-yellow';
+1809:                                                     }
+1810:                                                 }, 250);
+1811:                                             }
+1812:                                             
+1813:                                             // During grace period, continue stroke coordinates so path remains seamless
+1814:                                             if (currentStrokeRef.current) {
+1815:                                                 currentStrokeRef.current.points.push({ x: smoothedX, y: smoothedY });
+1816:                                             }
+1817:                                             lastPointRef.current = { x: smoothedX, y: smoothedY };
+1818:                                         } else {
+1819:                                             setDrawingStatus('Hovering');
+1820:         
+<truncated 367 bytes>
+if (hoverTrailRef.current.length > 12) {
+1825:                                                     hoverTrailRef.current.shift();
+1826:                                                 }
+1827:                                             } else {
+1828:                                                 hoverTrailRef.current = [];
+1829:                                             }
+1830:                                             lastPointRef.current = { x: smoothedX, y: smoothedY };
+1831:                                         }
+1832:                                     }
+1833:                                     
+1834:                                     renderAll();
+1835:                                     
+1836:                                     // Get current status for UI
+1837:                                     const currentStatus = inGracePeriodRef.current 
+1838:                                         ? 'Grace Period' 
+1839:                                         : drawingPinchActiveRef.current 
+1840:                                             ? 'Drawing' 
+1841:                                             : 'Hovering';
+1842:                                             
+1843:                                     // Telemetry updates in sidebar
+1844:                                     const statusEl = document.getElementById('telemetry-drawing-status');
+1845:                                     if (statusEl) {
+1846:                                         statusEl.textContent = currentStatus;
+1847:                                         statusEl.className = `text-sm font-bold ${
+1848:                                             currentStatus === 'Drawing' 
+1849:                                                 ? 'text-accent-green' 
+1850:                                                 : currentStatus === 'Grace Period' 
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

@@ -1,0 +1,34 @@
+Created At: 2026-06-12T10:10:04Z
+Completed At: 2026-06-12T10:10:04Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 3319
+Total Bytes: 223512
+Showing lines 2000 to 2025
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+2000:                         
+2001:                         <header className="h-20 border-b border-glass-border px-8 flex items-center justify-between backdrop-blur-md z-10 shrink-0">
+2002:                             <div>
+2003:                                 <h2 className="text-xl font-bold tracking-wide text-white">
+2004:                                     {activeMenu === 'dashboard' ? 'System Monitor' : activeMenu === 'mouse' ? 'Virtual Mouse Monitor' : activeMenu === 'keyboard' ? 'Virtual Keyboard Monitor' : 'System Configuration'}
+2005:                                 </h2>
+2006:                                 <p className="text-xs text-gray-400 mt-0.5">
+2007:                                     {activeMenu === 'dashboard' 
+2008:                                         ? 'Telemetry overview and input gesture mapping controls.' 
+2009:                                         : activeMenu === 'mouse' 
+2010:                                         ? 'Real-time mouse tracking coordinates, status, and settings.' 
+2011:                                         : activeMenu === 'keyboard'
+2012:                                         ? 'Interactive virtual keyboard and live text telemetry.'
+2013:                                         : 'Calibrate input settings and device thresholds.'}
+2014:                                 </p>
+2015:                             </div>
+2016: 
+2017:                             <div className="flex items-center gap-4">
+2018:                                 <div className="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-xs text-emerald-400 font-medium">
+2019:                                     <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+2020:                                     Engine Online
+2021:                                 </div>
+2022: 
+2023:                                 <span className="w-px h-6 bg-glass-border hidden md:inline-block" />
+2024: 
+2025:                                 <button className="p-2.5 rounded-xl glass-card text-gray-400 hover:text-white relative group">
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

@@ -1,0 +1,36 @@
+Created At: 2026-06-11T10:52:04Z
+Completed At: 2026-06-11T10:52:04Z
+File Path: `file:///C:/Users/nikun/.gemini/antigravity/brain/f71acb1b-ab5a-4de9-85a5-1a298f3c313a/task.md`
+Total Lines: 28
+Total Bytes: 1783
+Showing lines 1 to 28
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1: # Upgrade Tasks — Phase 3.6 (Feature Management, Settings, Telemetry) & Drag & Drop
+2: 
+3: - [ ] Update dependencies and configuration:
+4:   - [ ] Add `psutil` to `requirements.txt`.
+5:   - [ ] Update `config/app_config.py` with new settings state.
+6:   - [ ] Update `config/settings_manager.py` to support toggles, sliders, and defaults.
+7: - [ ] Implement core engines & routing logic:
+8:   - [ ] Update `modules/mode_manager.py` to prioritize enabled modes only.
+9:   - [ ] Implement Drag & Drop pinch-hold state machine in `modules/virtual_mouse.py`.
+10:   - [ ] Implement cursor acceleration algorithm in `modules/virtual_mouse.py`.
+11:   - [ ] Support dynamic update cooldowns in volume and brightness controllers.
+12: - [ ] Update rendering & visualizer overlays:
+13:   - [ ] Add `DRAGGING` orange feedback text banner overlay.
+14:   - [ ] Update visualizer to support global show/hide overlays config toggle.
+15: - [ ] Integrate with Backend & Web Dashboard:
+16:   - [ ] Integrate CPU/RAM measurements and websocket serialization in `web_backend.py`.
+17:   - [ ] Redesign React dashboard with Sidebar navigation (Dashboard, Stream, Logs, Settings).
+18:   - [ ] Implement live resource charts (CPU, RAM, FPS) on the Telemetry page.
+19:   - [ ] Implement Event Log controls (search, filter categories, CSV download export) in UI.
+20:   - [ ] Add advanced configuration cards (Cursor, Click, Scroll, Volume, Brightness, Global) in settings view.
+21: - [ ] Integrate with Desktop UI:
+22:   - [ ] Update `dashboard/shell/window.py` to forward new telemetry fields.
+23:   - [ ] Update `dashboard/pages/virtual_mouse_page.py` with Drag metrics and toggles.
+24: - [ ] Verification & testing:
+25:   - [ ] Create validation script `scratch/test_drag.py`.
+26:   - [ ] Expand unit tests in `tests/test_virtual_mouse.py`.
+27:   - [ ] Run test suite and check backend server launch.
+28: 
+The above content shows the entire, complete file contents of the requested file.

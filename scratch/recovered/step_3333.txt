@@ -1,0 +1,29 @@
+Created At: 2026-06-12T10:42:01Z
+Completed At: 2026-06-12T10:42:02Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 4033
+Total Bytes: 278212
+Showing lines 3110 to 3130
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+3110:                                                     </div>
+3111:                                                 </div>
+3112:                                             </div>
+3113:                                         </div>
+3114:                                     </>
+3115:                                 ) : activeMenu === 'keyboard' ? (
+3116:                                     <>
+3117:                                         {/* Hero Header Section */}
+3118:                                         <div className="glass-panel rounded-3xl p-6 flex flex-col md:flex-row md:items-center justify-between border border-glass-border relative overflow-hidden">
+3119:                                             <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 opacity-20" />
+3120:                                             <div>
+3121:                                                 <h2 className="text-2xl font-bold tracking-wide text-white">Virtual Keyboard Controls</h2>
+3122:                                                 <p className="text-xs text-gray-400 mt-1 max-w-xl">
+3123:                                                     Type text using standard mouse clicks or finger-pinch gestures. Customize your layouts and monitor live inputs.
+3124:                                                 </p>
+3125:                                             </div>
+3126:                                             <div className="mt-4 md:mt-0">
+3127:                                                 <span className="px-4 py-2 rounded-full text-xs font-semibold border bg-emerald-500/10 border-emerald-500/20 text-accent-green">
+3128:                                                     Interactive
+3129:                                                 </span>
+3130:                                             </div>
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

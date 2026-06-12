@@ -1,0 +1,53 @@
+Created At: 2026-06-12T04:58:43Z
+Completed At: 2026-06-12T04:58:44Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 2413
+Total Bytes: 169480
+Showing lines 800 to 1599
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+800:                             setFps(data.fps);
+801:                             setHands(data.hands);
+802:                             setGesture(data.gesture);
+803:                             setConfidence(data.confidence);
+804:                             setCameraStatus(data.camera_status);
+805:                             setFrame(data.frame);
+806:                             setCursorX(data.cursor_x || 0);
+807:                             setCursorY(data.cursor_y || 0);
+808:                             setTrackingState(data.tracking_state || 'Disabled');
+809:                             setPinchDistance(data.pinch_distance || 0.0);
+810:                             setClickStatus(data.click_status || 'OPEN');
+811:                             setClickCounter(data.click_counter || 0);
+812:                             setCurrentAction(data.current_action || 'None');
+813:                             // Phase 3.3 — Right Click
+814:                             const prevRC = prevRightClickStatusRef.current;
+815:                             const newRC = data.right_click_status || 'OPEN';
+816:                             setRightClickStatus(newRC);
+817:                             setRightClickCounter(data.right_click_counter || 0);
+818:                             setRightPinchDistance(data.right_pinch_distance || 0.0);
+819:                             // Log right-click event on transition into RIGHT_CLICK
+820:                             if (newRC === 'RIGHT_CLICK' && prevRC !== 'RIGHT_CLICK') {
+821:                                 const timeString = new 
+<truncated 45283 bytes>
+                                                            alt="Camera Feed" 
+1460:                                                                 className="w-full h-full object-contain rounded-xl"
+1461:                                                             />
+1462:                                                         ) : (
+1463:                                                             <div className="flex flex-col items-center justify-center p-8 text-center max-w-sm">
+1464:                                                                 <div className="w-16 h-16 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-gray-500 mb-4 animate-pulse">
+1465:                                                                     <VideoOffIcon className="w-8 h-8" />
+1466:                                                                 </div>
+1467:                                                                 <h4 className="text-white font-medium mb-1">Camera Stream Inactive</h4>
+1468:                                                                 <p className="text-xs text-gray-400 leading-relaxed">
+1469:                                                                     To analyze hand geometry and process shortcuts, please launch the camera using the Quick Actions panel below.
+1470:                                                                 </p>
+1471:                                                             </div>
+1472:                                                         )}
+1473:                                                     </div>
+1474:                                                 </div>
+1475:                                             </div>
+1476: 
+1477:                                             {/* Action & Log Cards (1 Column) */}
+1478:                                             <div class
+<truncated 12650 bytes>
+
+NOTE: The output was truncated because it was too long. Use a more targeted query or a smaller range to get the information you need.

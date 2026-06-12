@@ -1,0 +1,37 @@
+Created At: 2026-06-11T10:10:07Z
+Completed At: 2026-06-11T10:10:07Z
+File Path: `file:///C:/Users/nikun/.gemini/antigravity/brain/f71acb1b-ab5a-4de9-85a5-1a298f3c313a/task.md`
+Total Lines: 29
+Total Bytes: 1537
+Showing lines 1 to 29
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1: # Phase 3.4 Volume Control Tasks
+2: 
+3: - [x] Add `pycaw` dependency to `requirements.txt` and install it.
+4: - [x] Add configuration settings:
+5:   - [x] Add defaults to `config/settings.yaml`.
+6:   - [x] Update `config/app_config.py`.
+7:   - [x] Update `config/settings_manager.py`.
+8: - [x] Implement `VolumeController`:
+9:   - [x] Create `modules/volume_controller.py`.
+10:   - [x] Integrate with `pycaw` for system volume adjustments.
+11:   - [x] Add distance-to-volume percentage mapping (30px = 0%, 250px = 100%).
+12:   - [x] Add volume smoothing (EMA filter) and non-spam logging.
+13: - [x] Integrate gesture and controller into `VirtualMouse`:
+14:   - [x] Update `modules/virtual_mouse.py` signature of `process_hand` to accept `frame_w` and `frame_h`.
+15:   - [x] Add gesture detection for ONLY Thumb + Pinky extended.
+16:   - [x] Prevent conflicts with cursor movement, clicking, and scrolling.
+17:   - [x] Call `VolumeController` when Volume mode is active.
+18: - [x] Update Visualizer:
+19:   - [x] Update `modules/visualizer.py` to draw the line between thumb and pinky tips, pixel distance, and volume banner.
+20: - [x] Update Backend:
+21:   - [x] Update `web_backend.py` to instantiate `VolumeController`, call it, and package telemetry.
+22: - [x] Update Dashboard Web UI:
+23:   - [x] Update `web/src/App.tsx` to handle and display volume telemetry (Volume Level, Mode, Distance).
+24: - [x] Update Desktop UI:
+25:   - [x] Update `dashboard/pages/virtual_mouse_page.py` to show volume fields in CustomTkinter.
+26: - [/] Verification and testing:
+27:   - [ ] Create verification script.
+28:   - [ ] Validate implementation.
+29: 
+The above content shows the entire, complete file contents of the requested file.

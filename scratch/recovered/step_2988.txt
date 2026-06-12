@@ -1,0 +1,29 @@
+Created At: 2026-06-12T10:09:38Z
+Completed At: 2026-06-12T10:09:38Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 3318
+Total Bytes: 223418
+Showing lines 1930 to 1950
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1930:                             </div>
+1931: 
+1932:                             {/* Navigation */}
+1933:                             <nav className="px-4 py-6 space-y-2">
+1934:                                 {[
+1935:                                     { id: 'dashboard', name: 'Dashboard', icon: LayersIcon },
+1936:                                     { id: 'mouse', name: 'Virtual Mouse', icon: MousePointerIcon },
+1937:                                     { id: 'keyboard', name: 'Virtual Keyboard', icon: KeyboardIcon },
+1938:                                     { id: 'shortcuts', name: 'Gestures Map', icon: SlidersIcon },
+1939:                                     { id: 'analytics', name: 'Real-time Metrics', icon: TrendingUpIcon },
+1940:                                     { id: 'settings', name: 'System Settings', icon: SettingsIcon }
+1941:                                 ].map((item) => {
+1942:                                     const Icon = item.icon;
+1943:                                     const isActive = activeMenu === item.id;
+1944:                                     return (
+1945:                                         <button
+1946:                                             key={item.id}
+1947:                                             onClick={() => {
+1948:                                                 setActiveMenu(item.id);
+1949:                                                 logSystemEvent(`Navigated to page: ${item.name}`);
+1950:                                             }}
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

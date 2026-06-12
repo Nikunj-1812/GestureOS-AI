@@ -1,0 +1,28 @@
+Created At: 2026-06-11T10:27:42Z
+Completed At: 2026-06-11T10:27:43Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 1787
+Total Bytes: 119241
+Showing lines 686 to 705
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+686:             const [virtualMouseVolumeSmoothing, setVirtualMouseVolumeSmoothing] = useState(0.15);
+687:             const prevVolumeLevelRef = useRef(-1);
+688: 
+689:             // Switches State
+690:             const [showLandmarks, setShowLandmarks] = useState(true);
+691:             const [showConnections, setShowConnections] = useState(true);
+692:             const [showBoundingBox, setShowBoundingBox] = useState(true);
+693:             const [showFingerStates, setShowFingerStates] = useState(true);
+694:             const [showDistanceMeter, setShowDistanceMeter] = useState(true);
+695:             const [showDebugPanel, setShowDebugPanel] = useState(true);
+696:             const [showHud, setShowHud] = useState(true);
+697: 
+698:             const prevGestureRef = useRef('None');
+699:             const socketRef = useRef(null);
+700:             const eventIdCounterRef = useRef(0);
+701: 
+702:             // Connect to the WebSocket backend
+703:             useEffect(() => {
+704:                 const connectWS = () => {
+705:                     setSocketStatus('connecting');
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

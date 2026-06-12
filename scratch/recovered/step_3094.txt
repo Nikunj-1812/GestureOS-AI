@@ -1,0 +1,49 @@
+Created At: 2026-06-12T10:18:05Z
+Completed At: 2026-06-12T10:18:05Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 3495
+Total Bytes: 240348
+Showing lines 3440 to 3480
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+3440:                                                                 disabled={undoStack.length === 0}
+3441:                                                                 className={`py-2 px-3 rounded-xl font-semibold text-xs border transition-all ${
+3442:                                                                     undoStack.length === 0
+3443:                                                                         ? 'bg-zinc-850/40 border-zinc-900/10 text-zinc-650 cursor-not-allowed'
+3444:                                                                         : 'bg-blue-600/20 hover:bg-blue-600/30 border-blue-500/30 text-blue-200 active:scale-95'
+3445:                                                                 }`}
+3446:                                                             >
+3447:                                                                 💾 Save PNG
+3448:                                                             </button>
+3449:                                                         </div>
+3450:                                                     </div>
+3451:                                                 </div>
+3452:                                             </div>
+3453:                                         </>
+3454:                                     ) : (
+3455:                                         <div className="glass-card rounded-2xl p-8 text-center text-gray-400">
+3456:                                             <p>This page is currently under construction. Please use the Dashboard or Virtual Mouse navigation links.</p>
+3457:                                         </div>
+3458:                                     )}
+3459:                                 </div>
+3460:                             </div>
+3461:         }
+3462: 
+3463:         const root = ReactDOM.createRoot(document.getElementById('root'));
+3464:         root.render(<App />);
+3465:     </script>
+3466: </body>
+3467: </html>"""
+3468: 
+3469: @app.get("/static/react.min.js")
+3470: def get_react():
+3471:     from fastapi.responses import FileResponse
+3472:     return FileResponse("static/react.min.js", media_type="application/javascript")
+3473: 
+3474: @app.get("/static/react-dom.min.js")
+3475: def get_react_dom():
+3476:     from fastapi.responses import FileResponse
+3477:     return FileResponse("static/react-dom.min.js", media_type="application/javascript")
+3478: 
+3479: @app.get("/static/babel.min.js")
+3480: def get_babel():
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

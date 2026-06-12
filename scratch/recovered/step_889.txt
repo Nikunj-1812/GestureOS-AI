@@ -1,0 +1,43 @@
+Created At: 2026-06-11T10:49:45Z
+Completed At: 2026-06-11T10:49:45Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 2053
+Total Bytes: 138910
+Showing lines 1700 to 1820
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1700:                                                                 {rightClickCounter}
+1701:                                                             </span>
+1702:                                                         </div>
+1703: 
+1704:                                                         {/* Phase 3.4 Scroll Section */}
+1705:                                                         <div className="text-[10px] uppercase tracking-widest text-gray-600 font-semibold pt-1">Scroll Mode (Index + Middle Up)</div>
+1706: 
+1707:                                                         <div className="flex justify-between items-center text-sm border-b border-glass-border pb-2">
+1708:                                                             <span className="text-gray-400">Scroll Mode Status</span>
+1709:                                                             <span className={`font-semibold ${
+1710:                                                                 scrollMode ? 'text-teal-400' : 'text-white'
+1711:                                                             }`}>
+1712:                                                                 {scrollMode ? 'ACTIVE' : 'IDLE'}
+1713:                                                             </span>
+1714:                                                         </div>
+1715:                                                         <div className="flex justify-between items-center text-sm border-b border-glass-border pb-2">
+1716:                                                             <span className="text-g
+<truncated 8801 bytes>
+
+1805:                                                                         setVirtualMouseEnabled(checked);
+1806:                                                                         updateSetting('virtual_mouse_enabled', checked);
+1807:                                                                         logSystemEvent(`Virtual Mouse set to: ${checked ? 'Enabled' : 'Disabled'}`);
+1808:                                                                     }}
+1809:                                                                     className="sr-only peer" 
+1810:                                                                 />
+1811:                                                                 <div className="w-11 h-6 bg-zinc-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+1812:                                                             </div>
+1813:                                                         </label>
+1814: 
+1815:                                                         {/* Sensitivity Slider */}
+1816:                                                         <div className="space-y-2">
+1817:                                                             <div className="flex justify-between text-xs">
+1818:                                                                 <span className="text-gray-400">Sensitivity</span>
+1819:                                                                 <span className="text-white font-mono">{virtualMouseSensitivity.toFixed(2)}x</span>
+1820:                                                             </div>
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

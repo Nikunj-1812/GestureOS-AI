@@ -1,0 +1,59 @@
+Created At: 2026-06-12T10:07:09Z
+Completed At: 2026-06-12T10:07:09Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 3040
+Total Bytes: 208293
+Showing lines 900 to 950
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+900:             const [dragCounter, setDragCounter] = useState(0);
+901:             const [virtualMouseDragThresholdMs, setVirtualMouseDragThresholdMs] = useState(200.0);
+902:             const prevDragStatusRef = useRef('IDLE');
+903: 
+904:             // Virtual Keyboard UI States
+905:             const [hoveredKey, setHoveredKey] = useState('None');
+906:             const [lastPressedKey, setLastPressedKey] = useState('None');
+907:             const [typedText, setTypedText] = useState('');
+908:             const [isShiftActive, setIsShiftActive] = useState(false);
+909:             const [isCapsLockActive, setIsCapsLockActive] = useState(false);
+910:             const [pressedKey, setPressedKey] = useState(null);
+911:             const [hoverDuration, setHoverDuration] = useState(0.0);
+912:             const [enableKeyboardSound, setEnableKeyboardSound] = useState(true);
+913:             const [systemTypingEnabled, setSystemTypingEnabled] = useState(false);
+914:             const [autocompleteEnabled, setAutocompleteEnabled] = useState(true);
+915:             const [wpm, setWpm] = useState(0);
+916:             const [accuracy, setAccuracy] = useState(100);
+917:             const [currentWord, setCurrentWord] = useState('');
+918:             const [recentWords, setRecentWords] = useState([]);
+919:             const [predictions, setPredictions] = useState([]);
+920:             const totalKeystrokesRef = useRef(0);
+921:             const backspaceCountRef = useRef(0);
+922:             const typingStartTimeRef = useRef(null);
+923: 
+924:             const getCurrentWordJS = (text) => {
+925:                 if (!text) return "";
+926:                 const match = text.match(/[\w'-]+$/);
+927:                 return match ? match[0] : "";
+928:             };
+929:             
+930:             const smoothXRef = useRef(null);
+931:             const smoothYRef = useRef(null);
+932:             const candidateKeyRef = useRef(null);
+933:             const candidateStartTimeRef = useRef(null);
+934:             const lastHoverDetectTimeRef = useRef(null);
+935:             const hoveredKeyRef = useRef('None');
+936:             const pinchActiveRef = useRef(false);
+937: 
+938: 
+939:             // Switches State
+940:             const [showLandmarks, setShowLandmarks] = useState(true);
+941:             const [showConnections, setShowConnections] = useState(true);
+942:             const [showBoundingBox, setShowBoundingBox] = useState(true);
+943:             const [showFingerStates, setShowFingerStates] = useState(true);
+944:             const [showDistanceMeter, setShowDistanceMeter] = useState(true);
+945:             const [showDebugPanel, setShowDebugPanel] = useState(true);
+946:             const [showHud, setShowHud] = useState(true);
+947: 
+948:             const prevGestureRef = useRef('None');
+949:             const socketRef = useRef(null);
+950:             const eventIdCounterRef = useRef(0);
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

@@ -1,0 +1,31 @@
+Created At: 2026-06-12T09:41:00Z
+Completed At: 2026-06-12T09:41:01Z
+File Path: `file:///C:/Users/nikun/.gemini/antigravity/brain/f71acb1b-ab5a-4de9-85a5-1a298f3c313a/task.md`
+Total Lines: 23
+Total Bytes: 1434
+Showing lines 1 to 23
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1: # Phase 4.5 Tasks — Smart Keyboard
+2: 
+3: - [x] Modify Configuration & Settings Schema:
+4:   - [x] Add new configuration items in `config/app_config.py`.
+5:   - [x] Update `config/settings_manager.py` with `SettingsState` variables, loading, saving, and updating logic.
+6: - [x] Implement Word Predictor module:
+7:   - [x] Create `modules/word_predictor.py` containing common vocabularies and suggestion lookup logic.
+8: - [x] Implement Desktop GUI features in `dashboard/pages/virtual_keyboard_page.py`:
+9:   - [x] Track statistics (total_keystrokes, backspace_count, typing_start_time).
+10:   - [x] Add WPM, Accuracy, Current Word, and Recent Words telemetry fields.
+11:   - [x] Implement Suggestions Bar UI and auto-complete execution.
+12:   - [x] Implement Emoji Panel UI.
+13:   - [x] Sync UI toggles with `SettingsManager` to save properties to `settings.json`.
+14: - [ ] Implement Web Dashboard & Backend features:
+15:   - [ ] Support new keyboard settings in `/api/settings` and `/api/settings/update` endpoints in `web_backend.py`.
+16:   - [ ] Add `/api/keyboard/suggest` endpoint.
+17:   - [ ] Implement state, telemetry fields, suggestions bar, and emoji panel in React web frontend.
+18:   - [ ] Connect React toggles and events to backend.
+19: - [ ] Verification and testing:
+20:   - [ ] Create `tests/test_word_predictor.py` to test predictor logic.
+21:   - [ ] Add stats math test cases in `tests/test_virtual_keyboard.py`.
+22:   - [ ] Manually verify Smart Keyboard features in both dashboards.
+23: 
+The above content shows the entire, complete file contents of the requested file.

@@ -1,0 +1,24 @@
+Created At: 2026-06-12T09:52:18Z
+Completed At: 2026-06-12T09:52:18Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 3013
+Total Bytes: 206760
+Showing lines 350 to 365
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+350:                     "frame": None
+351:                 })
+352:                 await asyncio.sleep(0.05)
+353:                 continue
+354:                 
+355:             # Avoid duplicate frame processing
+356:             current_frame_id = camera_stream.frame_id
+357:             if current_frame_id == last_frame_id:
+358:                 await asyncio.sleep(0.005)
+359:                 continue
+360:             last_frame_id = current_frame_id
+361:             
+362:             loop_start = time.perf_counter()
+363: 
+364:             # Profiling steps
+365:             t0 = time.perf_counter()
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

@@ -1,0 +1,46 @@
+Created At: 2026-06-12T05:10:07Z
+Completed At: 2026-06-12T05:10:08Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 2630
+Total Bytes: 183310
+Showing lines 2320 to 2400
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+2320:                                                                     To analyze hand geometry and process keyboard inputs, please launch the camera from the Dashboard.
+2321:                                                                 </p>
+2322:                                                             </div>
+2323:                                                         )}
+2324:                                                     </div>
+2325:                                                 </div>
+2326:                                             </div>
+2327: 
+2328:                                             {/* Right: Keyboard Telemetry Panel (1 Column) */}
+2329:                                             <div className="flex flex-col gap-4">
+2330:                                                 <div className="glass-card rounded-2xl p-6 border border-glass-border flex flex-col justify-between h-[400px] relative overflow-hidden">
+2331:                                                     <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 opacity-20" />
+2332:                                                     
+2333:                                                     <div>
+2334:                                                         <h3 className="text-sm font-semibold text-white pb-3 border-b border-glass-border mb-4">
+2335:                                                             Keyboard Telemetry
+2336:                                                         </h3>
+2337:                     
+<truncated 4588 bytes>
+                           <div>
+2383:                                                 <h3 className="text-lg font-bold text-white">QWERTY Keyboard Grid</h3>
+2384:                                                 <p className="text-xs text-gray-400">Click keys to trigger typing action. Layout dynamically matches Caps/Shift states.</p>
+2385:                                             </div>
+2386: 
+2387:                                             {/* Responsive Keyboard */}
+2388:                                             <div className="flex flex-col gap-2 max-w-4xl mx-auto w-full bg-zinc-950/40 p-4 rounded-2xl border border-glass-border">
+2389:                                                 {/* Row 1 (Numbers) */}
+2390:                                                 <div className="flex gap-1.5 w-full justify-between">
+2391:                                                     {["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"].map(key => (
+2392:                                                         <button 
+2393:                                                             key={key}
+2394:                                                             data-key={key}
+2395:                                                             onMouseEnter={() => setHoveredKey(key)}
+2396:                                                             onMouseLeave={() => setHoveredKey('None')}
+2397:                                                             onClick={() => handleWebKeyPress(key)}
+2398:                                                             className={`flex-1 h-12 rounded-lg text-sm font-semibold transition-all duration-100 ${
+2399:                                                                 pressedKey === key 
+2400:                                                                     ? 'bg-amber-500 text-black scale-95' 
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

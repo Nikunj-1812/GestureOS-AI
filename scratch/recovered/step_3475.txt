@@ -1,0 +1,44 @@
+Created At: 2026-06-12T10:53:23Z
+Completed At: 2026-06-12T10:53:23Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 4035
+Total Bytes: 278290
+Showing lines 3630 to 3670
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+3630:                                                                 />
+3631:                                                             </div>
+3632:                                                         )}
+3633:                                                         
+3634:                                                         {/* Button to restore PiP if hidden */}
+3635:                                                         {backgroundMode === 'whiteboard' && pipHidden && (
+3636:                                                             <button
+3637:                                                                 onClick={() => setPipHidden(false)}
+3638:                                                                 className="absolute bottom-6 right-6 z-20 px-3 py-1.5 rounded-xl bg-blue-600/30 hover:bg-blue-600/50 border border-blue-500/30 text-xs font-semibold text-white transition-all active:scale-95"
+3639:                                                             >
+3640:                                                                 📷 Show Camera
+3641:                                                             </button>
+3642:                                                         )}
+3643: 
+3644:                                                         {/* Custom Circular Cursor Indicator */}
+3645:                                                         <div 
+3646:                                                             id="drawing-cursor"
+3647:                                                             className="absolute pointer-ev
+<truncated 707 bytes>
+                                                
+3655:                                                             {/* Core brush pointer */}
+3656:                                                             <div 
+3657:                                                                 className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 rounded-full border border-white/30 cursor-dot"
+3658:                                                                 style={{ 
+3659:                                                                     width: '5px', 
+3660:                                                                     height: '5px',
+3661:                                                                     backgroundColor: '#c6a0f6' 
+3662:                                                                 }}
+3663:                                                             />
+3664: 
+3665:                                                             {/* Telemetry Tooltip Pill */}
+3666:                                                             <div className="absolute top-full mt-3 left-1/2 transform -translate-x-1/2 px-2.5 py-1 rounded-full bg-zinc-950/90 border border-white/10 flex items-center gap-1.5 text-[9px] font-semibold text-white pointer-events-none whitespace-nowrap shadow-xl">
+3667:                                                                 <span className="w-1.5 h-1.5 rounded-full cursor-color-badge" style={{ backgroundColor: '#c6a0f6' }} />
+3668:                                                                 <span className="cursor-size">5px</span>
+3669:                                                                 <span className="text-gray-500">|</span>
+3670:                                                                 <span className="cursor-state" style={{ color: '#8aadf4' }}>
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

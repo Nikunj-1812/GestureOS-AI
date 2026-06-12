@@ -1,0 +1,53 @@
+Created At: 2026-06-12T10:05:59Z
+Completed At: 2026-06-12T10:06:00Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 3040
+Total Bytes: 208293
+Showing lines 266 to 310
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+266: @app.post("/api/keyboard/type")
+267: def api_keyboard_type(payload: dict):
+268:     key = payload.get("key")
+269:     shift = payload.get("shift", False)
+270:     caps = payload.get("caps", False)
+271:     if not key:
+272:         return {"status": "error", "message": "No key provided"}
+273:     
+274:     try:
+275:         # Check if it is a suggestion key
+276:         if key.startswith("Suggestion_"):
+277:             suggestion = payload.get("suggestion", "")
+278:             prefix = payload.get("prefix", "")
+279:             # Backspace the prefix
+280:             for _ in range(len(prefix)):
+281:                 pyautogui.press("backspace")
+282:             # Write suggestion + space
+283:             pyautogui.write(suggestion + " ")
+284:             return {"status": "success"}
+285: 
+286:         if key == "Space":
+287:             pyautogui.press("space")
+288:         elif key == "Backspace":
+289:             pyautogui.press("backspace")
+290:         elif key == "Enter":
+291:             pyautogui.press("enter")
+292:         elif key == "Tab":
+293:             pyautogui.press("tab")
+294:         elif key == "Shift":
+295:             pyautogui.press("shift")
+296:         elif key == "Caps Lock":
+297:             pyautogui.press("capslock")
+298:         else:
+299:             is_upper = caps or shift
+300:             char = key.upper() if is_upper and len(key) == 1 else key
+301:             # Check if it's emoji / unicode
+302:             if any(ord(c) > 127 for c in char):
+303:                 import pyperclip
+304:                 pyperclip.copy(char)
+305:                 pyautogui.hotkey("ctrl", "v")
+306:             else:
+307:                 pyautogui.write(char)
+308:         return {"status": "success"}
+309:     except Exception as e:
+310:         logger.error(f"Error executing pyautogui keypress from web backend: {e}")
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

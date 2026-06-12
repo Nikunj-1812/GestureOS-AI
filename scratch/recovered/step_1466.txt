@@ -1,0 +1,25 @@
+Created At: 2026-06-12T04:37:06Z
+Completed At: 2026-06-12T04:37:06Z
+File Path: `file:///C:/Users/nikun/.gemini/antigravity/brain/f71acb1b-ab5a-4de9-85a5-1a298f3c313a/task.md`
+Total Lines: 17
+Total Bytes: 955
+Showing lines 1 to 17
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1: # Phase 3.5 Tasks — Drag & Drop
+2: 
+3: - [/] Add configurations:
+4:   - [ ] Add `drag_threshold_ms: 200.0` to `config/settings.yaml`.
+5:   - [ ] Add `virtual_mouse_drag_threshold_ms` to `config/app_config.py`.
+6:   - [ ] Update `config/settings_manager.py` to support `virtual_mouse_drag_threshold_ms`.
+7: - [ ] Implement core drag-and-drop state machine:
+8:   - [ ] Update `modules/virtual_mouse.py` with Drag & Drop timer hold state machine.
+9: - [ ] Update HUD & overlays:
+10:   - [ ] Update `modules/visualizer.py` with `DRAGGING` status rendering and HUD lines.
+11: - [ ] Integrate with Backend & Dashboards:
+12:   - [ ] Expose `virtual_mouse_drag_threshold_ms` and drag telemetry in `web_backend.py` (API settings, websocket payloads, React UI).
+13:   - [ ] Update `dashboard/pages/virtual_mouse_page.py` and `dashboard/shell/window.py` to support Drag telemetry.
+14: - [ ] Verification and testing:
+15:   - [ ] Add unit tests to `tests/test_virtual_mouse.py`.
+16:   - [ ] Verify using live server.
+17: 
+The above content shows the entire, complete file contents of the requested file.

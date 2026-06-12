@@ -1,0 +1,49 @@
+Created At: 2026-06-12T09:40:34Z
+Completed At: 2026-06-12T09:40:34Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 2752
+Total Bytes: 190617
+Showing lines 250 to 290
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+250:             virtual_mouse.drag_threshold_ms = config.virtual_mouse_drag_threshold_ms
+251:     return {"status": "success"}
+252: 
+253: @app.post("/api/log_error")
+254: def api_log_error(error_data: dict):
+255:     logger.error(f"[FRONTEND ERROR] {json.dumps(error_data, indent=2)}")
+256:     return {"status": "logged"}
+257: 
+258: @app.post("/api/keyboard/type")
+259: def api_keyboard_type(payload: dict):
+260:     key = payload.get("key")
+261:     shift = payload.get("shift", False)
+262:     caps = payload.get("caps", False)
+263:     if not key:
+264:         return {"status": "error", "message": "No key provided"}
+265:     
+266:     try:
+267:         if key == "Space":
+268:             pyautogui.press("space")
+269:         elif key == "Backspace":
+270:             pyautogui.press("backspace")
+271:         elif key == "Enter":
+272:             pyautogui.press("enter")
+273:         elif key == "Tab":
+274:             pyautogui.press("tab")
+275:         elif key == "Shift":
+276:             pyautogui.press("shift")
+277:         elif key == "Caps Lock":
+278:             pyautogui.press("capslock")
+279:         else:
+280:             is_upper = caps or shift
+281:             char = key.upper() if is_upper else key.lower()
+282:             pyautogui.write(char)
+283:         return {"status": "success"}
+284:     except Exception as e:
+285:         logger.error(f"Error executing pyautogui keypress from web backend: {e}")
+286:         return {"status": "error", "message": str(e)}
+287: 
+288: @app.websocket("/ws")
+289: async def websocket_endpoint(websocket: WebSocket):
+290:     await websocket.accept()
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

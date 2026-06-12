@@ -1,0 +1,60 @@
+Created At: 2026-06-11T10:49:53Z
+Completed At: 2026-06-11T10:49:53Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 2053
+Total Bytes: 138910
+Showing lines 900 to 965
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+900:                                     };
+901:                                     setEvents(prev => [volumeEvent, ...prev].slice(0, 50));
+902:                                     prevVolumeLevelRef.current = data.volume_level;
+903:                                 }
+904:                             } else if (!newVM) {
+905:                                 prevVolumeLevelRef.current = -1;
+906:                             }
+907: 
+908:                             // Phase 3.5 — Brightness
+909:                             const newBM = data.brightness_mode || false;
+910:                             setBrightnessMode(newBM);
+911:                             setBrightnessLevel(data.brightness_level || 0);
+912:                             setBrightnessDistance(data.brightness_distance || 0.0);
+913:                             // Log brightness changes on integer level change
+914:                             if (newBM && data.brightness_level !== prevBrightnessLevelRef.current) {
+915:                                 if (data.brightness_level !== undefined) {
+916:                                     const timeString = new Date().toLocaleTimeString();
+917:                                     eventIdCounterRef.current += 1;
+918:                                     const brightnessEvent = {
+919:                                         id: `${Date.now()}-${eventIdCounterRef.current}`,
+920:                                         timestamp: timeString,
+921:                                         gesture: 'Brightness',
+922:                                         confidenc
+<truncated 1083 bytes>
+ modeEvent = {
+939:                                     id: `${Date.now()}-${eventIdCounterRef.current}`,
+940:                                     timestamp: timeString,
+941:                                     gesture: 'Mode Switch',
+942:                                     confidence: 1.0,
+943:                                     action: `[MODE] ${newAM}`
+944:                                 };
+945:                                 setEvents(prev => [modeEvent, ...prev].slice(0, 50));
+946:                                 prevActiveModeRef.current = newAM;
+947:                             }
+948: 
+949:                             // Trigger logs on gesture change (ignoring empty/None/unknown)
+950:                             if (data.gesture !== prevGestureRef.current) {
+951:                                 if (data.gesture && data.gesture !== 'None' && data.gesture !== 'unknown') {
+952:                                     const timeString = new Date().toLocaleTimeString();
+953:                                     eventIdCounterRef.current += 1;
+954:                                     const newEvent = {
+955:                                         id: `${Date.now()}-${eventIdCounterRef.current}`,
+956:                                         timestamp: timeString,
+957:                                         gesture: data.gesture,
+958:                                         confidence: data.confidence,
+959:                                         action: `Triggered mapped shortcut for [${data.gesture}]`
+960:                                     };
+961:                                     setEvents(prev => [newEvent, ...prev].slice(0, 50));
+962:                                 }
+963:                                 prevGestureRef.current = data.gesture;
+964:                             }
+965:                         } catch (err) {
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

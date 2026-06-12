@@ -1,0 +1,59 @@
+Created At: 2026-06-11T10:08:26Z
+Completed At: 2026-06-11T10:08:27Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 1639
+Total Bytes: 106428
+Showing lines 670 to 720
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+670:             const prevGestureRef = useRef('None');
+671:             const socketRef = useRef(null);
+672:             const eventIdCounterRef = useRef(0);
+673: 
+674:             // Connect to the WebSocket backend
+675:             useEffect(() => {
+676:                 const connectWS = () => {
+677:                     setSocketStatus('connecting');
+678:                     const wsProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+679:                     const wsUrl = `${wsProtocol}//${window.location.host}/ws`;
+680:                     console.log(`Connecting to WebSocket: ${wsUrl}`);
+681:                     
+682:                     const ws = new WebSocket(wsUrl);
+683:                     socketRef.current = ws;
+684: 
+685:                     ws.onopen = () => {
+686:                         setSocketStatus('connected');
+687:                         console.log('WebSocket connection established');
+688:                     };
+689: 
+690:                     ws.onmessage = (event) => {
+691:                         try {
+692:                             const data = JSON.parse(event.data);
+693:                             setFps(data.fps);
+694:                             setHands(data.hands);
+695:                             setGesture(data.gesture);
+696:                             setConfidence(data.confidence);
+697:                             setCameraStatus(data.camera_status);
+698:                             setFrame(data.frame);
+699:                             setCursorX(data.cursor_x || 0);
+700:                             setCursorY(data.cursor_y || 0);
+701:                             setTrackingState(data.tracking_state || 'Disabled');
+702:                             setPinchDistance(data.pinch_distance || 0.0);
+703:                             setClickStatus(data.click_status || 'OPEN');
+704:                             setClickCounter(data.click_counter || 0);
+705:                             setCurrentAction(data.current_action || 'None');
+706:                             // Phase 3.3 — Right Click
+707:                             const prevRC = prevRightClickStatusRef.current;
+708:                             const newRC = data.right_click_status || 'OPEN';
+709:                             setRightClickStatus(newRC);
+710:                             setRightClickCounter(data.right_click_counter || 0);
+711:                             setRightPinchDistance(data.right_pinch_distance || 0.0);
+712:                             // Log right-click event on transition into RIGHT_CLICK
+713:                             if (newRC === 'RIGHT_CLICK' && prevRC !== 'RIGHT_CLICK') {
+714:                                 const timeString = new Date().toLocaleTimeString();
+715:                                 eventIdCounterRef.current += 1;
+716:                                 const rcEvent = {
+717:                                     id: `${Date.now()}-${eventIdCounterRef.current}`,
+718:                                     timestamp: timeString,
+719:                                     gesture: 'Right Click',
+720:                                     confidence: 1.0,
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

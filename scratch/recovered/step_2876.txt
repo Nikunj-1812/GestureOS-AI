@@ -1,0 +1,76 @@
+Created At: 2026-06-12T10:05:11Z
+Completed At: 2026-06-12T10:05:11Z
+File Path: `file:///C:/Users/nikun/.gemini/antigravity/brain/f71acb1b-ab5a-4de9-85a5-1a298f3c313a/implementation_plan.md`
+Total Lines: 83
+Total Bytes: 4487
+Showing lines 1 to 83
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1: # Implementation Plan — Phase 5.1: Air Drawing Canvas
+2: 
+3: This document outlines the proposed changes to implement the **Air Drawing Canvas** feature set.
+4: 
+5: ## Goal
+6: Create a full-featured Air Drawing page in both the CustomTkinter desktop dashboard and the React web dashboard that allows users to draw in real time using their hand index finger and pinch gesture.
+7: 
+8: ---
+9: 
+10: ## Technical Architecture & Design
+11: 
+12: ### 1. Drawing State & Gesture Control
+13: * **Hovering vs. Drawing State**:
+14:   * **Hovering (Hover state)**: When the hand is detected but the user is not pinching, the cursor moves a visual drawing pointer (dot) around the canvas.
+15:   * **Drawing (Draw state)**: When the user pinches (Thumb + Index distance $\le$ click threshold), a drawing stroke is active. Lines connect successive coordinate points.
+16:   * **Idle**: When no hand is detected in the camera frame.
+17: * **Undo & Redo**:
+18:   * Maintain a list of strokes: `self.strokes = list[list[tuple[int, int, str, int]]]` representing the brush coordinates, colors, and sizes.
+19:   * Maintain a redo stack: `self.redo_stack = list[list[tuple[int, int, str, int]]]`.
+20: * **Brush Settings**:
+21:   * **Color Palette**: Red, Green, Blue, Yellow, Purple, White.
+22:   * **Brush Size**: Small (2px), Medium (5px), Large (10px), Extra Large (20px).
+23: 
+24: ### 2. Desktop UI (CustomTkinter & Canvas)
+25: We will modify the placeholder in `dashboard/pages/air_drawing_page.py` to create a functional drawing experience:
+26: * **Camera Overlay Canvas**
+<truncated 1285 bytes>
+ct ratio.
+44:   * Render the live webcam feed as the background layer.
+45:   * Synchronize incoming hand WebSocket pointer coordinates to draw on the canvas when the user pinches.
+46:   * Implement client-side Undo/Redo, brush color/size selectors, and Clear/Save actions.
+47: 
+48: ---
+49: 
+50: ## Proposed Changes
+51: 
+52: ### Desktop GUI
+53: #### [MODIFY] [air_drawing_page.py](file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/dashboard/pages/air_drawing_page.py)
+54: * Refactor the file to build a real `tkinter.Canvas` drawing environment.
+55: * Add methods for drawing points, starting/ending strokes, clearing the canvas, undo, redo, and saving drawings.
+56: * Bind hand coordinate mapping and pinch actions in `set_camera_frame`.
+57: 
+58: #### [MODIFY] [window.py](file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/dashboard/shell/window.py)
+59: * Route incoming camera frames to the drawing page's `set_camera_frame` when it is active.
+60: 
+61: ### Web Backend
+62: #### [MODIFY] [web_backend.py](file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py)
+63: * Add `/api/drawing/save` POST endpoint.
+64: * Add `'drawing'` menu item in the React app sidebar.
+65: * Add HTML template markup for the Air Drawing page containing settings controls and HTML5 canvas.
+66: * Connect WebSocket `onmessage` hand coordinates to local canvas drawing paths.
+67: 
+68: ---
+69: 
+70: ## Verification Plan
+71: 
+72: ### Automated Tests
+73: * Create `tests/test_air_drawing.py` containing test cases verifying:
+74:   * Stroke addition and state transitions (Idle, Hovering, Drawing).
+75:   * Undo and Redo stack synchronization.
+76:   * Clear Canvas action.
+77: 
+78: ### Manual Verification
+79: * Run both the desktop dashboard and web backend.
+80: * Draw a shape (e.g. a circle) on both screens.
+81: * Test Undo/Redo operations and color changes.
+82: * Save the drawing and verify that the saved file appears successfully in the workspace.
+83: 
+The above content shows the entire, complete file contents of the requested file.

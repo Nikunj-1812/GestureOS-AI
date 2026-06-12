@@ -1,0 +1,34 @@
+Created At: 2026-06-12T05:06:47Z
+Completed At: 2026-06-12T05:06:47Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 2588
+Total Bytes: 179063
+Showing lines 2330 to 2355
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+2330:                                                 <div className="glass-card rounded-2xl p-6 border border-glass-border flex flex-col justify-between h-[400px] relative overflow-hidden">
+2331:                                                     <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 opacity-20" />
+2332:                                                     
+2333:                                                     <div>
+2334:                                                         <h3 className="text-sm font-semibold text-white pb-3 border-b border-glass-border mb-4">
+2335:                                                             Keyboard Telemetry
+2336:                                                         </h3>
+2337:                                                         
+2338:                                                         <div className="space-y-3">
+2339:                                                             <div className="flex justify-between items-center text-xs">
+2340:                                                                 <span className="text-gray-400">Current Hovered Key</span>
+2341:                                                                 <span className="px-2 py-1 rounded bg-zinc-800 text-white font-mono font-bold">{hoveredKey}</span>
+2342:                                                             </div>
+2343:                                                             <div className="flex justify-between items-center text-xs">
+2344:                                                                 <span className="text-gray-400">Last Pressed Key</span>
+2345:                                                                 <span className="px-2 py-1 rounded bg-zinc-800 text-white font-mono font-bold">{lastPressedKey}</span>
+2346:                                                             </div>
+2347:                                                             <div className="flex justify-between items-center text-xs">
+2348:                                                                 <span className="text-gray-400">Stream FPS</span>
+2349:                                                                 <span className="text-accent-blue font-bold">{fps.toFixed(1)} FPS</span>
+2350:                                                             </div>
+2351:                                                         </div>
+2352:                                                     </div>
+2353: 
+2354:                                                     <div className="flex-1 flex flex-col gap-2 mt-4">
+2355:                                                         <div className="flex justify-between items-center text-xs">
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

@@ -1,0 +1,41 @@
+Created At: 2026-06-12T05:06:37Z
+Completed At: 2026-06-12T05:06:37Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 2516
+Total Bytes: 174805
+Showing lines 868 to 900
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+868:                     ws.onmessage = (event) => {
+869:                         try {
+870:                             const data = JSON.parse(event.data);
+871:                             setFps(data.fps);
+872:                             setHands(data.hands);
+873:                             setGesture(data.gesture);
+874:                             setConfidence(data.confidence);
+875:                             setCameraStatus(data.camera_status);
+876:                             setFrame(data.frame);
+877:                             setCursorX(data.cursor_x || 0);
+878:                             setCursorY(data.cursor_y || 0);
+879:                             setTrackingState(data.tracking_state || 'Disabled');
+880:                             setPinchDistance(data.pinch_distance || 0.0);
+881:                             setClickStatus(data.click_status || 'OPEN');
+882:                             setClickCounter(data.click_counter || 0);
+883:                             setCurrentAction(data.current_action || 'None');
+884:                             // Phase 3.3 — Right Click
+885:                             const prevRC = prevRightClickStatusRef.current;
+886:                             const newRC = data.right_click_status || 'OPEN';
+887:                             setRightClickStatus(newRC);
+888:                             setRightClickCounter(data.right_click_counter || 0);
+889:                             setRightPinchDistance(data.right_pinch_distance || 0.0);
+890:                             // Log right-click event on transition into RIGHT_CLICK
+891:                             if (newRC === 'RIGHT_CLICK' && prevRC !== 'RIGHT_CLICK') {
+892:                                 const timeString = new Date().toLocaleTimeString();
+893:                                 eventIdCounterRef.current += 1;
+894:                                 const rcEvent = {
+895:                                     id: `${Date.now()}-${eventIdCounterRef.current}`,
+896:                                     timestamp: timeString,
+897:                                     gesture: 'Right Click',
+898:                                     confidence: 1.0,
+899:                                     action: `Right Click triggered | gesture=thumb_middle_pinch | dist=${(data.right_pinch_distance || 0).toFixed(4)}`
+900:                                 };
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

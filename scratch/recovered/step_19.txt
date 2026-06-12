@@ -1,0 +1,62 @@
+Created At: 2026-06-11T09:20:05Z
+Completed At: 2026-06-11T09:20:06Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 1456
+Total Bytes: 91353
+Showing lines 1200 to 1456
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1200:                                                     virtualMouseEnabled 
+1201:                                                         ? 'bg-emerald-500/10 border-emerald-500/20 text-accent-green' 
+1202:                                                         : 'bg-zinc-500/10 border-zinc-500/20 text-gray-400'
+1203:                                                 }`}>
+1204:                                                     {virtualMouseEnabled ? 'Active' : 'Inactive'}
+1205:                                                 </span>
+1206:                                             </div>
+1207:                                         </div>
+1208: 
+1209:                                         {/* Two-Column Main Content Layout */}
+1210:                                         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+1211:                                             {/* Left: Camera Feed Preview (2 Columns) */}
+1212:                                             <div className="lg:col-span-2 flex flex-col gap-4">
+1213:                                                 <div className="glass-card rounded-2xl p-4 flex flex-col h-[480px] justify-between relative group overflow-hidden">
+1214:                                                     <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 opacity-20" />
+1215:                                                     
+1216:                                                     <div className="flex items-center justify-between pb-3 border-b border-glass-b
+<truncated 20291 bytes>
+                              setVirtualMouseClickThreshold(val);
+1422:                                                                     updateSetting('virtual_mouse_click_threshold', val);
+1423:                                                                 }}
+1424:                                                                 className="w-full h-1.5 bg-zinc-700 rounded-lg appearance-none cursor-pointer accent-blue-500" 
+1425:                                                             />
+1426:                                                         </div>
+1427:                                                     </div>
+1428:                                                 </div>
+1429:                                             </div>
+1430:                                         </div>
+1431:                                     </>
+1432:                                 ) : (
+1433:                                     <div className="glass-card rounded-2xl p-8 text-center text-gray-400">
+1434:                                         <p>This page is currently under construction. Please use the Dashboard or Virtual Mouse navigation links.</p>
+1435:                                     </div>
+1436:                                 )}
+1437:                             </div>
+1438:                         </div>
+1439:                     </main>
+1440:                 </div>
+1441:             );
+1442:         }
+1443: 
+1444:         const root = ReactDOM.createRoot(document.getElementById('root'));
+1445:         root.render(<App />);
+1446:     </script>
+1447: </body>
+1448: </html>"""
+1449: 
+1450: @app.get("/", response_class=HTMLResponse)
+1451: async def get_dashboard():
+1452:     return HTML_CONTENT
+1453: 
+1454: if __name__ == "__main__":
+1455:     uvicorn.run("web_backend:app", host="127.0.0.1", port=8000, log_level="info")
+1456: 
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

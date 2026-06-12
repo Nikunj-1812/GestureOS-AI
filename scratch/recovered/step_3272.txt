@@ -1,0 +1,44 @@
+Created At: 2026-06-12T10:38:37Z
+Completed At: 2026-06-12T10:38:38Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 3501
+Total Bytes: 240552
+Showing lines 960 to 995
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+960:             const typingStartTimeRef = useRef(null);
+961: 
+962:             // Air Drawing UI States
+963:             const [drawingStatus, setDrawingStatus] = useState('Idle');
+964:             const [webBrushSize, _setWebBrushSize] = useState(5);
+965:             const webBrushSizeRef = useRef(5);
+966:             const setWebBrushSize = (val) => {
+967:                 _setWebBrushSize(val);
+968:                 webBrushSizeRef.current = val;
+969:             };
+970: 
+971:             const [webBrushColor, _setWebBrushColor] = useState('#c6a0f6'); // Mauve
+972:             const webBrushColorRef = useRef('#c6a0f6');
+973:             const setWebBrushColor = (val) => {
+974:                 _setWebBrushColor(val);
+975:                 webBrushColorRef.current = val;
+976:             };
+977: 
+978:             const [webBrushColorName, setWebBrushColorName] = useState('Mauve');
+979:             const [undoStack, setUndoStack] = useState([]);
+980:             const [redoStack, setRedoStack] = useState([]);
+981:             const [streamFps, setStreamFps] = useState(0.0);
+982: 
+983:             // Refs for drawing state machine
+984:             const currentStrokeRef = useRef(null);
+985:             const lastPointRef = useRef(null);
+986:             const isDrawingStateRef = useRef(false);
+987:             const webSmoothXRef = useRef(null);
+988:             const webSmoothYRef = useRef(null);
+989:             const activeMenuRef = useRef('dashboard');
+990: 
+991:             useEffect(() => {
+992:                 activeMenuRef.current = activeMenu;
+993:             }, [activeMenu]);
+994: 
+995:             const redrawCanvas = (strokes) => {
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

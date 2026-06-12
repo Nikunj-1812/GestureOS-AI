@@ -1,0 +1,28 @@
+Created At: 2026-06-11T10:08:40Z
+Completed At: 2026-06-11T10:08:41Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 1639
+Total Bytes: 106428
+Showing lines 761 to 780
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+761:                                     eventIdCounterRef.current += 1;
+762:                                     const newEvent = {
+763:                                         id: `${Date.now()}-${eventIdCounterRef.current}`,
+764:                                         timestamp: timeString,
+765:                                         gesture: data.gesture,
+766:                                         confidence: data.confidence,
+767:                                         action: `Triggered mapped shortcut for [${data.gesture}]`
+768:                                     };
+769:                                     setEvents(prev => [newEvent, ...prev].slice(0, 50));
+770:                                 }
+771:                                 prevGestureRef.current = data.gesture;
+772:                             }
+773:                         } catch (err) {
+774:                             console.error('Error decoding WebSocket JSON payload:', err);
+775:                         }
+776:                     };
+777: 
+778:                     ws.onclose = () => {
+779:                         setSocketStatus('disconnected');
+780:                         console.log('WebSocket connection lost, retrying in 3 seconds...');
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

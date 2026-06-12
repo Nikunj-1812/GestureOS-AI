@@ -1,0 +1,29 @@
+Created At: 2026-06-12T10:09:08Z
+Completed At: 2026-06-12T10:09:09Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 3213
+Total Bytes: 215912
+Showing lines 1415 to 1435
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1415:                             if (data.gesture !== prevGestureRef.current) {
+1416:                                 if (data.gesture && data.gesture !== 'None' && data.gesture !== 'unknown') {
+1417:                                     const timeString = new Date().toLocaleTimeString();
+1418:                                     eventIdCounterRef.current += 1;
+1419:                                     const newEvent = {
+1420:                                         id: `${Date.now()}-${eventIdCounterRef.current}`,
+1421:                                         timestamp: timeString,
+1422:                                         gesture: data.gesture,
+1423:                                         confidence: data.confidence,
+1424:                                         action: `Triggered mapped shortcut for [${data.gesture}]`
+1425:                                     };
+1426:                                     setEvents(prev => [newEvent, ...prev].slice(0, 50));
+1427:                                 }
+1428:                                 prevGestureRef.current = data.gesture;
+1429:                             }
+1430:                         } catch (err) {
+1431:                             console.error('Error decoding WebSocket JSON payload:', err);
+1432:                         }
+1433:                     };
+1434: 
+1435:                     ws.onclose = () => {
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

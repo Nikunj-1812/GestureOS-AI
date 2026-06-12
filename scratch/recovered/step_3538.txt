@@ -1,0 +1,21 @@
+Created At: 2026-06-12T10:59:05Z
+Completed At: 2026-06-12T10:59:05Z
+File Path: `file:///C:/Users/nikun/.gemini/antigravity/brain/f71acb1b-ab5a-4de9-85a5-1a298f3c313a/task.md`
+Total Lines: 13
+Total Bytes: 860
+Showing lines 1 to 13
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1: # Task List — Robust Pinch Detection & Stability Upgrade
+2: 
+3: - [x] Modify `modules/hand_detector.py` to expose hand detection confidence score
+4: - [x] Update `web_backend.py` (FastAPI backend) to send the tracking score over WebSocket
+5: - [x] Implement Exponential Moving Average (EMA) smoothing for `index_pinch_distance`
+6: - [x] Implement Pinch Hysteresis (separate start/release thresholds) in React frontend
+7: - [x] Implement Temporal Stability (consecutive pinch/release frame counts) in React frontend
+8: - [x] Implement Stroke Grace Period (250ms continuity window) in React frontend
+9: - [x] Implement Confidence-Based Filtering (ignore frames with hand tracking score < 0.55)
+10: - [x] Update custom cursor tooltip and sidebar telemetry UI with new debug metrics
+11: - [x] Run syntax checkers and verify code correctness
+12: - [x] Run pytest unit tests to ensure no regressions
+13: 
+The above content shows the entire, complete file contents of the requested file.

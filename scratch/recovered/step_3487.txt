@@ -1,0 +1,61 @@
+Created At: 2026-06-12T10:54:07Z
+Completed At: 2026-06-12T10:54:07Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 4043
+Total Bytes: 278669
+Showing lines 1650 to 1810
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1650:                                         confidence: data.confidence,
+1651:                                         action: `Triggered mapped shortcut for [${data.gesture}]`
+1652:                                     };
+1653:                                     setEvents(prev => [newEvent, ...prev].slice(0, 50));
+1654:                                 }
+1655:                                 prevGestureRef.current = data.gesture;
+1656:                             }
+1657: 
+1658:                             // Phase 5.1 — Air Drawing Canvas
+1659:                             if (activeMenuRef.current === 'drawing') {
+1660:                                 setStreamFps(data.fps || 0.0);
+1661:                                 const isHandDetected = data.hands > 0;
+1662:                                 
+1663:                                 // Reset One Euro filter state when hand enters/exits frame to avoid jumps
+1664:                                 if (isHandDetected && !wasHandDetectedRef.current) {
+1665:                                     filterXRef.current.reset();
+1666:                                     filterYRef.current.reset();
+1667:                                     hoverTrailRef.current = [];
+1668:                                 }
+1669:                                 wasHandDetectedRef.current = isHandDetected;
+1670: 
+1671:                                 if (isHandDetected && data.index_tip_x !== undefined && data.index_tip_x !== null) {
+1672:                                     const rawX = data.index_tip_x;
+1673:                               
+<truncated 8494 bytes>
+a95' : '#8aadf4';
+1784:                                         }
+1785:                                         
+1786:                                         const confBadge = cursorEl.querySelector('.cursor-confidence');
+1787:                                         if (confBadge) {
+1788:                                             confBadge.textContent = data.confidence !== undefined ? `${Math.round(data.confidence * 100)}%` : '--%';
+1789:                                         }
+1790:                                     }
+1791:                                 } else {
+1792:                                     setDrawingStatus('Idle');
+1793:                                     hoverTrailRef.current = [];
+1794:                                     if (isDrawingStateRef.current) {
+1795:                                         isDrawingStateRef.current = false;
+1796:                                         const stroke = currentStrokeRef.current;
+1797:                                         if (stroke && stroke.points.length > 0) {
+1798:                                             setUndoStack(prev => [...prev, stroke]);
+1799:                                             setRedoStack([]);
+1800:                                         }
+1801:                                         currentStrokeRef.current = null;
+1802:                                         lastPointRef.current = null;
+1803:                                     }
+1804:                                     
+1805:                                     renderAll();
+1806:                                     
+1807:                                     const cursorEl = document.getElementById('drawing-cursor');
+1808:                                     if (cursorEl) cursorEl.style.display = 'none';
+1809:                                 }
+1810:                             }
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

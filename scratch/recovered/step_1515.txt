@@ -1,0 +1,72 @@
+Created At: 2026-06-12T04:41:44Z
+Completed At: 2026-06-12T04:41:44Z
+File Path: `file:///C:/Users/nikun/.gemini/antigravity/brain/f71acb1b-ab5a-4de9-85a5-1a298f3c313a/implementation_plan.md`
+Total Lines: 82
+Total Bytes: 4304
+Showing lines 1 to 82
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1: # Implementation Plan — Phase 3.5: Drag & Drop
+2: 
+3: This plan outlines the design and implementation steps for **Phase 3.5 — Drag & Drop** gesture control in GestureOS.
+4: 
+5: ## Proposed Design
+6: 
+7: ### 1. Drag & Drop Gesture State Machine
+8: We will track the Pinch state (Thumb + Index distance <= threshold):
+9: - **Pinch Detection**:
+10:   - When pinch is detected, we start a timer to measure the hold duration.
+11:   - If `hold_duration < drag_threshold_ms` (configurable, default `200ms`), cursor movement is temporarily frozen to avoid cursor drift / accidental drags during a simple click.
+12:   - If the pinch is released *before* `drag_threshold_ms`, we dispatch a standard Left Click (`pyautogui.click()`).
+13:   - If the pinch is held *beyond* `drag_threshold_ms`:
+14:     - We transition to **DRAGGING** mode.
+15:     - We execute `pyautogui.mouseDown()`.
+16:     - We log `[DRAG] Drag Start`.
+17:     - We increment `drag_counter`.
+18: - **Maintain Drag**:
+19:   - While pinch is held, cursor movement resumes, allowing the user to drag the item.
+20:   - The HUD overlay shows `DRAGGING` visual feedback in green.
+21: - **Pinch Release**:
+22:   - When pinch distance exceeds threshold, we release the drag.
+23:   - We execute `pyautogui.mouseUp()`.
+24:   - We log `[DRAG] Drag End | Duration = X.XXs`.
+25:   - Reset timers.
+26: 
+27: ### 2. Configuration Settings
+28: We will add these parameters to `config/settings.yaml` and wire them into `settings_manager.py`:
+29: - `virtual_mouse_drag_threshold_ms`: default `200.0` (configurabl
+<truncated 1098 bytes>
+9: 
+50: ### Core Logic
+51: #### [MODIFY] [modules/virtual_mouse.py](file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/modules/virtual_mouse.py)
+52: - Implement state tracking fields: `self.drag_status` (IDLE/PINCHING/DRAGGING), `self.drag_start_time`, `self.drag_counter`, `self.drag_duration`.
+53: - Refactor the Left Click handler to integrate the drag-and-drop timer hold check and freeze coordinate mapping during click pre-cooldown window.
+54: - Log drag start and stop events accurately without console duplicate spam.
+55: 
+56: ### HUD & UI Panels
+57: #### [MODIFY] [modules/visualizer.py](file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/modules/visualizer.py)
+58: - Render floating `DRAGGING` text label in green above finger tips when active.
+59: - Add Drag rows (Status, Counter, Duration) to HUD.
+60: 
+61: #### [MODIFY] [web_backend.py](file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py)
+62: - Package drag status and configuration sliders into settings endpoints and live websocket JSON packets.
+63: - Update React UI settings list and telemetry panel with Drag options.
+64: 
+65: #### [MODIFY] [virtual_mouse_page.py](file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/dashboard/pages/virtual_mouse_page.py) and [window.py](file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/dashboard/shell/window.py)
+66: - Bind drag telemetry indicators to the desktop UI.
+67: 
+68: ---
+69: 
+70: ## Verification Plan
+71: 
+72: ### Automated Tests
+73: - Run `pytest tests/test_virtual_mouse.py`.
+74: - Add test cases verifying:
+75:   - Quick pinch-release fires a normal click.
+76:   - Long pinch hold triggers Drag Start and `pyautogui.mouseDown`.
+77:   - Drag release triggers `pyautogui.mouseUp` and computes duration.
+78: 
+79: ### Manual Verification
+80: - Start server, open `http://127.0.0.1:8000`, verify Drag telemetry updates dynamically.
+81: - Hold pinch gesture, verify items on desktop drag properly.
+82: 
+The above content shows the entire, complete file contents of the requested file.

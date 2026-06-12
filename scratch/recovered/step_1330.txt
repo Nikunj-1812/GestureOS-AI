@@ -1,0 +1,49 @@
+Created At: 2026-06-11T12:58:43Z
+Completed At: 2026-06-11T12:58:44Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 1987
+Total Bytes: 135200
+Showing lines 850 to 890
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+850:                                     const timeString = new Date().toLocaleTimeString();
+851:                                     eventIdCounterRef.current += 1;
+852:                                     const brightnessEvent = {
+853:                                         id: `${Date.now()}-${eventIdCounterRef.current}`,
+854:                                         timestamp: timeString,
+855:                                         gesture: 'Brightness',
+856:                                         confidence: 1.0,
+857:                                         action: `[BRIGHTNESS] ${data.brightness_level}% (Distance: ${(data.brightness_distance || 0).toFixed(1)}px)`
+858:                                     };
+859:                                     setEvents(prev => [brightnessEvent, ...prev].slice(0, 50));
+860:                                     prevBrightnessLevelRef.current = data.brightness_level;
+861:                                 }
+862:                             } else if (!newBM) {
+863:                                 prevBrightnessLevelRef.current = -1;
+864:                             }
+865: 
+866:                             // Phase 3.5 — Mode Manager
+867:                             const newAM = data.active_mode || 'CURSOR';
+868:                             setActiveMode(newAM);
+869:                             if (newAM !== prevActiveModeRef.current) {
+870:                                 const timeString = new Date().toLocaleTimeString();
+871:                                 eventIdCounterRef.current += 1;
+872:                                 const modeEvent = {
+873:                                     id: `${Date.now()}-${eventIdCounterRef.current}`,
+874:                                     timestamp: timeString,
+875:                                     gesture: 'Mode Switch',
+876:                                     confidence: 1.0,
+877:                                     action: `[MODE] ${newAM}`
+878:                                 };
+879:                                 setEvents(prev => [modeEvent, ...prev].slice(0, 50));
+880:                                 prevActiveModeRef.current = newAM;
+881:                             }
+882: 
+883:                             // Trigger logs on gesture change (ignoring empty/None/unknown)
+884:                             if (data.gesture !== prevGestureRef.current) {
+885:                                 if (data.gesture && data.gesture !== 'None' && data.gesture !== 'unknown') {
+886:                                     const timeString = new Date().toLocaleTimeString();
+887:                                     eventIdCounterRef.current += 1;
+888:                                     const newEvent = {
+889:                                         id: `${Date.now()}-${eventIdCounterRef.current}`,
+890:                                         timestamp: timeString,
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

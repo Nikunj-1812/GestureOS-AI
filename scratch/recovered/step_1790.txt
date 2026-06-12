@@ -1,0 +1,87 @@
+Created At: 2026-06-12T05:02:10Z
+Completed At: 2026-06-12T05:02:10Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 2483
+Total Bytes: 173395
+Showing lines 434 to 520
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+434:         logger.info("WebSocket client disconnected")
+435:     except Exception as e:
+436:         logger.error(f"Error in websocket loop: {e}")
+437: 
+438: HTML_CONTENT = """<!DOCTYPE html>
+439: <html lang="en">
+440: <head>
+441:     <meta charset="UTF-8">
+442:     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+443:     <title>GestureOS AI - Web Dashboard</title>
+444:     <!-- Global Error Handler -->
+445:     <script>
+446:         window.onerror = function (message, source, lineno, colno, error) {
+447:             const errorData = {
+448:                 message: message,
+449:                 source: source,
+450:                 lineno: lineno,
+451:                 colno: colno,
+452:                 error: error ? error.stack : null
+453:             };
+454:             console.error("Global Error Caught:", errorData);
+455:             
+456:             // Show overlay on screen
+457:             const overlay = document.createElement("div");
+458:             overlay.style.position = "fixed";
+459:             overlay.style.top = "0";
+460:             overlay.style.left = "0";
+461:             overlay.style.width = "100%";
+462:             overlay.style.height = "100%";
+463:             overlay.style.backgroundColor = "rgba(0,0,0,0.95)";
+464:             overlay.style.color = "#ff4a4a";
+465:             overlay.style.padding = "40px";
+466:             overlay.style.fontFamily = "monospace";
+467:             overlay.style.fontSize = "14px";
+468:             overlay.style.lineHeight = "1.6";
+469:             overlay.style.zIndex = "999999";
+<truncated 703 bytes>
+, err));
+480:             return false;
+481:         };
+482: 
+483:         window.addEventListener("unhandledrejection", function (event) {
+484:             const errorData = {
+485:                 message: "Unhandled Promise Rejection: " + event.reason,
+486:                 error: event.reason && event.reason.stack ? event.reason.stack : null
+487:             };
+488:             console.error("Unhandled Promise Rejection:", errorData);
+489:             
+490:             // Send to backend API
+491:             fetch("/api/log_error", {
+492:                 method: "POST",
+493:                 headers: { "Content-Type": "application/json" },
+494:                 body: JSON.stringify(errorData)
+495:             }).catch(err => console.error("Failed to send error to backend", err));
+496:         });
+497:     </script>
+498:     <!-- Tailwind CSS CDN -->
+499:     <script src="https://cdn.tailwindcss.com"></script>
+500:     <script>
+501:         tailwind.config = {
+502:             theme: {
+503:                 extend: {
+504:                     colors: {
+505:                         background: "#080710",
+506:                         glass: {
+507:                             light: "rgba(255, 255, 255, 0.05)",
+508:                             border: "rgba(255, 255, 255, 0.06)",
+509:                             glow: "rgba(59, 130, 246, 0.15)",
+510:                         },
+511:                         accent: {
+512:                             blue: "#3b82f6",
+513:                             purple: "#8b5cf6",
+514:                             green: "#10b981",
+515:                         }
+516:                     },
+517:                     fontFamily: {
+518:                         sans: ["Outfit", "Inter", "sans-serif"],
+519:                         mono: ["JetBrains Mono", "Fira Code", "monospace"],
+520:                     }
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

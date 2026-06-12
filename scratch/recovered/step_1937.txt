@@ -1,0 +1,64 @@
+Created At: 2026-06-12T05:09:26Z
+Completed At: 2026-06-12T05:09:26Z
+File Path: `file:///C:/Users/nikun/.gemini/antigravity/brain/f71acb1b-ab5a-4de9-85a5-1a298f3c313a/implementation_plan.md`
+Total Lines: 84
+Total Bytes: 5237
+Showing lines 1 to 84
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1: # Implementation Plan — Phase 4.2: Key Hover Detection
+2: 
+3: This plan details the design and implementation steps for **Phase 4.2 — Key Hover Detection** in GestureOS.
+4: 
+5: ## Proposed Design
+6: 
+7: ### 1. Hand Tracking Integration (Landmark 8)
+8: We will use the **Index Finger Tip (Landmark 8)** as the pointing cursor for the virtual keyboard.
+9: * **Desktop Dashboard**: `dashboard/shell/window.py` will pass the list of `detected_hands` to `VirtualKeyboardPage.set_camera_frame`.
+10: * **Web Dashboard**: `web_backend.py` will capture the primary hand's landmark 8 `(x, y)` coordinates and transmit them in the WebSocket payload under the keys `index_tip_x` and `index_tip_y`.
+11: 
+12: ### 2. Coordinate Mapping & Target Detection
+13: To detect which virtual key is under the finger:
+14: * **Desktop Dashboard (CustomTkinter)**:
+15:   * Extract landmark 8 `(x, y)` from the primary hand.
+16:   * Map the normalized coordinate to the absolute screen coordinate space based on the window's position and size:
+17:     ```python
+18:     x_mirrored = 1.0 - x # Camera is mirrored horizontally
+19:     root_x = self.winfo_rootx() + int(x_mirrored * self.winfo_width())
+20:     root_y = self.winfo_rooty() + int(y * self.winfo_height())
+21:     ```
+22:   * Call `self.winfo_containing(root_x, root_y)` to find the Tkinter widget at that coordinate.
+23:   * Walk up the widget hierarchy (`widget.master`) to check if the widget belongs to one of our keyboard buttons.
+24: * **Web Dashboard (React)**:
+25:   * Map the normalized `(index_tip_x, index_tip
+<truncated 2039 bytes>
+ Implement coordinate smoothing, coordinate mapping, and widget targeting.
+56: * Implement state tracking for the targeted candidate key, hover delay (150ms), and debounce grace period (100ms).
+57: * Dynamically update the background/border colors of the hovered key to the hover accent color.
+58: * Add a "Hover Duration" telemetry data field.
+59: 
+60: ### Web Dashboard Components
+61: #### [MODIFY] [web_backend.py](file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py)
+62: * Add `index_tip_x` and `index_tip_y` to the WebSocket JSON payload.
+63: * Add a "Hover Duration" telemetry label in the React virtual keyboard section.
+64: * Implement identical coordinate smoothing, viewport mapping, `document.elementFromPoint` detection, hover delay, and debounce logic in the React frontend.
+65: * Dynamically update React keyboard button styling on hover.
+66: 
+67: ---
+68: 
+69: ## Verification Plan
+70: 
+71: ### Automated Tests
+72: * Create unit tests in `tests/test_virtual_keyboard_hover.py` to verify:
+73:   * Normalized coordinate mapping and widget resolution.
+74:   * State transitions under hover delay (confirming a key is NOT hovered before 150ms, and IS hovered after 150ms).
+75:   * Debouncing grace period (confirming hover state persists during a brief <100ms interruption).
+76:   * Telemetry updates for Hovered Key and Hover Duration.
+77: 
+78: ### Manual Verification
+79: 1. Run `python main.py` and open the Virtual Keyboard page in the CustomTkinter app.
+80: 2. Verify that raising your hand and pointing your index finger highlights keys after a brief delay, displaying the key name and counting up the hover duration.
+81: 3. Verify that the camera feed maintains 25+ FPS during hand tracking.
+82: 4. Run the web backend server, open `http://127.0.0.1:8000`, and navigate to the web dashboard's Virtual Keyboard tab.
+83: 5. Verify that pointing at keys on the web preview functions identically with highlights and telemetry.
+84: 
+The above content shows the entire, complete file contents of the requested file.

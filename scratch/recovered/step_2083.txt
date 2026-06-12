@@ -1,0 +1,48 @@
+Created At: 2026-06-12T05:19:25Z
+Completed At: 2026-06-12T05:19:26Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 2640
+Total Bytes: 183911
+Showing lines 936 to 975
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+936:                                 smoothYRef.current = null;
+937:                             }
+938: 
+939:                             // Hover Delay (150ms) and Debouncing (100ms)
+940:                             if (detectedKey) {
+941:                                 lastHoverDetectTimeRef.current = wsNow;
+942:                                 if (detectedKey === candidateKeyRef.current) {
+943:                                     const elapsed = (wsNow - candidateStartTimeRef.current) / 1000;
+944:                                     setHoverDuration(elapsed);
+945:                                     if (elapsed >= 0.150) {
+946:                                         setHoveredKey(detectedKey);
+947:                                     }
+948:                                 } else {
+949:                                     candidateKeyRef.current = detectedKey;
+950:                                     candidateStartTimeRef.current = wsNow;
+951:                                     setHoverDuration(0.0);
+952:                                 }
+953:                             } else {
+954:                                 let debounceElapsed = 0;
+955:                                 if (lastHoverDetectTimeRef.current) {
+956:                                     debounceElapsed = (wsNow - lastHoverDetectTimeRef.current) / 1000;
+957:                                 }
+958:                                 if (debounceElapsed >= 0.100 || !lastHoverDetectTimeRef.current) {
+959:                                     candidateKeyRef.current = null;
+960:                                     candidateStartTimeRef.current = null;
+961:                                     setHoverDuration(0.0);
+962:                                     setHoveredKey('None');
+963:                                 }
+964:                             }
+965: 
+966:                             // Phase 3.3 — Right Click
+967:                             const prevRC = prevRightClickStatusRef.current;
+968:                             const newRC = data.right_click_status || 'OPEN';
+969:                             setRightClickStatus(newRC);
+970:                             setRightClickCounter(data.right_click_counter || 0);
+971:                             setRightPinchDistance(data.right_pinch_distance || 0.0);
+972:                             // Log right-click event on transition into RIGHT_CLICK
+973:                             if (newRC === 'RIGHT_CLICK' && prevRC !== 'RIGHT_CLICK') {
+974:                                 const timeString = new Date().toLocaleTimeString();
+975:                                 eventIdCounterRef.current += 1;
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

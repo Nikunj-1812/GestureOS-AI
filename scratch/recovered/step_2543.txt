@@ -1,0 +1,61 @@
+Created At: 2026-06-12T09:41:57Z
+Completed At: 2026-06-12T09:41:57Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 2763
+Total Bytes: 190961
+Showing lines 950 to 1050
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+950:                                 const rawY = data.index_tip_y;
+951:                                 const xMirrored = 1.0 - rawX; // Mirror horizontal to match screen direction
+952: 
+953:                                 // Smooth coordinates using exponential moving average (EMA)
+954:                                 const smoothing = 0.20;
+955:                                 if (smoothXRef.current === null || smoothYRef.current === null) {
+956:                                     smoothXRef.current = xMirrored;
+957:                                     smoothYRef.current = rawY;
+958:                                 } else {
+959:                                     smoothXRef.current += (xMirrored - smoothXRef.current) * smoothing;
+960:                                     smoothYRef.current += (rawY - smoothYRef.current) * smoothing;
+961:                                 }
+962: 
+963:                                 // Map to viewport coordinates
+964:                                 const clientX = smoothXRef.current * window.innerWidth;
+965:                                 const clientY = smoothYRef.current * window.innerHeight;
+966: 
+967:                                 // Resolve HTML element at the cursor point
+968:                                 try {
+969:                                     const element = document.elementFromPoint(clientX, clientY);
+970:                                     if (element) {
+971:                                         let curr = element;
+972:                                         while (curr) {
+973:                     
+<truncated 3297 bytes>
+ keyToPress = hoveredKeyRef.current;
+1024:                                     if (keyToPress && keyToPress !== 'None') {
+1025:                                         handleWebKeyPress(keyToPress);
+1026:                                         if (enableKeyboardSound) {
+1027:                                             playKeyboardClickSound();
+1028:                                         }
+1029:                                     }
+1030:                                 }
+1031:                             } else {
+1032:                                 if (data.pinch_distance > 0.05 || data.hands === 0) {
+1033:                                     pinchActiveRef.current = false;
+1034:                                 }
+1035:                             }
+1036: 
+1037:                             // Phase 3.3 — Right Click
+1038:                             const prevRC = prevRightClickStatusRef.current;
+1039:                             const newRC = data.right_click_status || 'OPEN';
+1040:                             setRightClickStatus(newRC);
+1041:                             setRightClickCounter(data.right_click_counter || 0);
+1042:                             setRightPinchDistance(data.right_pinch_distance || 0.0);
+1043:                             // Log right-click event on transition into RIGHT_CLICK
+1044:                             if (newRC === 'RIGHT_CLICK' && prevRC !== 'RIGHT_CLICK') {
+1045:                                 const timeString = new Date().toLocaleTimeString();
+1046:                                 eventIdCounterRef.current += 1;
+1047:                                 const rcEvent = {
+1048:                                     id: `${Date.now()}-${eventIdCounterRef.current}`,
+1049:                                     timestamp: timeString,
+1050:                                     gesture: 'Right Click',
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

@@ -1,0 +1,64 @@
+Created At: 2026-06-12T05:10:30Z
+Completed At: 2026-06-12T05:10:30Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 2630
+Total Bytes: 183310
+Showing lines 1300 to 1380
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1300:                 return `${(confidence * 100).toFixed(0)}%`;
+1301:             };
+1302: 
+1303:             // Virtual Keyboard UI event handlers
+1304:             const handleWebKeyPress = (key) => {
+1305:                 setPressedKey(key);
+1306:                 setTimeout(() => setPressedKey(null), 100);
+1307:                 setLastPressedKey(key);
+1308: 
+1309:                 if (key === 'Shift') {
+1310:                     setIsShiftActive(!isShiftActive);
+1311:                 } else if (key === 'Caps Lock') {
+1312:                     setIsCapsLockActive(!isCapsLockActive);
+1313:                 } else if (key === 'Backspace') {
+1314:                     setTypedText(prev => prev.slice(0, -1));
+1315:                 } else if (key === 'Space') {
+1316:                     setTypedText(prev => prev + ' ');
+1317:                     autoReleaseShift();
+1318:                 } else if (key === 'Tab') {
+1319:                     setTypedText(prev => prev + '    ');
+1320:                     autoReleaseShift();
+1321:                 } else if (key === 'Enter') {
+1322:                     setTypedText(prev => prev + '\\n');
+1323:                     autoReleaseShift();
+1324:                 } else {
+1325:                     const isUpper = isCapsLockActive || isShiftActive;
+1326:                     const char = isUpper ? key.toUpperCase() : key.toLowerCase();
+1327:                     setTypedText(prev => prev + char);
+1328:                     autoReleaseShift();
+1329:                 }
+1330:             };
+1331: 
+1332:             const autoReleaseShif
+<truncated 1851 bytes>
+irtual Mouse', icon: MousePointerIcon },
+1360:                                     { id: 'keyboard', name: 'Virtual Keyboard', icon: KeyboardIcon },
+1361:                                     { id: 'shortcuts', name: 'Gestures Map', icon: SlidersIcon },
+1362:                                     { id: 'analytics', name: 'Real-time Metrics', icon: TrendingUpIcon },
+1363:                                     { id: 'settings', name: 'System Settings', icon: SettingsIcon }
+1364:                                 ].map((item) => {
+1365:                                     const Icon = item.icon;
+1366:                                     const isActive = activeMenu === item.id;
+1367:                                     return (
+1368:                                         <button
+1369:                                             key={item.id}
+1370:                                             onClick={() => {
+1371:                                                 setActiveMenu(item.id);
+1372:                                                 logSystemEvent(`Navigated to page: ${item.name}`);
+1373:                                             }}
+1374:                                             className={`w-full flex items-center justify-between px-4 py-3.5 rounded-xl transition-all duration-300 group ${
+1375:                                                 isActive 
+1376:                                                     ? 'bg-blue-600/20 border border-blue-500/30 text-white font-medium shadow-md shadow-blue-500/5' 
+1377:                                                     : 'text-gray-400 hover:text-white hover:bg-white/5 border border-transparent'
+1378:                                             }`}
+1379:                                         >
+1380:                                             <div className="flex items-center gap-3.5">
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

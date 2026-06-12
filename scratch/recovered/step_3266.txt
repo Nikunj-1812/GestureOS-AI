@@ -1,0 +1,27 @@
+Created At: 2026-06-12T10:38:01Z
+Completed At: 2026-06-12T10:38:01Z
+File Path: `file:///C:/Users/nikun/.gemini/antigravity/brain/f71acb1b-ab5a-4de9-85a5-1a298f3c313a/task.md`
+Total Lines: 19
+Total Bytes: 1245
+Showing lines 1 to 19
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1: # Phase 5.1 Tasks — Air Drawing Canvas
+2: 
+3: - [x] Implement Desktop GUI Air Drawing:
+4:   - [x] Refactor `dashboard/pages/air_drawing_page.py` to use a `tkinter.Canvas` background stream renderer
+5:   - [x] Map and smooth coordinates from hand landmarks to the canvas grid
+6:   - [x] Implement drawing states (Idle, Hovering, Drawing) based on index-thumb pinch
+7:   - [x] Add brush setting controls (color selection, brush size slider)
+8:   - [x] Implement Undo, Redo, Clear Canvas, and Save Drawing (to a white-background PNG file)
+9: - [x] Update Desktop Main Window Event Routing:
+10:   - [x] Update `dashboard/shell/window.py` to forward camera frames and hand landmarks to `AirDrawingPage`
+11: - [x] Implement Web Frontend & Backend Drawing:
+12:   - [x] Add `/api/drawing/save` POST endpoint in `web_backend.py`
+13:   - [x] Add the "Air Drawing" tab and `PencilIcon` to the web navigation menu
+14:   - [x] Build the HTML5 canvas layout, mapping WebSocket coordinates to canvas line drawings, brush updates, and stack actions
+15:   - [x] Implement web Undo/Redo, brush color/size selectors, Clear, and Save actions
+16: - [x] Verification:
+17:   - [x] Create `tests/test_air_drawing.py` verifying state logic, brush limits, and undo/redo stacks
+18:   - [x] Manually verify drawing and saved files
+19: 
+The above content shows the entire, complete file contents of the requested file.

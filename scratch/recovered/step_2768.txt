@@ -1,0 +1,19 @@
+Created At: 2026-06-12T09:58:33Z
+Completed At: 2026-06-12T09:58:33Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 3037
+Total Bytes: 208090
+Showing lines 985 to 995
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+985:                                 });
+986:                             } else {
+987:                                 if (hasFrameRef.current) {
+988:                                     hasFrameRef.current = false;
+989:                                     setHasFrameState(false);
+990:                                 }
+991:                             }
+992:                             setCursorX(data.cursor_x || 0);
+993:                             setCursorY(data.cursor_y || 0);
+994:                             setTrackingState(data.tracking_state || 'Disabled');
+995:                             setPinchDistance(data.pinch_distance || 0.0);
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

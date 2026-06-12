@@ -1,0 +1,23 @@
+Created At: 2026-06-11T11:34:04Z
+Completed At: 2026-06-11T11:34:05Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 1364
+Total Bytes: 89652
+Showing lines 276 to 290
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+276:         virtual_mouse.right_debounce_ms = getattr(config, 'click_cooldown_ms', 300.0)
+277:         virtual_mouse.volume_cooldown_ms = getattr(config, 'volume_cooldown_ms', 100.0)
+278:         virtual_mouse.brightness_cooldown_ms = getattr(config, 'brightness_cooldown_ms', 100.0)
+279:         if virtual_mouse._brightness_controller:
+280:             virtual_mouse._brightness_controller.cooldown_ms = getattr(config, 'brightness_cooldown_ms', 100.0)
+281:         virtual_mouse.show_overlays = getattr(config, 'show_overlays', True)
+282:         virtual_mouse.show_event_logs = getattr(config, 'show_event_logs', True)
+283:         virtual_mouse.enable_sounds = getattr(config, 'enable_sounds', True)
+284:         virtual_mouse.enable_telemetry = getattr(config, 'enable_telemetry', True)
+285:     return {"status": "success"}
+286: 
+287: @app.websocket("/ws")
+288: async def websocket_endpoint(websocket: WebSocket):
+289:     await websocket.accept()
+290:     logger.info("WebSocket client connected")
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

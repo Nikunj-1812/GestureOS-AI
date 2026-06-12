@@ -1,0 +1,39 @@
+Created At: 2026-06-11T10:47:26Z
+Completed At: 2026-06-11T10:47:26Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 1987
+Total Bytes: 135200
+Showing lines 960 to 990
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+960:                         if (data.virtual_mouse_brightness_max_distance_px !== undefined) {
+961:                             setVirtualMouseBrightnessMaxDistancePx(data.virtual_mouse_brightness_max_distance_px);
+962:                         }
+963:                         if (data.virtual_mouse_brightness_smoothing !== undefined) {
+964:                             setVirtualMouseBrightnessSmoothing(data.virtual_mouse_brightness_smoothing);
+965:                         }
+966:                     })
+967:                     .catch(err => console.error('Error loading config settings:', err));
+968: 
+969:                 // Escape key emergency stop listener
+970:                 const handleEscape = (e) => {
+971:                     if (e.key === 'Escape') {
+972:                         setVirtualMouseEnabled(false);
+973:                         updateSetting('virtual_mouse_enabled', false);
+974:                         setRightClickStatus('OPEN');
+975:                         setScrollMode(false);
+976:                         setScrollDirection('NONE');
+977:                         logSystemEvent('\u26a0 EMERGENCY STOP: Virtual mouse disabled via ESC key.');
+978:                     }
+979:                 };
+980:                 window.addEventListener('keydown', handleEscape);
+981: 
+982:                 return () => {
+983:                     window.removeEventListener('keydown', handleEscape);
+984:                     if (socketRef.current) {
+985:                         socketRef.current.close();
+986:                     }
+987:                 };
+988:             }, []);
+989: 
+990:             const logSystemEvent = (msg) => {
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

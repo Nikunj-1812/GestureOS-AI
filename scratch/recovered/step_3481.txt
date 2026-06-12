@@ -1,0 +1,57 @@
+Created At: 2026-06-12T10:53:42Z
+Completed At: 2026-06-12T10:53:42Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 4035
+Total Bytes: 278290
+Showing lines 1649 to 1785
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1649: 
+1650:                             // Phase 5.1 — Air Drawing Canvas
+1651:                             if (activeMenuRef.current === 'drawing') {
+1652:                                 setStreamFps(data.fps || 0.0);
+1653:                                 const isHandDetected = data.hands > 0;
+1654:                                 
+1655:                                 // Reset One Euro filter state when hand enters/exits frame to avoid jumps
+1656:                                 if (isHandDetected && !wasHandDetectedRef.current) {
+1657:                                     filterXRef.current.reset();
+1658:                                     filterYRef.current.reset();
+1659:                                     hoverTrailRef.current = [];
+1660:                                 }
+1661:                                 wasHandDetectedRef.current = isHandDetected;
+1662: 
+1663:                                 if (isHandDetected && data.index_tip_x !== undefined && data.index_tip_x !== null) {
+1664:                                     const rawX = data.index_tip_x;
+1665:                                     const rawY = data.index_tip_y;
+1666:                                     
+1667:                                     // Resolve coordinate mapping based on mode
+1668:                                     let mappedX = 0;
+1669:                                     let mappedY = 0;
+1670:                                     
+1671:                                     const curCanvasWidth = canvasWidthRef.current;
+1672:                                     const curCanva
+<truncated 6878 bytes>
+.current}px`;
+1763:                                             cursorDot.style.backgroundColor = webBrushColorRef.current;
+1764:                                         }
+1765:                                         
+1766:                                         const sizeBadge = cursorEl.querySelector('.cursor-size');
+1767:                                         if (sizeBadge) sizeBadge.textContent = `${webBrushSizeRef.current}px`;
+1768:                                         
+1769:                                         const colorBadge = cursorEl.querySelector('.cursor-color-badge');
+1770:                                         if (colorBadge) colorBadge.style.backgroundColor = webBrushColorRef.current;
+1771:                                         
+1772:                                         const stateBadge = cursorEl.querySelector('.cursor-state');
+1773:                                         if (stateBadge) {
+1774:                                             stateBadge.textContent = isPinching ? 'DRAWING' : 'HOVERING';
+1775:                                             stateBadge.style.color = isPinching ? '#a6da95' : '#8aadf4';
+1776:                                         }
+1777:                                         
+1778:                                         const confBadge = cursorEl.querySelector('.cursor-confidence');
+1779:                                         if (confBadge) {
+1780:                                             confBadge.textContent = data.confidence !== undefined ? `${Math.round(data.confidence * 100)}%` : '--%';
+1781:                                         }
+1782:                                     }
+1783:                                 } else {
+1784:                                     setDrawingStatus('Idle');
+1785:                                     hoverTrailRef.current = [];
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

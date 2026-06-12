@@ -1,0 +1,39 @@
+Created At: 2026-06-12T10:43:55Z
+Completed At: 2026-06-12T10:43:55Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 4033
+Total Bytes: 278159
+Showing lines 3270 to 3300
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+3270:                                                                 onClick={handleClearBuffer}
+3271:                                                                 className="px-2.5 py-1 rounded-lg bg-red-500/10 hover:bg-red-500/20 text-red-400 text-[10px] font-semibold border border-red-500/10 transition-colors"
+3272:                                                             >
+3273:                                                                 Clear Buffer
+3274:                                                             </button>
+3275:                                                         </div>
+3276:                                                         <textarea 
+3277:                                                             readOnly
+3278:                                                             value={typedText}
+3279:                                                             className="flex-1 w-full bg-zinc-950/60 rounded-xl p-3 border border-glass-border text-sm text-gray-200 focus:outline-none focus:border-blue-500/40 font-mono resize-none"
+3280:                                                             placeholder="Typed output will stream here..."
+3281:                                                         />
+3282:                                                     </div>
+3283:                                                 </div>
+3284:                                             </div>
+3285:                                         </div>
+3286: 
+3287:                                         {/* QWERTY Keyboard Grid Section */}
+3288:                                         <div className="glass-panel rounded-3xl p-6 border border-glass-border relative overflow-hidden flex flex-col gap-4">
+3289:                                             <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 opacity-20" />
+3290:                                             <div>
+3291:                                                 <h3 className="text-lg font-bold text-white">QWERTY Keyboard Grid</h3>
+3292:                                                 <p className="text-xs text-gray-400">Click keys to trigger typing action. Layout dynamically matches Caps/Shift states.</p>
+3293:                                             </div>
+3294: 
+3295:                                             {/* Responsive Keyboard */}
+3296:                                             <div className="flex flex-col gap-2 max-w-4xl mx-auto w-full bg-zinc-950/40 p-4 rounded-2xl border border-glass-border">
+3297:                                                 {/* Suggestions Bar */}
+3298:                                                 <div className="flex gap-2 w-full mb-2">
+3299:                                                     {[0, 1, 2].map(idx => {
+3300:                                                         const pred = predictions[idx] || '';
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

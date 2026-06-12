@@ -1,0 +1,43 @@
+Created At: 2026-06-12T10:42:10Z
+Completed At: 2026-06-12T10:42:10Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 4033
+Total Bytes: 278212
+Showing lines 3840 to 3905
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+3840:                                                         <div className="glass-panel rounded-3xl p-6 border border-glass-border space-y-5">
+3841:                                                             <h3 className="text-lg font-bold text-white pb-3 border-b border-glass-border mb-0">Drawing Controls</h3>
+3842:                                                             
+3843:                                                             {/* View Configuration */}
+3844:                                                             <div className="space-y-3">
+3845:                                                                 <span className="text-xs text-gray-400 block font-semibold">View Options</span>
+3846:                                                                 <div className="flex gap-2">
+3847:                                                                     <button 
+3848:                                                                         onClick={() => setFullScreenMode(true)}
+3849:                                                                         className="flex-1 py-2 px-3 rounded-xl bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 text-white font-semibold text-xs active:scale-95 transition-all flex items-center justify-center gap-1.5"
+3850:                                                                     >
+3851:                                                                         🖥️ Fullscreen
+3852:                                                                     </button>
+3853:                            
+<truncated 3361 bytes>
+                                 type="checkbox"
+3887:                                                                     checked={showHoverTrail}
+3888:                                                                     onChange={(e) => setShowHoverTrail(e.target.checked)}
+3889:                                                                     className="w-3.5 h-3.5 rounded border-zinc-700 bg-zinc-900 text-blue-500 focus:ring-blue-500/40 cursor-pointer"
+3890:                                                                 />
+3891:                                                             </div>
+3892:                                                             
+3893:                                                             <span className="w-full h-px bg-glass-border block" />
+3894:                                                             
+3895:                                                             {/* Size Slider */}
+3896:                                                             <div>
+3897:                                                                 <div className="flex justify-between text-xs text-gray-400 mb-2">
+3898:                                                                     <span>Brush Size</span>
+3899:                                                                     <span>{webBrushSize} px</span>
+3900:                                                                 </div>
+3901:                                                                 <input 
+3902:                                                                     type="range"
+3903:                                                                     min="1"
+3904:                                                                     max="30"
+3905:                                                                     value={webBrushSize}
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

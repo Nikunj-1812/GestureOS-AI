@@ -1,0 +1,50 @@
+Created At: 2026-06-12T10:20:31Z
+Completed At: 2026-06-12T10:20:31Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 3488
+Total Bytes: 240174
+Showing lines 2700 to 3488
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+2700:                                                                 <span className="text-white font-mono">{virtualMouseVolumeMinDistancePx.toFixed(0)} px</span>
+2701:                                                             </div>
+2702:                                                             <input 
+2703:                                                                 type="range" 
+2704:                                                                 min="10" 
+2705:                                                                 max="100" 
+2706:                                                                 step="5"
+2707:                                                                 value={virtualMouseVolumeMinDistancePx} 
+2708:                                                                 onChange={(e) => {
+2709:                                                                     const val = parseFloat(e.target.value);
+2710:                                                                     setVirtualMouseVolumeMinDistancePx(val);
+2711:                                                                     updateSetting('virtual_mouse_volume_min_distance_px', val);
+2712:                                                                 }}
+2713:                                                                 className="w-full h-1.5 bg-zinc-700 rounded-lg appearance-none cursor-pointer accent-blue-500" 
+2714:                                                             />
+2715:                                                         </div>
+2716: 
+2717:
+<truncated 45283 bytes>
+                                            }`}
+3171:                                                     >
+3172:                                                         Enter
+3173:                                                     </button>
+3174:                                                 </div>
+3175: 
+3176:                                                 {/* Row 4 */}
+3177:                                                 <div className="flex gap-1.5 w-full justify-between">
+3178:                                                     <button 
+3179:                                                         data-key="Shift"
+3180:                                                         onMouseEnter={() => setHoveredKey('Shift')}
+3181:                                                         onMouseLeave={() => setHoveredKey('None')}
+3182:                                                         onClick={() => handleWebKeyPress('Shift')}
+3183:                                                         className={`w-24 h-12 rounded-lg text-xs font-bold transition-all duration-100 ${
+3184:                                                             pressedKey === 'Shift' 
+3185:                                                                 ? 'bg-amber-500 text-black scale-95' 
+3186:                                                                 : hoveredKey === 'Shift'
+3187:                                                                     ? 'bg-blue-600/40 text-white border border-blue-500/80 shadow-md shadow-blue-500/20'
+3188:                                                                     : isShiftActive 
+3189:                                                                         ? 'bg-blue-600 hover:bg-blue-500 text-white' 
+3190:                                                                         : 'bg-zinc-900 hover:bg-zinc-800 text-gray-300 bor
+<truncated 27503 bytes>
+
+NOTE: The output was truncated because it was too long. Use a more targeted query or a smaller range to get the information you need.

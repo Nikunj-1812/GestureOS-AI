@@ -1,0 +1,52 @@
+Created At: 2026-06-11T11:24:11Z
+Completed At: 2026-06-11T11:24:11Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 1421
+Total Bytes: 93677
+Showing lines 1341 to 1421
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1341:                                         {/* Card 5: Drag & Drop Settings */}
+1342:                                         <div className="glass-card p-6 rounded-2xl flex flex-col gap-4">
+1343:                                             <h3 className="text-sm font-bold uppercase text-gray-400 border-b border-glass-border pb-2">Drag & Drop Settings</h3>
+1344:                                             <label className="flex items-center justify-between cursor-pointer group">
+1345:                                                 <span className="text-xs font-semibold text-gray-300 group-hover:text-white">Enable Drag & Drop Mode</span>
+1346:                                                 <div className="relative">
+1347:                                                     <input type="checkbox" checked={modeDragEnabled} onChange={e => { const val = e.target.checked; setModeDragEnabled(val); updateSetting('mode_drag_enabled', val); }} className="sr-only peer" />
+1348:                                                     <div className="w-9 h-5 bg-zinc-700 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-blue-600"></div>
+1349:                                                 </div>
+1350:                                             </label>
+1351:                                             <div className="space-y-1">
+1352:              
+<truncated 4843 bytes>
+l key={i} className="flex items-center justify-between cursor-pointer group">
+1392:                                                     <span className="text-xs font-semibold text-gray-300 group-hover:text-white">{m.label}</span>
+1393:                                                     <div className="relative">
+1394:                                                         <input type="checkbox" checked={m.val} onChange={e => { const val = e.target.checked; m.setter(val); updateSetting(m.key, val); }} className="sr-only peer" />
+1395:                                                         <div className="w-9 h-5 bg-zinc-700 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-blue-600"></div>
+1396:                                                     </div>
+1397:                                                 </label>
+1398:                                             ))}
+1399:                                         </div>
+1400:                                     </div>
+1401:                                 )}
+1402:                             </div>
+1403:                         </div>
+1404:                     </main>
+1405:                 </div>
+1406:             );
+1407:         }
+1408: 
+1409:         const root = ReactDOM.createRoot(document.getElementById('root'));
+1410:         root.render(<App />);
+1411:     </script>
+1412: </body>
+1413: </html>"""
+1414: 
+1415: @app.get("/", response_class=HTMLResponse)
+1416: async def get_dashboard():
+1417:     return HTML_CONTENT
+1418: 
+1419: if __name__ == "__main__":
+1420:     uvicorn.run("web_backend:app", host="127.0.0.1", port=8000, log_level="info")
+1421: 
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

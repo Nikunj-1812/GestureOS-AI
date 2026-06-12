@@ -1,0 +1,93 @@
+Created At: 2026-06-12T04:58:41Z
+Completed At: 2026-06-12T04:58:41Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 2413
+Total Bytes: 169480
+Showing lines 1 to 800
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1: import os
+2: import sys
+3: 
+4: # Suppress third-party logging / console spam (MediaPipe, TensorFlow, OpenCV)
+5: os.environ['GLOG_minloglevel'] = '2'          # Suppress MediaPipe info logs
+6: os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'       # Suppress TensorFlow info/warning logs
+7: os.environ['OPENCV_LOG_LEVEL'] = 'ERROR'       # Suppress OpenCV info/warning logs
+8: os.environ['OPENCV_FFMPEG_LOGLEVEL'] = '-8'    # Suppress OpenCV FFMPEG logs
+9: 
+10: import base64
+11: import cv2
+12: import json
+13: import asyncio
+14: from fastapi import FastAPI, WebSocket, WebSocketDisconnect
+15: from fastapi.middleware.cors import CORSMiddleware
+16: from fastapi.responses import HTMLResponse
+17: import uvicorn
+18: import time
+19: from pathlib import Path
+20: 
+21: from config.settings_manager import SettingsManager
+22: from modules.camera import CameraStream
+23: from modules.hand_detector import HandDetector
+24: from modules.gesture_engine import GestureEngine
+25: from modules.action_dispatcher import ActionDispatcher
+26: from loguru import logger
+27: 
+28: app = FastAPI(title="GestureOS AI Web Backend")
+29: 
+30: # Enable CORS
+31: app.add_middleware(
+32:     CORSMiddleware,
+33:     allow_origins=["*"],
+34:     allow_credentials=True,
+35:     allow_methods=["*"],
+36:     allow_headers=["*"],
+37: )
+38: 
+39: # Shared system states
+40: settings_manager = SettingsManager()
+41: config = settings_manager.build_app_config("config/settings.yaml")
+42: 
+43: # Configure logger level from settings
+44: logger.remove()
+45: logger.add(sys.stderr, level=config.log_level)
+46: 
+47: camera_stream = No
+<truncated 40223 bytes>
+ive] = useState(false);
+765:             const [pressedKey, setPressedKey] = useState(null);
+766: 
+767: 
+768:             // Switches State
+769:             const [showLandmarks, setShowLandmarks] = useState(true);
+770:             const [showConnections, setShowConnections] = useState(true);
+771:             const [showBoundingBox, setShowBoundingBox] = useState(true);
+772:             const [showFingerStates, setShowFingerStates] = useState(true);
+773:             const [showDistanceMeter, setShowDistanceMeter] = useState(true);
+774:             const [showDebugPanel, setShowDebugPanel] = useState(true);
+775:             const [showHud, setShowHud] = useState(true);
+776: 
+777:             const prevGestureRef = useRef('None');
+778:             const socketRef = useRef(null);
+779:             const eventIdCounterRef = useRef(0);
+780: 
+781:             // Connect to the WebSocket backend
+782:             useEffect(() => {
+783:                 const connectWS = () => {
+784:                     setSocketStatus('connecting');
+785:                     const wsProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+786:                     const wsUrl = `${wsProtocol}//${window.location.host}/ws`;
+787:                     console.log(`Connecting to WebSocket: ${wsUrl}`);
+788:                     
+789:                     const ws = new WebSocket(wsUrl);
+790:                     socketRef.current = ws;
+791: 
+792:                     ws.onopen = () => {
+793:                         setSocketStatus('connected');
+794:                         console.log('WebSocket connection established');
+795:                     };
+796: 
+797:                     ws.onmessage = (event) => {
+798:                         try {
+799:                             const data = JSON.parse(event.data);
+800:                             setFps(data.fps);
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

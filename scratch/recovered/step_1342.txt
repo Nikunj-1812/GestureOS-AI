@@ -1,0 +1,49 @@
+Created At: 2026-06-11T12:59:00Z
+Completed At: 2026-06-11T12:59:01Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 1987
+Total Bytes: 135200
+Showing lines 935 to 975
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+935:                         }
+936:                         if (data.virtual_mouse_right_click_threshold !== undefined) {
+937:                             setVirtualMouseRightClickThreshold(data.virtual_mouse_right_click_threshold);
+938:                         }
+939:                         if (data.virtual_mouse_scroll_sensitivity !== undefined) {
+940:                             setVirtualMouseScrollSensitivity(data.virtual_mouse_scroll_sensitivity);
+941:                         }
+942:                         if (data.virtual_mouse_scroll_dead_zone !== undefined) {
+943:                             setVirtualMouseScrollDeadZone(data.virtual_mouse_scroll_dead_zone);
+944:                         }
+945:                         if (data.virtual_mouse_scroll_smoothing !== undefined) {
+946:                             setVirtualMouseScrollSmoothing(data.virtual_mouse_scroll_smoothing);
+947:                         }
+948:                         if (data.virtual_mouse_volume_min_distance_px !== undefined) {
+949:                             setVirtualMouseVolumeMinDistancePx(data.virtual_mouse_volume_min_distance_px);
+950:                         }
+951:                         if (data.virtual_mouse_volume_max_distance_px !== undefined) {
+952:                             setVirtualMouseVolumeMaxDistancePx(data.virtual_mouse_volume_max_distance_px);
+953:                         }
+954:                         if (data.virtual_mouse_volume_smoothing !== undefined) {
+955:                             setVirtualMouseVolumeSmoothing(data.virtual_mouse_volume_smoothing);
+956:                         }
+957:                         if (data.virtual_mouse_brightness_min_distance_px !== undefined) {
+958:                             setVirtualMouseBrightnessMinDistancePx(data.virtual_mouse_brightness_min_distance_px);
+959:                         }
+960:                         if (data.virtual_mouse_brightness_max_distance_px !== undefined) {
+961:                             setVirtualMouseBrightnessMaxDistancePx(data.virtual_mouse_brightness_max_distance_px);
+962:                         }
+963:                         if (data.virtual_mouse_brightness_smoothing !== undefined) {
+964:                             setVirtualMouseBrightnessSmoothing(data.virtual_mouse_brightness_smoothing);
+965:                         }
+966:                     })
+967:                     .catch(err => console.error('Error loading config settings:', err));
+968: 
+969:                 // Escape key emergency stop listener
+970:                 const handleEscape = (e) => {
+971:                     if (e.key === 'Escape') {
+972:                         setVirtualMouseEnabled(false);
+973:                         updateSetting('virtual_mouse_enabled', false);
+974:                         setRightClickStatus('OPEN');
+975:                         setScrollMode(false);
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

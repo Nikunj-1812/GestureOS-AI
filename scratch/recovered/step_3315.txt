@@ -1,0 +1,44 @@
+Created At: 2026-06-12T10:41:33Z
+Completed At: 2026-06-12T10:41:34Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 4033
+Total Bytes: 278212
+Showing lines 2510 to 2550
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+2510:                                                 <div className="glass-card rounded-2xl p-5">
+2511:                                                     <h3 className="text-sm font-bold uppercase tracking-wider text-gray-400 flex items-center gap-2">
+2512:                                                         <SlidersIcon className="w-4 h-4 text-accent-blue" />
+2513:                                                         Display Settings
+2514:                                                     </h3>
+2515:                                                     <p className="text-xs text-gray-500 mt-1 mb-4">Toggle live stream visual overlays.</p>
+2516:                                                     
+2517:                                                     <div className="grid grid-cols-2 gap-y-3.5 gap-x-2 text-[11px]">
+2518:                                                         {[
+2519:                                                             { id: 'show_landmarks', label: 'Landmarks', value: showLandmarks, setter: setShowLandmarks },
+2520:                                                             { id: 'show_connections', label: 'Connections', value: showConnections, setter: setShowConnections },
+2521:                                                             { id: 'show_bounding_box', label: 'Bounding Box', value: showBoundingBox, setter: setShowBoundingBox },
+2522:                                                             { id: 'show_finger_states', label: 'Finger States', value: showFingerStates, setter: setShowFingerStates },
+2523:     
+<truncated 984 bytes>
+cked={item.value}
+2531:                                                                     onChange={(e) => {
+2532:                                                                         const checked = e.target.checked;
+2533:                                                                         item.setter(checked);
+2534:                                                                         updateSetting(item.id, checked);
+2535:                                                                     }}
+2536:                                                                     className="w-3.5 h-3.5 rounded border-glass-border bg-[#080710] text-blue-500 focus:ring-blue-500/40 cursor-pointer"
+2537:                                                                 />
+2538:                                                                 <span>{item.label}</span>
+2539:                                                             </label>
+2540:                                                         ))}
+2541:                                                     </div>
+2542:                                                 </div>
+2543: 
+2544:                                                 {/* Activity Log Panel */}
+2545:                                                 <div className="glass-card rounded-2xl p-5 flex flex-col flex-1 min-h-[220px] justify-between">
+2546:                                                     <div>
+2547:                                                         <h3 className="text-sm font-bold uppercase tracking-wider text-gray-400 flex items-center gap-2">
+2548:                                                             <CpuIcon className="w-4 h-4 text-accent-blue" />
+2549:                                                             Activity Log
+2550:                                                         </h3>
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

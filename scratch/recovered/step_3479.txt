@@ -1,0 +1,58 @@
+Created At: 2026-06-12T10:53:30Z
+Completed At: 2026-06-12T10:53:30Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 4035
+Total Bytes: 278290
+Showing lines 1740 to 1805
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1740:                                         lastPointRef.current = { x: smoothedX, y: smoothedY };
+1741:                                     }
+1742:                                     
+1743:                                     // Trigger instant rendering of lines, curves, and trails
+1744:                                     renderAll();
+1745:                                     
+1746:                                     // Update custom cursor telemetry tooltip directly in the DOM
+1747:                                     const cursorEl = document.getElementById('drawing-cursor');
+1748:                                     if (cursorEl) {
+1749:                                         cursorEl.style.display = 'block';
+1750:                                         cursorEl.style.left = `${smoothedX}px`;
+1751:                                         cursorEl.style.top = `${smoothedY}px`;
+1752:                                         
+1753:                                         const cursorRing = cursorEl.querySelector('.cursor-ring');
+1754:                                         if (cursorRing) {
+1755:                                             cursorRing.style.borderColor = isPinching ? '#a6da95' : '#8aadf4';
+1756:                                             cursorRing.style.borderStyle = isPinching ? 'solid' : 'dashed';
+1757:                                         }
+1758:                                         
+1759:                                         const cursorDot = cursorEl.querySelector('.cursor-dot');
+1760:                                    
+<truncated 1539 bytes>
+ = cursorEl.querySelector('.cursor-confidence');
+1779:                                         if (confBadge) {
+1780:                                             confBadge.textContent = data.confidence !== undefined ? `${Math.round(data.confidence * 100)}%` : '--%';
+1781:                                         }
+1782:                                     }
+1783:                                 } else {
+1784:                                     setDrawingStatus('Idle');
+1785:                                     hoverTrailRef.current = [];
+1786:                                     if (isDrawingStateRef.current) {
+1787:                                         isDrawingStateRef.current = false;
+1788:                                         const stroke = currentStrokeRef.current;
+1789:                                         if (stroke && stroke.points.length > 0) {
+1790:                                             setUndoStack(prev => [...prev, stroke]);
+1791:                                             setRedoStack([]);
+1792:                                         }
+1793:                                         currentStrokeRef.current = null;
+1794:                                         lastPointRef.current = null;
+1795:                                     }
+1796:                                     
+1797:                                     renderAll();
+1798:                                     
+1799:                                     const cursorEl = document.getElementById('drawing-cursor');
+1800:                                     if (cursorEl) cursorEl.style.display = 'none';
+1801:                                 }
+1802:                             }
+1803:                         } catch (err) {
+1804:                             console.error('Error decoding WebSocket JSON payload:', err);
+1805:                         }
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

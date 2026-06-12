@@ -1,0 +1,50 @@
+Created At: 2026-06-11T10:28:12Z
+Completed At: 2026-06-11T10:28:12Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 1870
+Total Bytes: 124496
+Showing lines 1170 to 1240
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1170:                                 <p className="text-xs text-gray-400 mt-0.5">
+1171:                                     {activeMenu === 'dashboard' 
+1172:                                         ? 'Telemetry overview and input gesture mapping controls.' 
+1173:                                         : activeMenu === 'mouse' 
+1174:                                         ? 'Real-time mouse tracking coordinates, status, and settings.' 
+1175:                                         : 'Calibrate input settings and device thresholds.'}
+1176:                                 </p>
+1177:                             </div>
+1178: 
+1179:                             <div className="flex items-center gap-4">
+1180:                                 <div className="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-xs text-emerald-400 font-medium">
+1181:                                     <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+1182:                                     Engine Online
+1183:                                 </div>
+1184: 
+1185:                                 <span className="w-px h-6 bg-glass-border hidden md:inline-block" />
+1186: 
+1187:                                 <button className="p-2.5 rounded-xl glass-card text-gray-400 hover:text-white relative group">
+1188:                                     <BellIcon className="w-5 h-5" />
+1189:                                     <span className="absolute top-1.5 right-1.5 w-2.5 h-2.5 bg-blue-500 rounded-full border-2 border-backgro
+<truncated 2219 bytes>
+'dashboard' ? (
+1221:                                     <>
+1222:                                         {/* Status Cards Grid */}
+1223:                                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+1224:                                             {/* FPS Card */}
+1225:                                             <div className="glass-card p-5 rounded-2xl flex items-center gap-4 relative overflow-hidden group">
+1226:                                                 <div className="p-3 bg-blue-500/10 rounded-xl border border-blue-500/20 text-accent-blue">
+1227:                                                     <ActivityIcon className="w-6 h-6" />
+1228:                                                 </div>
+1229:                                                 <div>
+1230:                                                     <p className="text-xs font-semibold uppercase tracking-wider text-gray-400">Frames Per Second</p>
+1231:                                                     <p className="text-2xl font-bold text-white mt-1 font-mono tracking-tight">
+1232:                                                         {fps > 0 ? fps : '0.0'}
+1233:                                                     </p>
+1234:                                                 </div>
+1235:                                             </div>
+1236: 
+1237:                                             {/* Hands Detected Card */}
+1238:                                             <div className="glass-card p-5 rounded-2xl flex items-center gap-4 relative overflow-hidden group">
+1239:                                                 <div className="p-3 bg-indigo-500/10 rounded-xl border border-indigo-500/20 text-accent-purple">
+1240:                                                     <HandIcon className="w-6 h-6" />
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

@@ -1,0 +1,29 @@
+Created At: 2026-06-12T09:57:23Z
+Completed At: 2026-06-12T09:57:23Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 3021
+Total Bytes: 207053
+Showing lines 965 to 985
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+965:                     };
+966: 
+967:                     ws.onmessage = (event) => {
+968:                         try {
+969:                             const data = JSON.parse(event.data);
+970:                             setFps(data.fps);
+971:                             setHands(data.hands);
+972:                             setGesture(data.gesture);
+973:                             setConfidence(data.confidence);
+974:                             setCameraStatus(data.camera_status);
+975:                             setFrame(data.frame);
+976:                             setCursorX(data.cursor_x || 0);
+977:                             setCursorY(data.cursor_y || 0);
+978:                             setTrackingState(data.tracking_state || 'Disabled');
+979:                             setPinchDistance(data.pinch_distance || 0.0);
+980:                             setClickStatus(data.click_status || 'OPEN');
+981:                             setClickCounter(data.click_counter || 0);
+982:                             setCurrentAction(data.current_action || 'None');
+983: 
+984:                             // Key Hover Detection for Web Keyboard
+985:                             let detectedKey = null;
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

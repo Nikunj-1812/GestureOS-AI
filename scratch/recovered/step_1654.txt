@@ -1,0 +1,65 @@
+Created At: 2026-06-12T04:54:19Z
+Completed At: 2026-06-12T04:54:19Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 2092
+Total Bytes: 142927
+Showing lines 740 to 800
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+740:             const [dragDuration, setDragDuration] = useState(0.0);
+741:             const [dragCounter, setDragCounter] = useState(0);
+742:             const [virtualMouseDragThresholdMs, setVirtualMouseDragThresholdMs] = useState(200.0);
+743:             const prevDragStatusRef = useRef('IDLE');
+744: 
+745: 
+746:             // Switches State
+747:             const [showLandmarks, setShowLandmarks] = useState(true);
+748:             const [showConnections, setShowConnections] = useState(true);
+749:             const [showBoundingBox, setShowBoundingBox] = useState(true);
+750:             const [showFingerStates, setShowFingerStates] = useState(true);
+751:             const [showDistanceMeter, setShowDistanceMeter] = useState(true);
+752:             const [showDebugPanel, setShowDebugPanel] = useState(true);
+753:             const [showHud, setShowHud] = useState(true);
+754: 
+755:             const prevGestureRef = useRef('None');
+756:             const socketRef = useRef(null);
+757:             const eventIdCounterRef = useRef(0);
+758: 
+759:             // Connect to the WebSocket backend
+760:             useEffect(() => {
+761:                 const connectWS = () => {
+762:                     setSocketStatus('connecting');
+763:                     const wsProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+764:                     const wsUrl = `${wsProtocol}//${window.location.host}/ws`;
+765:                     console.log(`Connecting to WebSocket: ${wsUrl}`);
+766:                     
+767:                     const ws = new WebSocket(wsUrl
+<truncated 256 bytes>
+         };
+774: 
+775:                     ws.onmessage = (event) => {
+776:                         try {
+777:                             const data = JSON.parse(event.data);
+778:                             setFps(data.fps);
+779:                             setHands(data.hands);
+780:                             setGesture(data.gesture);
+781:                             setConfidence(data.confidence);
+782:                             setCameraStatus(data.camera_status);
+783:                             setFrame(data.frame);
+784:                             setCursorX(data.cursor_x || 0);
+785:                             setCursorY(data.cursor_y || 0);
+786:                             setTrackingState(data.tracking_state || 'Disabled');
+787:                             setPinchDistance(data.pinch_distance || 0.0);
+788:                             setClickStatus(data.click_status || 'OPEN');
+789:                             setClickCounter(data.click_counter || 0);
+790:                             setCurrentAction(data.current_action || 'None');
+791:                             // Phase 3.3 — Right Click
+792:                             const prevRC = prevRightClickStatusRef.current;
+793:                             const newRC = data.right_click_status || 'OPEN';
+794:                             setRightClickStatus(newRC);
+795:                             setRightClickCounter(data.right_click_counter || 0);
+796:                             setRightPinchDistance(data.right_pinch_distance || 0.0);
+797:                             // Log right-click event on transition into RIGHT_CLICK
+798:                             if (newRC === 'RIGHT_CLICK' && prevRC !== 'RIGHT_CLICK') {
+799:                                 const timeString = new Date().toLocaleTimeString();
+800:                                 eventIdCounterRef.current += 1;
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

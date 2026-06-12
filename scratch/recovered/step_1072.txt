@@ -1,0 +1,47 @@
+Created At: 2026-06-11T10:59:48Z
+Completed At: 2026-06-11T10:59:49Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 1192
+Total Bytes: 69773
+Showing lines 995 to 1045
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+995:                             if (data.gesture !== prevGestureRef.current) {
+996:                                 if (data.gesture && data.gesture !== 'None' && data.gesture !== 'unknown') logSystemEvent(`Gesture Recognized: [${data.gesture}] (Confidence: ${(data.confidence * 100).toFixed(0)}%)`, 'Gesture');
+997:                                 prevGestureRef.current = data.gesture;
+998:                             }
+999:                         } catch (err) { console.error(err); }
+1000:                     };
+1001:                     ws.onclose = () => { setSocketStatus('disconnected'); setTimeout(connectWS, 3000); };
+1002:                 };
+1003:                 connectWS();
+1004: 
+1005:                 fetch('/api/settings').then(res => res.json()).then(data => {
+1006:                     setShowLandmarks(data.show_landmarks); setShowConnections(data.show_connections);
+1007:                     setShowBoundingBox(data.show_bounding_box); setShowFingerStates(data.show_finger_states);
+1008:                     setShowDistanceMeter(data.show_distance_meter); setShowDebugPanel(data.show_debug_panel);
+1009:                     setShowHud(data.show_hud); setVirtualMouseEnabled(data.virtual_mouse_enabled);
+1010:                     setVirtualMouseSensitivity(data.virtual_mouse_sensitivity); setVirtualMouseDeadZone(data.virtual_mouse_dead_zone);
+1011:                     setVirtualMouseSmoothing(data.virtual_mouse_smoothing);
+1012:                     if (data.virtual_mouse_click_threshold !== undefined) setVirtualMouseClickThreshold(data.virtual_mouse_click_thr
+<truncated 2035 bytes>
+== undefined) setModeVolumeEnabled(data.mode_volume_enabled);
+1027:                     if (data.mode_brightness_enabled !== undefined) setModeBrightnessEnabled(data.mode_brightness_enabled);
+1028:                     if (data.mode_drag_enabled !== undefined) setModeDragEnabled(data.mode_drag_enabled);
+1029:                     if (data.drag_hold_threshold_ms !== undefined) setDragHoldThresholdMs(data.drag_hold_threshold_ms);
+1030:                     if (data.cursor_acceleration_enabled !== undefined) setCursorAccelerationEnabled(data.cursor_acceleration_enabled);
+1031:                     if (data.click_cooldown_ms !== undefined) setClickCooldownMs(data.click_cooldown_ms);
+1032:                     if (data.volume_cooldown_ms !== undefined) setVolumeCooldownMs(data.volume_cooldown_ms);
+1033:                     if (data.brightness_cooldown_ms !== undefined) setBrightnessCooldownMs(data.brightness_cooldown_ms);
+1034:                     if (data.show_overlays !== undefined) setShowOverlays(data.show_overlays);
+1035:                     if (data.show_event_logs !== undefined) setShowEventLogs(data.show_event_logs);
+1036:                     if (data.enable_sounds !== undefined) setEnableSounds(data.enable_sounds);
+1037:                     if (data.enable_telemetry !== undefined) setEnableTelemetry(data.enable_telemetry);
+1038:                 }).catch(console.error);
+1039: 
+1040:                 const handleEscape = (e) => {
+1041:                     if (e.key === 'Escape') {
+1042:                         setVirtualMouseEnabled(false); updateSetting('virtual_mouse_enabled', false);
+1043:                         setRightClickStatus('OPEN'); setScrollMode(false); setScrollDirection('NONE');
+1044:                         logSystemEvent('⚠ EMERGENCY STOP: Virtual mouse disabled via ESC key.', 'System');
+1045:                     }
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

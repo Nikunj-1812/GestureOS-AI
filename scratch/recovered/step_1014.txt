@@ -1,0 +1,58 @@
+Created At: 2026-06-11T10:57:41Z
+Completed At: 2026-06-11T10:57:41Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 1192
+Total Bytes: 69773
+Showing lines 331 to 380
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+331:                 continue
+332:                 
+333:             # Avoid duplicate frame processing
+334:             current_frame_id = camera_stream.frame_id
+335:             if current_frame_id == last_frame_id:
+336:                 await asyncio.sleep(0.005)
+337:                 continue
+338:             last_frame_id = current_frame_id
+339:             
+340:             loop_start = time.perf_counter()
+341: 
+342:             # Profiling steps
+343:             t0 = time.perf_counter()
+344:             
+345:             # Optimize: Downscale processing resolution to 640w for ~4x performance boost
+346:             h_orig, w_orig = frame.shape[:2]
+347:             if w_orig > 640:
+348:                 scale = 640.0 / w_orig
+349:                 target_h = int(h_orig * scale)
+350:                 frame = cv2.resize(frame, (640, target_h), interpolation=cv2.INTER_LINEAR)
+351: 
+352:             if config.flip_horizontal:
+353:                 frame = cv2.flip(frame, 1)
+354:                 
+355:             h, w = frame.shape[:2]
+356:             t_resize = time.perf_counter() - t0
+357: 
+358:             # Run MediaPipe hand detection
+359:             t_det_start = time.perf_counter()
+360:             detected_hands, mp_results = hand_detector.detect(frame)
+361:             t_detect = time.perf_counter() - t_det_start
+362:             
+363:             gesture_label = "unknown"
+364:             gesture_confidence = 0.0
+365:             
+366:             t_pred_start = time.perf_counter()
+367:             if detected_hands:
+368:                 primary_hand = detected_hands[0]
+369:                 if gesture_engine.is_loaded:
+370:                     gesture_label, gesture_confidence = gesture_engine.predict(primary_hand)
+371:                     if gesture_label != "unknown":
+372:                         action_dispatcher.dispatch(gesture_label, virtual_mouse_active=virtual_mouse.enabled)
+373:                 else:
+374:                     gesture_label = "No Model"
+375:             else:
+376:                 gesture_engine.reset()
+377:             t_predict = time.perf_counter() - t_pred_start
+378: 
+379:             # Log only on gesture change
+380:             if gesture_label != last_gesture:
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

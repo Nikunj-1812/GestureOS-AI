@@ -1,0 +1,74 @@
+Created At: 2026-06-11T10:25:54Z
+Completed At: 2026-06-11T10:25:55Z
+File Path: `file:///C:/Users/nikun/.gemini/antigravity/brain/f71acb1b-ab5a-4de9-85a5-1a298f3c313a/implementation_plan.md`
+Total Lines: 103
+Total Bytes: 5498
+Showing lines 1 to 103
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1: # Implementation Plan — Phase 3.5: Brightness Control & Central Mode Manager
+2: 
+3: This plan outlines the design and implementation steps for Phase 3.5 in GestureOS.
+4: 
+5: ## User Review Required
+6: 
+7: > [!IMPORTANT]
+8: > **Centralized Mode Management**: The system will transition to a strict Single-Active-Mode model. Prioritized gestures determine the active mode (`BRIGHTNESS` > `VOLUME` > `SCROLL` > `CLICK` > `CURSOR`). A mode switching cooldown of `300ms` will be enforced to prevent rapid flipping and cursor jitter.
+9: 
+10: > [!NOTE]
+11: > **Windows Brightness Control**: We will use the `screen-brightness-control` library for direct Windows system brightness integration. If it fails to load or run (e.g. in VM/headless environments), it will fall back to simulated brightness adjustments gracefully.
+12: 
+13: ## Proposed Changes
+14: 
+15: ### 1. Dependencies & Configuration
+16: 
+17: #### [MODIFY] [requirements.txt](file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/requirements.txt)
+18: - Add `screen-brightness-control>=0.2.1` to automated dependencies.
+19: 
+20: #### [MODIFY] [settings.yaml](file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/config/settings.yaml)
+21: - Add default values for Brightness control:
+22:   - `brightness_min_distance_px: 30.0`
+23:   - `brightness_max_distance_px: 250.0`
+24:   - `brightness_smoothing: 0.15`
+25: 
+26: #### [MODIFY] [app_config.py](file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/config/app_config.py)
+27: - Load brightness configuration properties.
+28: 
+29: #### [
+<truncated 2382 bytes>
+VE, value, and graphical slider bar `[████████░░░░]`.
+69: - Add Brightness telemetry details (Mode, Level, Distance) into the HUD overlay panel.
+70: 
+71: ---
+72: 
+73: ### 4. Dashboard & Backend API
+74: 
+75: #### [MODIFY] [web_backend.py](file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py)
+76: - Wire brightness parameters into the API `/api/settings` and `/api/settings/update` endpoints.
+77: - Package `active_mode` and brightness parameters into the WebSocket live JSON packet.
+78: - Refactor the React dashboard template (`HTML_CONTENT`):
+79:   - **Top Cards**: Replace/arrange 6 cards: FPS, Hands Detected, Current Gesture, Active Mode, Volume, Brightness.
+80:   - **Telemetry Dashboard**: Add Brightness telemetry section (Mode status, Level, Hand distance).
+81:   - **Tracking Settings**: Add sliders for Brightness Min Distance, Max Distance, and Smoothing.
+82:   - **Activity Log**: Sync event handling for `[MODE] ...` and `[BRIGHTNESS] ...` log events.
+83: 
+84: #### [MODIFY] [virtual_mouse_page.py](file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/dashboard/pages/virtual_mouse_page.py)
+85: - Add widgets for active mode indicator and brightness telemetry fields (Mode, Level, Distance).
+86: 
+87: ---
+88: 
+89: ## Verification Plan
+90: 
+91: ### Automated Tests
+92: - Run `pytest tests/test_virtual_mouse.py`.
+93: - Add test cases verifying:
+94:   - `ModeManager` priority ordering.
+95:   - Cooldown switching lock (switching ignored within `300ms`).
+96:   - Brightness gesture detection.
+97: - Add test script in `scratch/test_brightness.py` validating interpolation, smoothing, and 2% dead zone logic.
+98: 
+99: ### Manual Verification
+100: - Start server using `python web_backend.py`.
+101: - Verify the active mode transitions on log console: `[MODE] Volume`, `[MODE] Brightness`, etc.
+102: - Verify screen brightness adjusts on Windows when holding Brightness gesture and shifting distance.
+103: 
+The above content shows the entire, complete file contents of the requested file.

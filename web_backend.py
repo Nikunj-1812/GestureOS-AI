@@ -1,6 +1,14 @@
 import os
 import sys
 
+# Enable high-precision timers on Windows to allow precise sleep/intervals (e.g. 1ms)
+if sys.platform == 'win32':
+    try:
+        import ctypes
+        ctypes.windll.winmm.timeBeginPeriod(1)
+    except Exception:
+        pass
+
 # Suppress third-party logging / console spam (MediaPipe, TensorFlow, OpenCV)
 os.environ['GLOG_minloglevel'] = '2'          # Suppress MediaPipe info logs
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'       # Suppress TensorFlow info/warning logs
@@ -11,6 +19,8 @@ import base64
 import cv2
 import json
 import asyncio
+import math
+import pyautogui
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse
@@ -23,6 +33,7 @@ from modules.camera import CameraStream
 from modules.hand_detector import HandDetector
 from modules.gesture_engine import GestureEngine
 from modules.action_dispatcher import ActionDispatcher
+from modules import word_predictor
 from loguru import logger
 
 app = FastAPI(title="GestureOS AI Web Backend")
@@ -46,7 +57,7 @@ logger.add(sys.stderr, level=config.log_level)
 
 camera_stream = None
 hand_detector = HandDetector(
-    max_hands=2,
+    max_hands=1,
     detection_confidence=0.5,
     tracking_confidence=0.5
 )
@@ -73,7 +84,12 @@ virtual_mouse = VirtualMouse(
     volume_min_distance_px=getattr(config, 'virtual_mouse_volume_min_distance_px', 30.0),
     volume_max_distance_px=getattr(config, 'virtual_mouse_volume_max_distance_px', 250.0),
     volume_smoothing=getattr(config, 'virtual_mouse_volume_smoothing', 0.15),
+    brightness_min_distance_px=getattr(config, 'virtual_mouse_brightness_min_distance_px', 30.0),
+    brightness_max_distance_px=getattr(config, 'virtual_mouse_brightness_max_distance_px', 250.0),
+    brightness_smoothing=getattr(config, 'virtual_mouse_brightness_smoothing', 0.15),
+    drag_threshold_ms=getattr(config, 'virtual_mouse_drag_threshold_ms', 200.0),
 )
+
 
 camera_running = False
 
@@ -143,7 +159,7 @@ def api_reset_camera():
     except Exception:
         pass
     hand_detector = HandDetector(
-        max_hands=2,
+        max_hands=1,
         detection_confidence=0.5,
         tracking_confidence=0.5
     )
@@ -175,7 +191,16 @@ def api_get_settings():
         "virtual_mouse_brightness_min_distance_px": getattr(state, 'virtual_mouse_brightness_min_distance_px', 30.0),
         "virtual_mouse_brightness_max_distance_px": getattr(state, 'virtual_mouse_brightness_max_distance_px', 250.0),
         "virtual_mouse_brightness_smoothing": getattr(state, 'virtual_mouse_brightness_smoothing', 0.15),
+        "virtual_mouse_drag_threshold_ms": getattr(state, 'virtual_mouse_drag_threshold_ms', 200.0),
+        "keyboard_sound_enabled": getattr(state, 'keyboard_sound_enabled', True),
+        "keyboard_system_typing_enabled": getattr(state, 'keyboard_system_typing_enabled', False),
+        "keyboard_autocomplete_enabled": getattr(state, 'keyboard_autocomplete_enabled', True),
+        "brush_size": getattr(state, 'brush_size', 15),
+        "brush_color": getattr(state, 'brush_color', "#c6a0f6"),
+        "brush_color_name": getattr(state, 'brush_color_name', "Mauve"),
+        "brush_tool": getattr(state, 'brush_tool', "pen"),
     }
+
 
 @app.post("/api/settings/update")
 def api_update_settings(updates: dict):
@@ -183,21 +208,32 @@ def api_update_settings(updates: dict):
     bool_keys = [
         "show_landmarks", "show_connections", "show_bounding_box",
         "show_finger_states", "show_distance_meter", "show_debug_panel",
-        "show_hud", "virtual_mouse_enabled"
+        "show_hud", "virtual_mouse_enabled",
+        "keyboard_sound_enabled", "keyboard_system_typing_enabled", "keyboard_autocomplete_enabled"
     ]
     float_keys = [
         "virtual_mouse_sensitivity", "virtual_mouse_dead_zone", "virtual_mouse_smoothing",
         "virtual_mouse_click_threshold", "virtual_mouse_right_click_threshold",
         "virtual_mouse_scroll_sensitivity", "virtual_mouse_scroll_dead_zone", "virtual_mouse_scroll_smoothing",
         "virtual_mouse_volume_min_distance_px", "virtual_mouse_volume_max_distance_px", "virtual_mouse_volume_smoothing",
-        "virtual_mouse_brightness_min_distance_px", "virtual_mouse_brightness_max_distance_px", "virtual_mouse_brightness_smoothing"
+        "virtual_mouse_brightness_min_distance_px", "virtual_mouse_brightness_max_distance_px", "virtual_mouse_brightness_smoothing",
+        "virtual_mouse_drag_threshold_ms"
     ]
+    int_keys = ["brush_size"]
+    str_keys = ["brush_color", "brush_color_name", "brush_tool"]
+
     for key in bool_keys:
         if key in updates:
             params[key] = bool(updates[key])
     for key in float_keys:
         if key in updates:
             params[key] = float(updates[key])
+    for key in int_keys:
+        if key in updates:
+            params[key] = int(updates[key])
+    for key in str_keys:
+        if key in updates:
+            params[key] = str(updates[key])
     
     changed = settings_manager.update(**params)
     if changed:
@@ -230,7 +266,95 @@ def api_update_settings(updates: dict):
             virtual_mouse._brightness_controller.max_distance = config.virtual_mouse_brightness_max_distance_px
         if hasattr(config, 'virtual_mouse_brightness_smoothing') and virtual_mouse._brightness_controller:
             virtual_mouse._brightness_controller.smoothing = config.virtual_mouse_brightness_smoothing
+        if hasattr(config, 'virtual_mouse_drag_threshold_ms'):
+            virtual_mouse.drag_threshold_ms = config.virtual_mouse_drag_threshold_ms
     return {"status": "success"}
+
+@app.post("/api/log_error")
+def api_log_error(error_data: dict):
+    logger.error(f"[FRONTEND ERROR] {json.dumps(error_data, indent=2)}")
+    return {"status": "logged"}
+
+@app.post("/api/keyboard/type")
+def api_keyboard_type(payload: dict):
+    key = payload.get("key")
+    shift = payload.get("shift", False)
+    caps = payload.get("caps", False)
+    if not key:
+        return {"status": "error", "message": "No key provided"}
+    
+    try:
+        # Check if it is a suggestion key
+        if key.startswith("Suggestion_"):
+            suggestion = payload.get("suggestion", "")
+            prefix = payload.get("prefix", "")
+            # Backspace the prefix
+            for _ in range(len(prefix)):
+                pyautogui.press("backspace")
+            # Write suggestion + space
+            pyautogui.write(suggestion + " ")
+            return {"status": "success"}
+
+        if key == "Space":
+            pyautogui.press("space")
+        elif key == "Backspace":
+            pyautogui.press("backspace")
+        elif key == "Enter":
+            pyautogui.press("enter")
+        elif key == "Tab":
+            pyautogui.press("tab")
+        elif key == "Shift":
+            pyautogui.press("shift")
+        elif key == "Caps Lock":
+            pyautogui.press("capslock")
+        else:
+            is_upper = caps or shift
+            char = key.upper() if is_upper and len(key) == 1 else key
+            # Check if it's emoji / unicode
+            if any(ord(c) > 127 for c in char):
+                import pyperclip
+                pyperclip.copy(char)
+                pyautogui.hotkey("ctrl", "v")
+            else:
+                pyautogui.write(char)
+        return {"status": "success"}
+    except Exception as e:
+        logger.error(f"Error executing pyautogui keypress from web backend: {e}")
+        return {"status": "error", "message": str(e)}
+
+@app.post("/api/keyboard/suggest")
+def api_keyboard_suggest(payload: dict):
+    text = payload.get("text", "")
+    curr_word = word_predictor.get_current_word(text)
+    suggestions = word_predictor.get_suggestions(curr_word)
+    return {
+        "status": "success",
+        "current_word": curr_word,
+        "suggestions": suggestions
+    }
+
+@app.post("/api/drawing/save")
+def api_drawing_save(payload: dict):
+    image_data = payload.get("image")
+    if not image_data:
+        return {"status": "error", "message": "No image data provided"}
+    try:
+        import base64
+        import os
+        from datetime import datetime
+        if "," in image_data:
+            image_data = image_data.split(",")[1]
+        data = base64.b64decode(image_data)
+        os.makedirs("drawings", exist_ok=True)
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        filename = f"drawings/web_drawing_{timestamp}.png"
+        with open(filename, "wb") as f:
+            f.write(data)
+        logger.info(f"Saved web drawing to {filename}")
+        return {"status": "success", "filepath": filename}
+    except Exception as e:
+        logger.error(f"Error saving web drawing: {e}")
+        return {"status": "error", "message": str(e)}
 
 @app.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket):
@@ -253,7 +377,8 @@ async def websocket_endpoint(websocket: WebSocket):
                     "gesture": "None",
                     "confidence": 0.0,
                     "camera_status": "Disconnected",
-                    "frame": None
+                    "frame": None,
+                    "drawing_gesture": "none"
                 })
                 await asyncio.sleep(0.1)
                 continue
@@ -266,7 +391,8 @@ async def websocket_endpoint(websocket: WebSocket):
                     "gesture": "None",
                     "confidence": 0.0,
                     "camera_status": "Starting",
-                    "frame": None
+                    "frame": None,
+                    "drawing_gesture": "none"
                 })
                 await asyncio.sleep(0.05)
                 continue
@@ -274,7 +400,7 @@ async def websocket_endpoint(websocket: WebSocket):
             # Avoid duplicate frame processing
             current_frame_id = camera_stream.frame_id
             if current_frame_id == last_frame_id:
-                await asyncio.sleep(0.005)
+                await asyncio.sleep(0.001)
                 continue
             last_frame_id = current_frame_id
             
@@ -351,9 +477,9 @@ async def websocket_endpoint(websocket: WebSocket):
             )
             t_visuals = time.perf_counter() - t_vis_start
                 
-            # Compress to JPEG and base64 encode
+            # Compress to JPEG and base64 encode with optimized quality (80)
             t_enc_start = time.perf_counter()
-            _, buffer = cv2.imencode('.jpg', frame)
+            _, buffer = cv2.imencode('.jpg', frame, [int(cv2.IMWRITE_JPEG_QUALITY), 80])
             frame_b64 = base64.b64encode(buffer).decode('utf-8')
             t_encode = time.perf_counter() - t_enc_start
             
@@ -364,10 +490,59 @@ async def websocket_endpoint(websocket: WebSocket):
             fps_smooth = instant_fps if fps_smooth == 0 else (fps_smooth * 0.85 + instant_fps * 0.15)
             last_fps_tick = now
             
+            primary_hand = detected_hands[0] if detected_hands else None
+            index_tip_x = float(round(primary_hand.landmarks[8][0], 4)) if (primary_hand and len(primary_hand.landmarks) > 8) else None
+            index_tip_y = float(round(primary_hand.landmarks[8][1], 4)) if (primary_hand and len(primary_hand.landmarks) > 8) else None
+
+            # Compute live pinch distance for virtual keyboard: Middle Finger (12) and Thumb (4)
+            live_pinch_dist = 0.0
+            if primary_hand and len(primary_hand.landmarks) > 12:
+                mx, my, mz = primary_hand.landmarks[12]
+                tx, ty, tz = primary_hand.landmarks[4]
+                live_pinch_dist = math.sqrt((mx - tx)**2 + (my - ty)**2 + (mz - tz)**2)
+
+            # Compute live index-thumb pinch distance for Air Drawing
+            index_pinch_dist = 0.0
+            if primary_hand and len(primary_hand.landmarks) > 8:
+                ix_3d, iy_3d, iz_3d = primary_hand.landmarks[8]
+                tx_3d, ty_3d, tz_3d = primary_hand.landmarks[4]
+                index_pinch_dist = math.sqrt((ix_3d - tx_3d)**2 + (iy_3d - ty_3d)**2 + (iz_3d - tz_3d)**2)
+
+            # Calculate hand gesture controls (Phase 5.3)
+            drawing_gesture = "none"
+            if primary_hand and len(primary_hand.landmarks) > 20:
+                lm = primary_hand.landmarks
+                
+                def dist2d(p1, p2):
+                    return math.hypot(p1[0] - p2[0], p1[1] - p2[1])
+                
+                def is_up(tip, pip, mcp):
+                    y_check = lm[tip][1] < lm[pip][1] - 0.01
+                    dist_check = dist2d(lm[tip], lm[mcp]) > dist2d(lm[mcp], lm[0]) * 0.55
+                    return y_check and dist_check
+
+                index_up = is_up(8, 6, 5)
+                middle_up = is_up(12, 10, 9)
+                ring_up = is_up(16, 14, 13)
+                pinky_up = is_up(20, 18, 17)
+
+                if index_up and not middle_up and not ring_up and not pinky_up:
+                    drawing_gesture = "draw"
+                elif index_up and middle_up and not ring_up and not pinky_up:
+                    drawing_gesture = "pause"
+                elif not index_up and not middle_up and not ring_up and not pinky_up:
+                    drawing_gesture = "clear"
+                elif index_up and middle_up and ring_up and pinky_up:
+                    drawing_gesture = "menu"
+                else:
+                    drawing_gesture = "hover"
+
             # Send live telemetry + frame over WebSocket
             payload = {
                 "fps": float(round(fps_smooth, 1)),
                 "hands": len(detected_hands),
+                "index_tip_x": index_tip_x,
+                "index_tip_y": index_tip_y,
                 "gesture": gesture_label,
                 "confidence": float(round(gesture_confidence, 3)),
                 "camera_status": "Connected",
@@ -375,7 +550,9 @@ async def websocket_endpoint(websocket: WebSocket):
                 "cursor_x": cursor_x,
                 "cursor_y": cursor_y,
                 "tracking_state": tracking_state,
-                "pinch_distance": vm_result.get("pinch_distance", 0.0) if vm_result else 0.0,
+                "pinch_distance": vm_result.get("pinch_distance", float(round(live_pinch_dist, 4))) if vm_result else float(round(live_pinch_dist, 4)),
+                "index_pinch_distance": float(round(index_pinch_dist, 4)),
+                "hand_score": float(round(primary_hand.score, 4)) if primary_hand else 0.0,
                 "click_status": vm_result.get("click_status", "OPEN") if vm_result else "OPEN",
                 "click_counter": vm_result.get("click_counter", 0) if vm_result else 0,
                 "current_action": vm_result.get("current_action", "None") if vm_result else "None",
@@ -397,7 +574,12 @@ async def websocket_endpoint(websocket: WebSocket):
                 "brightness_mode": vm_result.get("brightness_mode", False) if vm_result else False,
                 "brightness_level": vm_result.get("brightness_level", 0) if vm_result else 0,
                 "brightness_distance": vm_result.get("brightness_distance", 0.0) if vm_result else 0.0,
+                "drag_status": vm_result.get("drag_status", "IDLE") if vm_result else "IDLE",
+                "drag_duration": vm_result.get("drag_duration", 0.0) if vm_result else 0.0,
+                "drag_counter": vm_result.get("drag_counter", 0) if vm_result else 0,
+                "drawing_gesture": drawing_gesture,
             }
+
             
             t_send_start = time.perf_counter()
             await websocket.send_json(payload)
@@ -421,8 +603,62 @@ HTML_CONTENT = """<!DOCTYPE html>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GestureOS AI - Web Dashboard</title>
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Global Error Handler -->
+    <script>
+        window.onerror = function (message, source, lineno, colno, error) {
+            const errorData = {
+                message: message,
+                source: source,
+                lineno: lineno,
+                colno: colno,
+                error: error ? error.stack : null
+            };
+            console.error("Global Error Caught:", errorData);
+            
+            // Show overlay on screen
+            const overlay = document.createElement("div");
+            overlay.style.position = "fixed";
+            overlay.style.top = "0";
+            overlay.style.left = "0";
+            overlay.style.width = "100%";
+            overlay.style.height = "100%";
+            overlay.style.backgroundColor = "rgba(0,0,0,0.95)";
+            overlay.style.color = "#ff4a4a";
+            overlay.style.padding = "40px";
+            overlay.style.fontFamily = "monospace";
+            overlay.style.fontSize = "14px";
+            overlay.style.lineHeight = "1.6";
+            overlay.style.zIndex = "999999";
+            overlay.style.overflow = "auto";
+            overlay.innerHTML = "<h1 style='color: #ff3333; margin-bottom: 20px; font-size: 24px; border-b: 1px solid #ff3333; padding-bottom: 10px;'>Frontend Error Detected</h1><pre style='white-space: pre-wrap;'>" + JSON.stringify(errorData, null, 2) + "</pre>";
+            document.body.appendChild(overlay);
+
+            // Send to backend API
+            fetch("/api/log_error", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(errorData)
+            }).catch(err => console.error("Failed to send error to backend", err));
+            return false;
+        };
+
+        window.addEventListener("unhandledrejection", function (event) {
+            const errorData = {
+                message: "Unhandled Promise Rejection: " + event.reason,
+                error: event.reason && event.reason.stack ? event.reason.stack : null
+            };
+            console.error("Unhandled Promise Rejection:", errorData);
+            
+            // Send to backend API
+            fetch("/api/log_error", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(errorData)
+            }).catch(err => console.error("Failed to send error to backend", err));
+        });
+    </script>
+    <!-- Tailwind CSS (Hosted Locally) -->
+    <script src="/static/tailwind.js"></script>
     <script>
         tailwind.config = {
             theme: {
@@ -453,10 +689,10 @@ HTML_CONTENT = """<!DOCTYPE html>
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     
-    <!-- React & Babel CDNs -->
-    <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
-    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <!-- React & Babel (Hosted Locally) -->
+    <script src="/static/react.min.js"></script>
+    <script src="/static/react-dom.min.js"></script>
+    <script src="/static/babel.min.js"></script>
 
     <style>
         body {
@@ -496,6 +732,20 @@ HTML_CONTENT = """<!DOCTYPE html>
         .scrollbar-thin::-webkit-scrollbar-thumb:hover {
             background: rgba(255, 255, 255, 0.25);
         }
+        .whiteboard-grid {
+            background-color: #0b0a15;
+            background-image: 
+                linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 24px 24px;
+        }
+        @keyframes spin-slow {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        .animate-spin-slow {
+            animation: spin-slow 12s linear infinite;
+        }
     </style>
 </head>
 <body class="bg-[#080710] text-gray-200 overflow-hidden">
@@ -512,6 +762,27 @@ HTML_CONTENT = """<!DOCTYPE html>
                 <path d="M10 18H5a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2v0a2 2 0 0 1 2 2v2" />
                 <path d="M6 14v0a6 6 0 0 0 12 0v-3" />
                 <path d="M18 15h1a2 2 0 0 1 2 2v1a2 2 0 0 1-2 2h-9a6 6 0 0 1-6-6v0" />
+            </svg>
+        );
+        const KeyboardIcon = (props) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+                <rect x="2" y="4" width="20" height="16" rx="2" ry="2"/>
+                <line x1="6" y1="8" x2="6" y2="8"/>
+                <line x1="10" y1="8" x2="10" y2="8"/>
+                <line x1="14" y1="8" x2="14" y2="8"/>
+                <line x1="18" y1="8" x2="18" y2="8"/>
+                <line x1="6" y1="12" x2="6" y2="12"/>
+                <line x1="10" y1="12" x2="10" y2="12"/>
+                <line x1="14" y1="12" x2="14" y2="12"/>
+                <line x1="18" y1="12" x2="18" y2="12"/>
+                <line x1="7" y1="16" x2="17" y2="16"/>
+            </svg>
+        );
+
+        const PencilIcon = (props) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+                <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/>
+                <path d="m15 5 4 4"/>
             </svg>
         );
 
@@ -656,13 +927,60 @@ HTML_CONTENT = """<!DOCTYPE html>
             </svg>
         );
 
+        // One Euro Filter for adaptive low-pass coordinate smoothing
+        class OneEuroFilter {
+            constructor(minCutoff = 1.0, beta = 0.05, dcutoff = 1.0) {
+                this.minCutoff = minCutoff;
+                this.beta = beta;
+                this.dcutoff = dcutoff;
+                this.x = null;
+                this.dx = 0;
+                this.lastTime = null;
+            }
+            
+            filter(value, timestamp) {
+                if (this.x === null) {
+                    this.x = value;
+                    this.lastTime = timestamp;
+                    return value;
+                }
+                
+                const dt = (timestamp - this.lastTime) / 1000.0;
+                if (dt <= 0) return this.x;
+                
+                const rate = 1.0 / dt;
+                const edx = (value - this.x) * rate;
+                const alpha_d = this.smoothingFactor(dt, this.dcutoff);
+                this.dx = this.dx + alpha_d * (edx - this.dx);
+                
+                const cutoff = this.minCutoff + this.beta * Math.abs(this.dx);
+                const alpha = this.smoothingFactor(dt, cutoff);
+                this.x = this.x + alpha * (value - this.x);
+                
+                this.lastTime = timestamp;
+                return this.x;
+            }
+            
+            smoothingFactor(dt, cutoff) {
+                const r = 2 * Math.PI * cutoff * dt;
+                return r / (r + 1);
+            }
+            
+            reset() {
+                this.x = null;
+                this.dx = 0;
+                this.lastTime = null;
+            }
+        }
+
         function App() {
             const [fps, setFps] = useState(0);
             const [hands, setHands] = useState(0);
             const [gesture, setGesture] = useState('None');
             const [confidence, setConfidence] = useState(0);
             const [cameraStatus, setCameraStatus] = useState('Disconnected');
-            const [frame, setFrame] = useState(null);
+            const [hasFrameState, setHasFrameState] = useState(false);
+            const hasFrameRef = useRef(false);
             
             const [socketStatus, setSocketStatus] = useState('disconnected');
             const [events, setEvents] = useState([]);
@@ -718,6 +1036,390 @@ HTML_CONTENT = """<!DOCTYPE html>
             const [virtualMouseBrightnessSmoothing, setVirtualMouseBrightnessSmoothing] = useState(0.15);
             const prevBrightnessLevelRef = useRef(-1);
             const prevActiveModeRef = useRef('CURSOR');
+            
+            // Phase 3.5 — Drag & Drop Control
+            const [dragStatus, setDragStatus] = useState('IDLE');
+            const [dragDuration, setDragDuration] = useState(0.0);
+            const [dragCounter, setDragCounter] = useState(0);
+            const [virtualMouseDragThresholdMs, setVirtualMouseDragThresholdMs] = useState(200.0);
+            const prevDragStatusRef = useRef('IDLE');
+
+            // Virtual Keyboard UI States
+            const [hoveredKey, setHoveredKey] = useState('None');
+            const [lastPressedKey, setLastPressedKey] = useState('None');
+            const [typedText, setTypedText] = useState('');
+            const [isShiftActive, setIsShiftActive] = useState(false);
+            const [isCapsLockActive, setIsCapsLockActive] = useState(false);
+            const [pressedKey, setPressedKey] = useState(null);
+            const [hoverDuration, setHoverDuration] = useState(0.0);
+            const [enableKeyboardSound, setEnableKeyboardSound] = useState(true);
+            const [systemTypingEnabled, setSystemTypingEnabled] = useState(false);
+            const [autocompleteEnabled, setAutocompleteEnabled] = useState(true);
+            const [wpm, setWpm] = useState(0);
+            const [accuracy, setAccuracy] = useState(100);
+            const [currentWord, setCurrentWord] = useState('');
+            const [recentWords, setRecentWords] = useState([]);
+            const [predictions, setPredictions] = useState([]);
+            const totalKeystrokesRef = useRef(0);
+            const backspaceCountRef = useRef(0);
+            const typingStartTimeRef = useRef(null);
+
+            // Air Drawing UI States
+            const [drawingStatus, _setDrawingStatus] = useState('Idle');
+            const drawingStatusRef = useRef('Idle');
+            const setDrawingStatus = (val) => {
+                _setDrawingStatus(val);
+                drawingStatusRef.current = val;
+            };
+
+            const [webBrushSize, _setWebBrushSize] = useState(5);
+            const webBrushSizeRef = useRef(5);
+            const setWebBrushSize = (val) => {
+                _setWebBrushSize(val);
+                webBrushSizeRef.current = val;
+            };
+
+            const [webBrushColor, _setWebBrushColor] = useState('#c6a0f6'); // Mauve
+            const webBrushColorRef = useRef('#c6a0f6');
+            const setWebBrushColor = (val) => {
+                _setWebBrushColor(val);
+                webBrushColorRef.current = val;
+            };
+
+            const [webBrushColorName, setWebBrushColorName] = useState('Mauve');
+            const [webBrushTool, _setWebBrushTool] = useState('pen'); // 'pen' | 'highlighter' | 'eraser'
+            const webBrushToolRef = useRef('pen');
+            const setWebBrushTool = (val) => {
+                _setWebBrushTool(val);
+                webBrushToolRef.current = val;
+            };
+            const [undoStack, _setUndoStack] = useState([]);
+            const undoStackRef = useRef([]);
+            const setUndoStack = (val) => {
+                if (typeof val === 'function') {
+                    _setUndoStack(prev => {
+                        const next = val(prev);
+                        undoStackRef.current = next;
+                        return next;
+                    });
+                } else {
+                    _setUndoStack(val);
+                    undoStackRef.current = val;
+                }
+            };
+
+            const [redoStack, setRedoStack] = useState([]);
+            const [streamFps, setStreamFps] = useState(0.0);
+
+            // Refs for drawing state machine
+            const currentStrokeRef = useRef(null);
+            const lastPointRef = useRef(null);
+            const isDrawingStateRef = useRef(false);
+            const webSmoothXRef = useRef(null);
+            const webSmoothYRef = useRef(null);
+            const activeMenuRef = useRef('dashboard');
+
+            // Stable Pinch Detection Refs
+            const smoothedPinchDistRef = useRef(0.0);
+            const drawingPinchActiveRef = useRef(false);
+            const consecutivePinchFramesRef = useRef(0);
+            const consecutiveReleaseFramesRef = useRef(0);
+            const gracePeriodTimeoutRef = useRef(null);
+            const inGracePeriodRef = useRef(false);
+
+            // Responsive & white board states
+            const [fullScreenMode, setFullScreenMode] = useState(false);
+            
+            const [backgroundMode, _setBackgroundMode] = useState('camera'); // 'camera' | 'whiteboard'
+            const backgroundModeRef = useRef('camera');
+            const setBackgroundMode = (val) => {
+                _setBackgroundMode(val);
+                backgroundModeRef.current = val;
+            };
+
+            const [pipSize, setPipSize] = useState('md');
+            const [pipHidden, setPipHidden] = useState(false);
+
+            const [filterIntensity, _setFilterIntensity] = useState(3);
+            const filterIntensityRef = useRef(3);
+            const setFilterIntensity = (val) => {
+                _setFilterIntensity(val);
+                filterIntensityRef.current = val;
+            };
+
+            const [showHoverTrail, _setShowHoverTrail] = useState(true);
+            const showHoverTrailRef = useRef(true);
+            const setShowHoverTrail = (val) => {
+                _setShowHoverTrail(val);
+                showHoverTrailRef.current = val;
+            };
+
+            const [canvasWidth, _setCanvasWidth] = useState(640);
+            const canvasWidthRef = useRef(640);
+            const setCanvasWidth = (val) => {
+                _setCanvasWidth(val);
+                canvasWidthRef.current = val;
+            };
+
+            const [canvasHeight, _setCanvasHeight] = useState(360);
+            const canvasHeightRef = useRef(360);
+            const setCanvasHeight = (val) => {
+                _setCanvasHeight(val);
+                canvasHeightRef.current = val;
+            };
+
+            // Hand detection state ref
+            const wasHandDetectedRef = useRef(false);
+
+            // Phase 5.3 — Gesture references
+            const [activeGesture, _setActiveGesture] = useState('none');
+            const activeGestureRef = useRef('none');
+            const setActiveGesture = (val) => {
+                _setActiveGesture(val);
+                activeGestureRef.current = val;
+            };
+            const consecutiveGestureFramesRef = useRef(0);
+            const lastRawGestureRef = useRef('none');
+            const prevActiveGestureRef = useRef('none');
+
+            // One Euro Filters for X and Y coordinates
+            const filterXRef = useRef(new OneEuroFilter(0.8, 0.03));
+            const filterYRef = useRef(new OneEuroFilter(0.8, 0.03));
+
+            const updateFilterParams = (level) => {
+                let minCutoff = 0.8;
+                let beta = 0.03;
+                if (level === 1) { minCutoff = 100.0; beta = 0.0; } // Bypass
+                else if (level === 2) { minCutoff = 1.5; beta = 0.05; }
+                else if (level === 3) { minCutoff = 0.8; beta = 0.03; }
+                else if (level === 4) { minCutoff = 0.4; beta = 0.01; }
+                else if (level === 5) { minCutoff = 0.15; beta = 0.003; }
+                
+                filterXRef.current.minCutoff = minCutoff;
+                filterXRef.current.beta = beta;
+                filterYRef.current.minCutoff = minCutoff;
+                filterYRef.current.beta = beta;
+            };
+
+            // Hover Trail Points Queue
+            const hoverTrailRef = useRef([]);
+
+            useEffect(() => {
+                activeMenuRef.current = activeMenu;
+            }, [activeMenu]);
+
+            // Resize Observer to dynamically size canvas
+            useEffect(() => {
+                if (activeMenu !== 'drawing') return;
+                
+                const container = document.getElementById('drawing-view-container');
+                if (!container) return;
+                
+                const resizeObserver = new ResizeObserver(entries => {
+                    for (let entry of entries) {
+                        const { width, height } = entry.contentRect;
+                        setCanvasWidth(width);
+                        setCanvasHeight(height - 10);
+                    }
+                });
+                
+                resizeObserver.observe(container);
+                return () => {
+                    resizeObserver.disconnect();
+                };
+            }, [activeMenu, fullScreenMode]);
+
+            // Redraw everything on canvas size change
+            useEffect(() => {
+                if (activeMenu === 'drawing') {
+                    renderAll();
+                }
+            }, [canvasWidth, canvasHeight, activeMenu]);
+
+            // Bezier quadratic interpolation for drawing smooth curves
+            const drawStrokeSegment = (ctx, points, color, size, tool = 'pen') => {
+                if (!points || points.length < 1) return;
+                
+                ctx.save();
+                ctx.beginPath();
+                ctx.lineCap = 'round';
+                ctx.lineJoin = 'round';
+                
+                if (tool === 'eraser') {
+                    ctx.globalCompositeOperation = 'destination-out';
+                    ctx.strokeStyle = 'rgba(0,0,0,1)';
+                    ctx.lineWidth = size;
+                    ctx.fillStyle = 'rgba(0,0,0,1)';
+                } else if (tool === 'highlighter') {
+                    ctx.globalCompositeOperation = 'source-over';
+                    ctx.lineWidth = size;
+                    
+                    let transparentColor = color;
+                    if (color.startsWith('#')) {
+                        let hex = color.slice(1);
+                        if (hex.length === 3) {
+                            hex = hex.split('').map(char => char + char).join('');
+                        }
+                        const r = parseInt(hex.slice(0, 2), 16);
+                        const g = parseInt(hex.slice(2, 4), 16);
+                        const b = parseInt(hex.slice(4, 6), 16);
+                        transparentColor = `rgba(${r}, ${g}, ${b}, 0.45)`;
+                    }
+                    ctx.strokeStyle = transparentColor;
+                    ctx.fillStyle = transparentColor;
+                } else {
+                    ctx.globalCompositeOperation = 'source-over';
+                    ctx.strokeStyle = color;
+                    ctx.lineWidth = size;
+                    ctx.fillStyle = color;
+                }
+                
+                if (points.length === 1) {
+                    const pt = points[0];
+                    ctx.arc(pt.x, pt.y, size / 2, 0, 2 * Math.PI);
+                    ctx.fill();
+                } else if (points.length === 2) {
+                    ctx.moveTo(points[0].x, points[0].y);
+                    ctx.lineTo(points[1].x, points[1].y);
+                    ctx.stroke();
+                } else {
+                    ctx.moveTo(points[0].x, points[0].y);
+                    for (let i = 1; i < points.length - 1; i++) {
+                        const xc = (points[i].x + points[i + 1].x) / 2;
+                        const yc = (points[i].y + points[i + 1].y) / 2;
+                        ctx.quadraticCurveTo(points[i].x, points[i].y, xc, yc);
+                    }
+                    ctx.lineTo(points[points.length - 1].x, points[points.length - 1].y);
+                    ctx.stroke();
+                }
+                ctx.restore();
+            };
+
+            // Draw smooth hover trail
+            const drawHoverTrail = (ctx, trail) => {
+                for (let i = 1; i < trail.length; i++) {
+                    ctx.beginPath();
+                    ctx.moveTo(trail[i - 1].x, trail[i - 1].y);
+                    ctx.lineTo(trail[i].x, trail[i].y);
+                    const opacity = (i / trail.length) * 0.4;
+                    ctx.strokeStyle = `rgba(138, 180, 244, ${opacity})`;
+                    ctx.lineWidth = 4;
+                    ctx.stroke();
+                }
+            };
+
+            // Unified Render Function
+            const renderAll = () => {
+                const canvas = document.getElementById('drawing-canvas');
+                if (!canvas) return;
+                const ctx = canvas.getContext('2d');
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                
+                // 1. Draw finalized strokes
+                undoStackRef.current.forEach(stroke => {
+                    drawStrokeSegment(ctx, stroke.points, stroke.color, stroke.size, stroke.tool);
+                });
+                
+                // 2. Draw active stroke
+                if (isDrawingStateRef.current && currentStrokeRef.current && currentStrokeRef.current.points.length > 0) {
+                    drawStrokeSegment(ctx, currentStrokeRef.current.points, webBrushColorRef.current, webBrushSizeRef.current, webBrushToolRef.current);
+                }
+                
+                // 3. Draw hover trail
+                if (!isDrawingStateRef.current && showHoverTrailRef.current && hoverTrailRef.current.length > 1) {
+                    drawHoverTrail(ctx, hoverTrailRef.current);
+                }
+            };
+
+            const redrawCanvas = (strokes) => {
+                renderAll();
+            };
+
+            const handleWebUndo = () => {
+                if (undoStack.length === 0) return;
+                const nextUndo = [...undoStack];
+                const popped = nextUndo.pop();
+                setUndoStack(nextUndo);
+                setRedoStack(prev => [...prev, popped]);
+                redrawCanvas(nextUndo);
+            };
+
+            const handleWebRedo = () => {
+                if (redoStack.length === 0) return;
+                const nextRedo = [...redoStack];
+                const popped = nextRedo.pop();
+                setRedoStack(nextRedo);
+                setUndoStack(prev => [...prev, popped]);
+                redrawCanvas([...undoStack, popped]);
+            };
+
+            const handleWebClear = () => {
+                setUndoStack([]);
+                setRedoStack([]);
+                const canvas = document.getElementById('drawing-canvas');
+                if (canvas) {
+                    const ctx = canvas.getContext('2d');
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                }
+            };
+
+            const handleWebSave = () => {
+                if (undoStack.length === 0) return;
+                const tempCanvas = document.createElement('canvas');
+                tempCanvas.width = 640;
+                tempCanvas.height = 360;
+                const tempCtx = tempCanvas.getContext('2d');
+                tempCtx.fillStyle = '#ffffff';
+                tempCtx.fillRect(0, 0, 640, 360);
+                
+                const mainCanvas = document.getElementById('drawing-canvas');
+                if (mainCanvas) {
+                    tempCtx.drawImage(mainCanvas, 0, 0);
+                }
+                
+                const dataUrl = tempCanvas.toDataURL('image/png');
+                fetch('/api/drawing/save', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ image: dataUrl })
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        logSystemEvent(`Saved web drawing to: ${data.filepath}`);
+                        alert(`Drawing saved successfully to ${data.filepath}`);
+                    } else {
+                        logSystemEvent(`Failed to save web drawing: ${data.message}`);
+                        alert(`Failed to save drawing: ${data.message}`);
+                    }
+                })
+                .catch(err => {
+                    console.error('Error saving drawing:', err);
+                    alert('Error saving drawing.');
+                });
+            };
+
+            useEffect(() => {
+                if (activeMenu === 'drawing') {
+                    setTimeout(() => {
+                        redrawCanvas(undoStack);
+                    }, 50);
+                }
+            }, [activeMenu]);
+
+            const getCurrentWordJS = (text) => {
+                if (!text) return "";
+                const match = text.match(new RegExp("[\w'-]+$"));
+                return match ? match[0] : "";
+            };
+            const smoothXRef = useRef(null);
+            const smoothYRef = useRef(null);
+            const candidateKeyRef = useRef(null);
+            const candidateStartTimeRef = useRef(null);
+            const lastHoverDetectTimeRef = useRef(null);
+            const hoveredKeyRef = useRef('None');
+            const pinchActiveRef = useRef(false);
+
 
             // Switches State
             const [showLandmarks, setShowLandmarks] = useState(true);
@@ -756,7 +1458,29 @@ HTML_CONTENT = """<!DOCTYPE html>
                             setGesture(data.gesture);
                             setConfidence(data.confidence);
                             setCameraStatus(data.camera_status);
-                            setFrame(data.frame);
+                            if (data.frame) {
+                                if (!hasFrameRef.current) {
+                                    hasFrameRef.current = true;
+                                    setHasFrameState(true);
+                                }
+                                requestAnimationFrame(() => {
+                                     const imgD = document.getElementById('dashboard-camera-preview');
+                                     if (imgD) imgD.src = data.frame;
+                                     const imgM = document.getElementById('mouse-camera-preview');
+                                     if (imgM) imgM.src = data.frame;
+                                     const imgK = document.getElementById('keyboard-camera-preview');
+                                     if (imgK) imgK.src = data.frame;
+                                     const imgDr = document.getElementById('drawing-camera-preview');
+                                     if (imgDr) imgDr.src = data.frame;
+                                     const imgDrPip = document.getElementById('drawing-camera-preview-pip');
+                                     if (imgDrPip) imgDrPip.src = data.frame;
+                                 });
+                            } else {
+                                if (hasFrameRef.current) {
+                                    hasFrameRef.current = false;
+                                    setHasFrameState(false);
+                                }
+                            }
                             setCursorX(data.cursor_x || 0);
                             setCursorY(data.cursor_y || 0);
                             setTrackingState(data.tracking_state || 'Disabled');
@@ -764,6 +1488,100 @@ HTML_CONTENT = """<!DOCTYPE html>
                             setClickStatus(data.click_status || 'OPEN');
                             setClickCounter(data.click_counter || 0);
                             setCurrentAction(data.current_action || 'None');
+
+                            // Key Hover Detection for Web Keyboard
+                            let detectedKey = null;
+                            const wsNow = Date.now();
+
+                            if (data.index_tip_x !== undefined && data.index_tip_y !== undefined && data.index_tip_x !== null && data.index_tip_y !== null) {
+                                const rawX = data.index_tip_x;
+                                const rawY = data.index_tip_y;
+                                const xMirrored = 1.0 - rawX; // Mirror horizontal to match screen direction
+
+                                // Smooth coordinates using exponential moving average (EMA)
+                                const smoothing = 0.20;
+                                if (smoothXRef.current === null || smoothYRef.current === null) {
+                                    smoothXRef.current = xMirrored;
+                                    smoothYRef.current = rawY;
+                                } else {
+                                    smoothXRef.current += (xMirrored - smoothXRef.current) * smoothing;
+                                    smoothYRef.current += (rawY - smoothYRef.current) * smoothing;
+                                }
+
+                                // Map to viewport coordinates
+                                const clientX = smoothXRef.current * window.innerWidth;
+                                const clientY = smoothYRef.current * window.innerHeight;
+
+                                // Resolve HTML element at the cursor point
+                                try {
+                                    const element = document.elementFromPoint(clientX, clientY);
+                                    if (element) {
+                                        let curr = element;
+                                        while (curr) {
+                                            if (curr.getAttribute && curr.getAttribute('data-key')) {
+                                                detectedKey = curr.getAttribute('data-key');
+                                                break;
+                                            }
+                                            curr = curr.parentElement;
+                                        }
+                                    }
+                                } catch (e) {
+                                    console.error("Error resolving hovered element:", e);
+                                }
+                            } else {
+                                smoothXRef.current = null;
+                                smoothYRef.current = null;
+                            }
+
+                            // Hover Delay (150ms) and Debouncing (100ms)
+                            if (detectedKey) {
+                                lastHoverDetectTimeRef.current = wsNow;
+                                if (detectedKey === candidateKeyRef.current) {
+                                    const elapsed = (wsNow - candidateStartTimeRef.current) / 1000;
+                                    setHoverDuration(elapsed);
+                                    if (elapsed >= 0.150) {
+                                        setHoveredKey(detectedKey);
+                                        hoveredKeyRef.current = detectedKey;
+                                    }
+                                } else {
+                                    candidateKeyRef.current = detectedKey;
+                                    candidateStartTimeRef.current = wsNow;
+                                    setHoverDuration(0.0);
+                                }
+                            } else {
+                                let debounceElapsed = 0;
+                                if (lastHoverDetectTimeRef.current) {
+                                    debounceElapsed = (wsNow - lastHoverDetectTimeRef.current) / 1000;
+                                }
+                                if (debounceElapsed >= 0.100 || !lastHoverDetectTimeRef.current) {
+                                    candidateKeyRef.current = null;
+                                    candidateStartTimeRef.current = null;
+                                    setHoverDuration(0.0);
+                                    setHoveredKey('None');
+                                    hoveredKeyRef.current = 'None';
+                                }
+                            }
+
+                            // Virtual Keyboard Pinch-to-Type Logic (Phase 4.3)
+                            const pinchThreshold = 0.05;
+                            const isPinching = data.hands > 0 && data.pinch_distance > 0 && data.pinch_distance <= pinchThreshold;
+                            if (isPinching) {
+                                if (!pinchActiveRef.current) {
+                                    pinchActiveRef.current = true;
+                                    const keyToPress = hoveredKeyRef.current;
+                                    if (keyToPress && keyToPress !== 'None') {
+                                        handleWebKeyPress(keyToPress);
+                                        if (enableKeyboardSound) {
+                                            playKeyboardClickSound();
+                                        }
+                                    }
+                                }
+                            } else {
+                                if (data.pinch_distance > 0.05 || data.hands === 0) {
+                                    pinchActiveRef.current = false;
+                                }
+                            }
+
                             // Phase 3.3 — Right Click
                             const prevRC = prevRightClickStatusRef.current;
                             const newRC = data.right_click_status || 'OPEN';
@@ -863,6 +1681,35 @@ HTML_CONTENT = """<!DOCTYPE html>
                                 prevBrightnessLevelRef.current = -1;
                             }
 
+                            // Phase 3.5 — Drag & Drop
+                            const newDS = data.drag_status || 'IDLE';
+                            setDragStatus(newDS);
+                            setDragDuration(data.drag_duration || 0.0);
+                            setDragCounter(data.drag_counter || 0);
+                            const prevDS = prevDragStatusRef.current;
+                            if (newDS === 'DRAGGING' && prevDS !== 'DRAGGING') {
+                                const timeString = new Date().toLocaleTimeString();
+                                eventIdCounterRef.current += 1;
+                                setEvents(prev => [{
+                                    id: `${Date.now()}-${eventIdCounterRef.current}`,
+                                    timestamp: timeString,
+                                    gesture: 'Drag Start',
+                                    confidence: 1.0,
+                                    action: `[DRAG] Drag Start | Count = ${data.drag_counter || 0}`
+                                }, ...prev].slice(0, 50));
+                            } else if (newDS === 'IDLE' && prevDS === 'DRAGGING') {
+                                const timeString = new Date().toLocaleTimeString();
+                                eventIdCounterRef.current += 1;
+                                setEvents(prev => [{
+                                    id: `${Date.now()}-${eventIdCounterRef.current}`,
+                                    timestamp: timeString,
+                                    gesture: 'Drag End',
+                                    confidence: 1.0,
+                                    action: `[DRAG] Drag End | Duration = ${(data.drag_duration || 0.0).toFixed(2)}s`
+                                }, ...prev].slice(0, 50));
+                            }
+                            prevDragStatusRef.current = newDS;
+
                             // Phase 3.5 — Mode Manager
                             const newAM = data.active_mode || 'CURSOR';
                             setActiveMode(newAM);
@@ -895,6 +1742,433 @@ HTML_CONTENT = """<!DOCTYPE html>
                                     setEvents(prev => [newEvent, ...prev].slice(0, 50));
                                 }
                                 prevGestureRef.current = data.gesture;
+                            }
+
+                            // Phase 5.1 — Air Drawing Canvas
+                            if (activeMenuRef.current === 'drawing') {
+                                setStreamFps(data.fps || 0.0);
+                                const isHandDetected = data.hands > 0;
+                                const handScore = data.hand_score !== undefined ? data.hand_score : 1.0;
+                                
+                                // Reset One Euro filter state when hand enters/exits frame to avoid jumps
+                                if (isHandDetected && !wasHandDetectedRef.current) {
+                                    filterXRef.current.reset();
+                                    filterYRef.current.reset();
+                                    hoverTrailRef.current = [];
+                                    smoothedPinchDistRef.current = 0.0;
+                                    consecutivePinchFramesRef.current = 0;
+                                    consecutiveReleaseFramesRef.current = 0;
+                                    
+                                    // If we were in grace period and hand returns, keep stroke alive
+                                    if (inGracePeriodRef.current) {
+                                        clearTimeout(gracePeriodTimeoutRef.current);
+                                        inGracePeriodRef.current = false;
+                                    }
+                                }
+                                wasHandDetectedRef.current = isHandDetected;
+
+                                // Filter based on confidence threshold
+                                let validHand = isHandDetected;
+                                if (isHandDetected && handScore < 0.55) {
+                                    validHand = false; // Ignore unreliable frame measurements
+                                }
+
+                                if (validHand && data.index_tip_x !== undefined && data.index_tip_x !== null) {
+                                    const rawX = data.index_tip_x;
+                                    const rawY = data.index_tip_y;
+                                    
+                                    // Resolve coordinate mapping based on mode
+                                    let mappedX = 0;
+                                    let mappedY = 0;
+                                    
+                                    const curCanvasWidth = canvasWidthRef.current;
+                                    const curCanvasHeight = canvasHeightRef.current;
+                                    
+                                    if (backgroundModeRef.current === 'camera') {
+                                        const scale = Math.max(curCanvasWidth / 640.0, curCanvasHeight / 360.0);
+                                        const wScaled = 640.0 * scale;
+                                        const hScaled = 360.0 * scale;
+                                        const dx = (curCanvasWidth - wScaled) / 2.0;
+                                        const dy = (curCanvasHeight - hScaled) / 2.0;
+                                        mappedX = rawX * wScaled + dx;
+                                        mappedY = rawY * hScaled + dy;
+                                    } else {
+                                        mappedX = rawX * curCanvasWidth;
+                                        mappedY = rawY * curCanvasHeight;
+                                    }
+                                    
+                                    // Smooth coordinates using One Euro Filter
+                                    const nowMs = Date.now();
+                                    let smoothedX = mappedX;
+                                    let smoothedY = mappedY;
+                                    
+                                    if (filterIntensityRef.current > 1) {
+                                        smoothedX = filterXRef.current.filter(mappedX, nowMs);
+                                        smoothedY = filterYRef.current.filter(mappedY, nowMs);
+                                    }
+                                    
+                                    const rawPinchDist = data.index_pinch_distance !== undefined ? data.index_pinch_distance : (data.pinch_distance || 0.0);
+                                    
+                                    // Smooth pinch distance
+                                    if (smoothedPinchDistRef.current === 0.0) {
+                                        smoothedPinchDistRef.current = rawPinchDist;
+                                    } else {
+                                        const alpha = 0.4;
+                                        smoothedPinchDistRef.current = (smoothedPinchDistRef.current * (1 - alpha)) + (rawPinchDist * alpha);
+                                    }
+                                    const ipDist = smoothedPinchDistRef.current;
+                                    setPinchDistance(ipDist);
+                                    
+                                    // Phase 5.3 — Gesture Filter & Debouncer
+                                    const rawGesture = data.drawing_gesture || 'none';
+                                    
+                                    if (rawGesture === lastRawGestureRef.current) {
+                                        consecutiveGestureFramesRef.current += 1;
+                                    } else {
+                                        consecutiveGestureFramesRef.current = 1;
+                                        lastRawGestureRef.current = rawGesture;
+                                    }
+                                    
+                                    if (consecutiveGestureFramesRef.current >= 3) {
+                                        const nextGesture = rawGesture;
+                                        if (nextGesture !== activeGestureRef.current) {
+                                            prevActiveGestureRef.current = activeGestureRef.current;
+                                            setActiveGesture(nextGesture);
+                                            
+                                            // Trigger one-time canvas clear
+                                            if (nextGesture === 'clear') {
+                                                handleWebClear();
+                                            }
+                                            
+                                            // Handle Tool Menu popup showing/hiding
+                                            const menuEl = document.getElementById('drawing-tool-menu');
+                                            if (menuEl) {
+                                                if (nextGesture === 'menu') {
+                                                    menuEl.classList.remove('hidden');
+                                                } else if (nextGesture === 'draw' || nextGesture === 'pause') {
+                                                    menuEl.classList.add('hidden');
+                                                }
+                                            }
+                                        }
+                                    }
+                                    
+                                    // HUD Mode Pill direct DOM updates
+                                    const hudEl = document.getElementById('drawing-hud-pill');
+                                    if (hudEl) {
+                                        const dot = hudEl.querySelector('.hud-dot');
+                                        const label = hudEl.querySelector('.hud-label');
+                                        
+                                        let labelText = '📷 Tracking';
+                                        let dotClass = 'w-2.5 h-2.5 rounded-full bg-gray-450';
+                                        let glowShadow = '0 0 10px rgba(255, 255, 255, 0.05)';
+                                        let borderColor = 'rgba(255, 255, 255, 0.1)';
+                                        
+                                        if (activeGestureRef.current === 'draw') {
+                                            const toolName = webBrushToolRef.current === 'eraser' ? 'Eraser'
+                                                           : webBrushToolRef.current === 'highlighter' ? 'Highlighter'
+                                                           : 'Pen';
+                                            labelText = `✏️ Draw Mode (${toolName})`;
+                                            
+                                            if (webBrushToolRef.current === 'eraser') {
+                                                dotClass = 'w-2.5 h-2.5 rounded-full bg-[#ed8796] animate-pulse';
+                                                glowShadow = '0 0 15px rgba(237, 135, 150, 0.5)';
+                                                borderColor = 'rgba(237, 135, 150, 0.5)';
+                                            } else if (webBrushToolRef.current === 'highlighter') {
+                                                dotClass = 'w-2.5 h-2.5 rounded-full bg-[#eed49f] animate-pulse';
+                                                glowShadow = '0 0 15px rgba(238, 212, 159, 0.5)';
+                                                borderColor = 'rgba(238, 212, 159, 0.5)';
+                                            } else {
+                                                dotClass = 'w-2.5 h-2.5 rounded-full bg-[#a6da95] animate-pulse';
+                                                glowShadow = '0 0 15px rgba(166, 218, 149, 0.5)';
+                                                borderColor = 'rgba(166, 218, 149, 0.5)';
+                                            }
+                                        } else if (activeGestureRef.current === 'pause') {
+                                            labelText = '⏸️ Paused';
+                                            dotClass = 'w-2.5 h-2.5 rounded-full bg-[#eed49f]';
+                                            glowShadow = '0 0 15px rgba(238, 212, 159, 0.5)';
+                                            borderColor = 'rgba(238, 212, 159, 0.5)';
+                                        } else if (activeGestureRef.current === 'clear') {
+                                            labelText = '🗑️ Clearing...';
+                                            dotClass = 'w-2.5 h-2.5 rounded-full bg-[#ed8796] animate-ping';
+                                            glowShadow = '0 0 15px rgba(237, 135, 150, 0.5)';
+                                            borderColor = 'rgba(237, 135, 150, 0.5)';
+                                        } else if (activeGestureRef.current === 'menu') {
+                                            labelText = '✋ Menu Open';
+                                            dotClass = 'w-2.5 h-2.5 rounded-full bg-[#8aadf4]';
+                                            glowShadow = '0 0 15px rgba(138, 173, 244, 0.5)';
+                                            borderColor = 'rgba(138, 173, 244, 0.5)';
+                                        }
+                                        
+                                        if (dot) dot.className = dotClass;
+                                        if (label) label.textContent = labelText;
+                                        hudEl.style.boxShadow = glowShadow;
+                                        hudEl.style.borderColor = borderColor;
+                                    }
+                                    
+                                    const isDrawModeActive = (activeGestureRef.current === 'draw');
+                                    
+                                    // Drawing State Transitions with Grace Period
+                                    if (isDrawModeActive) {
+                                        if (inGracePeriodRef.current) {
+                                            clearTimeout(gracePeriodTimeoutRef.current);
+                                            inGracePeriodRef.current = false;
+                                        }
+                                        
+                                        setDrawingStatus('Drawing');
+                                        hoverTrailRef.current = [];
+                                        
+                                        if (!isDrawingStateRef.current) {
+                                            isDrawingStateRef.current = true;
+                                            currentStrokeRef.current = {
+                                                points: [{ x: smoothedX, y: smoothedY }],
+                                                color: webBrushColorRef.current,
+                                                size: webBrushSizeRef.current,
+                                                tool: webBrushToolRef.current
+                                            };
+                                            lastPointRef.current = { x: smoothedX, y: smoothedY };
+                                        } else {
+                                            currentStrokeRef.current.points.push({ x: smoothedX, y: smoothedY });
+                                            lastPointRef.current = { x: smoothedX, y: smoothedY };
+                                        }
+                                    } else {
+                                        // Activate grace period instead of stopping immediately
+                                        if (isDrawingStateRef.current) {
+                                            if (!inGracePeriodRef.current) {
+                                                inGracePeriodRef.current = true;
+                                                setDrawingStatus('Grace Period');
+                                                gracePeriodTimeoutRef.current = setTimeout(() => {
+                                                    inGracePeriodRef.current = false;
+                                                    isDrawingStateRef.current = false;
+                                                    setDrawingStatus('Hovering');
+                                                    
+                                                    const stroke = currentStrokeRef.current;
+                                                    if (stroke && stroke.points.length > 0) {
+                                                        setUndoStack(prev => [...prev, stroke]);
+                                                        setRedoStack([]);
+                                                    }
+                                                    currentStrokeRef.current = null;
+                                                    lastPointRef.current = null;
+                                                    renderAll();
+                                                    
+                                                    // Update UI status text
+                                                    const statusEl = document.getElementById('telemetry-drawing-status');
+                                                    if (statusEl) {
+                                                        statusEl.textContent = 'Hovering';
+                                                        statusEl.className = 'text-sm font-bold text-accent-yellow';
+                                                    }
+                                                }, 250);
+                                            }
+                                            
+                                            // During grace period, continue stroke coordinates so path remains seamless
+                                            if (currentStrokeRef.current) {
+                                                currentStrokeRef.current.points.push({ x: smoothedX, y: smoothedY });
+                                            }
+                                            lastPointRef.current = { x: smoothedX, y: smoothedY };
+                                        } else {
+                                            setDrawingStatus('Hovering');
+                                            
+                                            // Track hover trail preview
+                                            if (showHoverTrailRef.current) {
+                                                hoverTrailRef.current.push({ x: smoothedX, y: smoothedY });
+                                                if (hoverTrailRef.current.length > 12) {
+                                                    hoverTrailRef.current.shift();
+                                                }
+                                            } else {
+                                                hoverTrailRef.current = [];
+                                            }
+                                            lastPointRef.current = { x: smoothedX, y: smoothedY };
+                                        }
+                                    }
+                                    
+                                    renderAll();
+                                    
+                                    // Get current status for UI
+                                    const currentStatus = inGracePeriodRef.current 
+                                        ? 'Grace Period' 
+                                        : isDrawModeActive 
+                                            ? 'Drawing' 
+                                            : 'Hovering';
+                                            
+                                    // Telemetry updates in sidebar
+                                    const statusEl = document.getElementById('telemetry-drawing-status');
+                                    if (statusEl) {
+                                        statusEl.textContent = currentStatus;
+                                        statusEl.className = `text-sm font-bold ${
+                                            currentStatus === 'Drawing' 
+                                                ? 'text-accent-green' 
+                                                : currentStatus === 'Grace Period' 
+                                                    ? 'text-amber-500 animate-pulse' 
+                                                    : 'text-accent-yellow'
+                                        }`;
+                                    }
+                                    
+                                    const coordsEl = document.getElementById('telemetry-pointer-coords');
+                                    if (coordsEl) {
+                                        coordsEl.textContent = `${Math.round(smoothedX)}, ${Math.round(smoothedY)}`;
+                                    }
+                                    
+                                    const pinchDistEl = document.getElementById('telemetry-pinch-distance');
+                                    if (pinchDistEl) {
+                                        pinchDistEl.textContent = `${ipDist.toFixed(4)} (raw: ${rawPinchDist.toFixed(4)})`;
+                                    }
+                                    
+                                    const confEl = document.getElementById('telemetry-pinch-confidence');
+                                    if (confEl) {
+                                        confEl.textContent = `${Math.round(handScore * 100)}%`;
+                                    }
+                                    
+                                    const pinchFramesEl = document.getElementById('telemetry-pinch-frames');
+                                    if (pinchFramesEl) {
+                                        pinchFramesEl.textContent = consecutivePinchFramesRef.current;
+                                    }
+                                    
+                                    const releaseFramesEl = document.getElementById('telemetry-release-frames');
+                                    if (releaseFramesEl) {
+                                        releaseFramesEl.textContent = consecutiveReleaseFramesRef.current;
+                                    }
+                                    
+                                    const stateEl = document.getElementById('telemetry-pinch-state');
+                                    if (stateEl) {
+                                        stateEl.textContent = inGracePeriodRef.current 
+                                            ? 'Grace Period' 
+                                            : activeGestureRef.current.toUpperCase();
+                                        stateEl.className = `text-sm font-bold ${
+                                            inGracePeriodRef.current 
+                                                ? 'text-amber-500' 
+                                                : activeGestureRef.current === 'draw' 
+                                                    ? 'text-accent-green' 
+                                                    : activeGestureRef.current === 'pause'
+                                                        ? 'text-accent-yellow'
+                                                        : activeGestureRef.current === 'clear'
+                                                            ? 'text-accent-red animate-pulse'
+                                                            : activeGestureRef.current === 'menu'
+                                                                ? 'text-accent-blue'
+                                                                : 'text-gray-450'
+                                        }`;
+                                    }
+                                    
+                                    const activeGestureEl = document.getElementById('telemetry-active-gesture');
+                                    if (activeGestureEl) {
+                                        activeGestureEl.textContent = activeGestureRef.current.toUpperCase();
+                                    }
+                                    
+                                    // Update custom cursor telemetry tooltip directly in the DOM
+                                    const cursorEl = document.getElementById('drawing-cursor');
+                                    if (cursorEl) {
+                                        cursorEl.style.display = 'block';
+                                        cursorEl.style.left = `${smoothedX}px`;
+                                        cursorEl.style.top = `${smoothedY}px`;
+                                        
+                                        const cursorRing = cursorEl.querySelector('.cursor-ring');
+                                        if (cursorRing) {
+                                            cursorRing.style.borderColor = currentStatus === 'Drawing' 
+                                                ? '#a6da95' 
+                                                : currentStatus === 'Grace Period' 
+                                                    ? '#f5a97f' 
+                                                    : '#8aadf4';
+                                            cursorRing.style.borderStyle = currentStatus === 'Drawing' ? 'solid' : 'dashed';
+                                                                       const cursorDot = cursorEl.querySelector('.cursor-dot');
+                                        if (cursorDot) {
+                                            cursorDot.style.width = `${webBrushSizeRef.current}px`;
+                                            cursorDot.style.height = `${webBrushSizeRef.current}px`;
+                                            cursorDot.style.backgroundColor = webBrushToolRef.current === 'eraser' ? '#ed8796' : webBrushColorRef.current;
+                                        }
+                                        
+                                        const sizeBadge = cursorEl.querySelector('.cursor-size');
+                                        if (sizeBadge) sizeBadge.textContent = `${webBrushSizeRef.current}px`;
+                                        
+                                        const colorBadge = cursorEl.querySelector('.cursor-color-badge');
+                                        if (colorBadge) colorBadge.style.backgroundColor = webBrushToolRef.current === 'eraser' ? '#ed8796' : webBrushColorRef.current;
+                                        
+                                        const stateBadge = cursorEl.querySelector('.cursor-state');
+                                        if (stateBadge) {
+                                            let cursorStateText = currentStatus.toUpperCase();
+                                            if (currentStatus === 'Drawing') {
+                                                cursorStateText = webBrushToolRef.current.toUpperCase();
+                                            }
+                                            stateBadge.textContent = cursorStateText;
+                                            
+                                            if (currentStatus === 'Drawing') {
+                                                stateBadge.style.color = webBrushToolRef.current === 'eraser' ? '#ed8796'
+                                                                      : webBrushToolRef.current === 'highlighter' ? '#eed49f'
+                                                                      : '#a6da95';
+                                            } else {
+                                                stateBadge.style.color = currentStatus === 'Grace Period' ? '#f5a97f' : '#8aadf4';
+                                            }
+                                        } '#8aadf4';
+                                        }
+                                        
+                                        const distBadge = cursorEl.querySelector('.cursor-dist');
+                                        if (distBadge) {
+                                            distBadge.textContent = ipDist.toFixed(4);
+                                        }
+                                        
+                                        const confBadge = cursorEl.querySelector('.cursor-confidence');
+                                        if (confBadge) {
+                                            confBadge.textContent = `${Math.round(handScore * 100)}%`;
+                                        }
+                                    }
+                                } else {
+                                    // Hand not detected or too low confidence
+                                    consecutivePinchFramesRef.current = 0;
+                                    consecutiveReleaseFramesRef.current += 1;
+                                    
+                                    consecutiveGestureFramesRef.current = 0;
+                                    lastRawGestureRef.current = 'none';
+                                    if (activeGestureRef.current !== 'none') {
+                                        setActiveGesture('none');
+                                    }
+                                    
+                                    // If drawing, enter grace period
+                                    if (isDrawingStateRef.current) {
+                                        if (!inGracePeriodRef.current) {
+                                            inGracePeriodRef.current = true;
+                                            setDrawingStatus('Grace Period');
+                                            
+                                            // Update status in DOM
+                                            const statusEl = document.getElementById('telemetry-drawing-status');
+                                            if (statusEl) {
+                                                statusEl.textContent = 'Grace Period';
+                                                statusEl.className = 'text-sm font-bold text-amber-500 animate-pulse';
+                                            }
+                                            
+                                            gracePeriodTimeoutRef.current = setTimeout(() => {
+                                                inGracePeriodRef.current = false;
+                                                isDrawingStateRef.current = false;
+                                                setDrawingStatus('Idle');
+                                                
+                                                const stroke = currentStrokeRef.current;
+                                                if (stroke && stroke.points.length > 0) {
+                                                    setUndoStack(prev => [...prev, stroke]);
+                                                    setRedoStack([]);
+                                                }
+                                                currentStrokeRef.current = null;
+                                                lastPointRef.current = null;
+                                                renderAll();
+                                                
+                                                const statusEl = document.getElementById('telemetry-drawing-status');
+                                                if (statusEl) {
+                                                    statusEl.textContent = 'Idle';
+                                                    statusEl.className = 'text-sm font-bold text-gray-450';
+                                                }
+                                            }, 250);
+                                        }
+                                    } else if (!inGracePeriodRef.current) {
+                                        setDrawingStatus('Idle');
+                                        hoverTrailRef.current = [];
+                                        
+                                        const statusEl = document.getElementById('telemetry-drawing-status');
+                                        if (statusEl) {
+                                            statusEl.textContent = 'Idle';
+                                            statusEl.className = 'text-sm font-bold text-gray-450';
+                                        }
+                                        
+                                        renderAll();
+                                        
+                                        const cursorEl = document.getElementById('drawing-cursor');
+                                        if (cursorEl) cursorEl.style.display = 'none';
+                                    }
+                                }
                             }
                         } catch (err) {
                             console.error('Error decoding WebSocket JSON payload:', err);
@@ -963,7 +2237,35 @@ HTML_CONTENT = """<!DOCTYPE html>
                         if (data.virtual_mouse_brightness_smoothing !== undefined) {
                             setVirtualMouseBrightnessSmoothing(data.virtual_mouse_brightness_smoothing);
                         }
+                        if (data.virtual_mouse_drag_threshold_ms !== undefined) {
+                            setVirtualMouseDragThresholdMs(data.virtual_mouse_drag_threshold_ms);
+                        }
+                        if (data.brush_size !== undefined) {
+                            _setWebBrushSize(data.brush_size);
+                            webBrushSizeRef.current = data.brush_size;
+                        }
+                        if (data.brush_color !== undefined) {
+                            _setWebBrushColor(data.brush_color);
+                            webBrushColorRef.current = data.brush_color;
+                        }
+                        if (data.brush_color_name !== undefined) {
+                            setWebBrushColorName(data.brush_color_name);
+                        }
+                        if (data.brush_tool !== undefined) {
+                            _setWebBrushTool(data.brush_tool);
+                            webBrushToolRef.current = data.brush_tool;
+                        }
+                        if (data.keyboard_sound_enabled !== undefined) {
+                            setEnableKeyboardSound(data.keyboard_sound_enabled);
+                        }
+                        if (data.keyboard_system_typing_enabled !== undefined) {
+                            setSystemTypingEnabled(data.keyboard_system_typing_enabled);
+                        }
+                        if (data.keyboard_autocomplete_enabled !== undefined) {
+                            setAutocompleteEnabled(data.keyboard_autocomplete_enabled);
+                        }
                     })
+
                     .catch(err => console.error('Error loading config settings:', err));
 
                 // Escape key emergency stop listener
@@ -974,8 +2276,11 @@ HTML_CONTENT = """<!DOCTYPE html>
                         setRightClickStatus('OPEN');
                         setScrollMode(false);
                         setScrollDirection('NONE');
-                        logSystemEvent('\u26a0 EMERGENCY STOP: Virtual mouse disabled via ESC key.');
+                        setDragStatus('IDLE');
+                        setDragDuration(0.0);
+                        logSystemEvent('⚠ EMERGENCY STOP: Virtual mouse disabled via ESC key.');
                     }
+
                 };
                 window.addEventListener('keydown', handleEscape);
 
@@ -1075,6 +2380,189 @@ HTML_CONTENT = """<!DOCTYPE html>
                 return `${(confidence * 100).toFixed(0)}%`;
             };
 
+            const playKeyboardClickSound = () => {
+                try {
+                    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(1000, audioCtx.currentTime);
+                    gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.05);
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    osc.start();
+                    osc.stop(audioCtx.currentTime + 0.05);
+                } catch (e) {
+                    console.error("Failed to play audio click:", e);
+                }
+            };
+
+            // Virtual Keyboard UI event handlers
+            const handleWebKeyPress = (key) => {
+                setPressedKey(key);
+                setTimeout(() => setPressedKey(null), 100);
+                setLastPressedKey(key);
+
+                if (!typingStartTimeRef.current) {
+                    typingStartTimeRef.current = Date.now();
+                }
+                totalKeystrokesRef.current += 1;
+                if (key === 'Backspace') {
+                    backspaceCountRef.current += 1;
+                }
+
+                // If suggestion key is pressed
+                if (key.startsWith('Suggestion_')) {
+                    const idx = parseInt(key.split('_')[1]);
+                    const word = predictions[idx];
+                    if (word) {
+                        const currentText = typedText;
+                        const prefix = getCurrentWordJS(currentText);
+                        
+                        let newText = currentText;
+                        if (prefix) {
+                            newText = currentText.slice(0, -prefix.length);
+                        }
+                        newText += word + ' ';
+                        
+                        setTypedText(newText);
+                        autoReleaseShift();
+
+                        if (systemTypingEnabled) {
+                            fetch('/api/keyboard/type', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({
+                                    key: `Suggestion_${idx}`,
+                                    suggestion: word,
+                                    prefix: prefix
+                                })
+                            }).catch(err => console.error('Error posting suggestion type to backend:', err));
+                        }
+                    }
+                    return;
+                }
+
+                if (systemTypingEnabled) {
+                    fetch('/api/keyboard/type', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            key: key,
+                            shift: isShiftActive,
+                            caps: isCapsLockActive
+                        })
+                    }).catch(err => console.error('Error posting keypress to backend:', err));
+                }
+
+                if (key === 'Shift') {
+                    setIsShiftActive(!isShiftActive);
+                } else if (key === 'Caps Lock') {
+                    setIsCapsLockActive(!isCapsLockActive);
+                } else if (key === 'Backspace') {
+                    setTypedText(prev => prev.slice(0, -1));
+                } else if (key === 'Space') {
+                    setTypedText(prev => prev + ' ');
+                    autoReleaseShift();
+                } else if (key === 'Tab') {
+                    setTypedText(prev => prev + '    ');
+                    autoReleaseShift();
+                } else if (key === 'Enter') {
+                    setTypedText(prev => prev + String.fromCharCode(10));
+                    autoReleaseShift();
+                } else {
+                    const isEmoji = key.length > 1 && !['Tab', 'Caps Lock', 'Enter', 'Shift', 'Backspace', 'Space'].includes(key);
+                    if (isEmoji) {
+                        setTypedText(prev => prev + key);
+                    } else {
+                        const isUpper = isCapsLockActive || isShiftActive;
+                        const char = isUpper ? key.toUpperCase() : key.toLowerCase();
+                        setTypedText(prev => prev + char);
+                    }
+                    autoReleaseShift();
+                }
+            };
+
+            const autoReleaseShift = () => {
+                setIsShiftActive(false);
+            };
+
+            const handleClearBuffer = () => {
+                setTypedText('');
+                totalKeystrokesRef.current = 0;
+                backspaceCountRef.current = 0;
+                typingStartTimeRef.current = null;
+                setWpm(0);
+                setAccuracy(100);
+                setCurrentWord('');
+                setRecentWords([]);
+                setPredictions([]);
+            };
+
+            useEffect(() => {
+                // Update current word
+                const currWord = getCurrentWordJS(typedText);
+                setCurrentWord(currWord);
+
+                // Update predictions
+                if (autocompleteEnabled && currWord) {
+                    fetch('/api/keyboard/suggest', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ text: typedText })
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.status === 'success') {
+                            setPredictions(data.suggestions || []);
+                        }
+                    })
+                    .catch(err => console.error('Error fetching suggestions:', err));
+                } else {
+                    setPredictions([]);
+                }
+
+                // Update WPM
+                if (typingStartTimeRef.current) {
+                    const elapsedSeconds = (Date.now() - typingStartTimeRef.current) / 1000;
+                    const elapsedMinutes = Math.max(5.0, elapsedSeconds) / 60.0;
+                    const calculatedWpm = Math.floor((typedText.length / 5) / elapsedMinutes);
+                    setWpm(calculatedWpm);
+                } else {
+                    setWpm(0);
+                }
+
+                // Update Accuracy
+                const totalKeypresses = totalKeystrokesRef.current;
+                const bsCount = backspaceCountRef.current;
+                if (totalKeypresses > 0) {
+                    const calculatedAcc = Math.max(0, Math.round(((totalKeypresses - 2 * bsCount) / totalKeypresses) * 100));
+                    setAccuracy(calculatedAcc);
+                } else {
+                    setAccuracy(100);
+                }
+
+                // Update Recent Words
+                const words = typedText.trim().split(/\s+/).filter(Boolean);
+                if (words.length > 0) {
+                    const isLastSpace = typedText.length > 0 && /\s/.test(typedText[typedText.length - 1]);
+                    const completedWords = isLastSpace ? words : words.slice(0, -1);
+                    
+                    const recent = [];
+                    for (let i = completedWords.length - 1; i >= 0; i--) {
+                        const wClean = completedWords[i].replace(/[^a-zA-Z0-9]/g, '');
+                        if (wClean && !recent.includes(wClean)) {
+                            recent.push(wClean);
+                            if (recent.length >= 5) break;
+                        }
+                    }
+                    setRecentWords(recent);
+                } else {
+                    setRecentWords([]);
+                }
+            }, [typedText, autocompleteEnabled]);
+
             return (
                 <div className="flex h-screen bg-[#080710] font-sans antialiased text-gray-200 overflow-hidden">
                     
@@ -1099,6 +2587,8 @@ HTML_CONTENT = """<!DOCTYPE html>
                                 {[
                                     { id: 'dashboard', name: 'Dashboard', icon: LayersIcon },
                                     { id: 'mouse', name: 'Virtual Mouse', icon: MousePointerIcon },
+                                    { id: 'keyboard', name: 'Virtual Keyboard', icon: KeyboardIcon },
+                                    { id: 'drawing', name: 'Air Drawing', icon: PencilIcon },
                                     { id: 'shortcuts', name: 'Gestures Map', icon: SlidersIcon },
                                     { id: 'analytics', name: 'Real-time Metrics', icon: TrendingUpIcon },
                                     { id: 'settings', name: 'System Settings', icon: SettingsIcon }
@@ -1161,17 +2651,20 @@ HTML_CONTENT = """<!DOCTYPE html>
                     {/* Main Content Area */}
                     <main className="flex-1 flex flex-col h-full overflow-hidden bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-blue-950/15 via-[#080710] to-[#080710]">
                         
-                        {/* Header Row - vertically aligned profile, mode status, notifications, settings, exit */}
                         <header className="h-20 border-b border-glass-border px-8 flex items-center justify-between backdrop-blur-md z-10 shrink-0">
                             <div>
                                 <h2 className="text-xl font-bold tracking-wide text-white">
-                                    {activeMenu === 'dashboard' ? 'System Monitor' : activeMenu === 'mouse' ? 'Virtual Mouse Monitor' : 'System Configuration'}
+                                    {activeMenu === 'dashboard' ? 'System Monitor' : activeMenu === 'mouse' ? 'Virtual Mouse Monitor' : activeMenu === 'keyboard' ? 'Virtual Keyboard Monitor' : activeMenu === 'drawing' ? 'Air Drawing Canvas' : 'System Configuration'}
                                 </h2>
                                 <p className="text-xs text-gray-400 mt-0.5">
                                     {activeMenu === 'dashboard' 
                                         ? 'Telemetry overview and input gesture mapping controls.' 
                                         : activeMenu === 'mouse' 
                                         ? 'Real-time mouse tracking coordinates, status, and settings.' 
+                                        : activeMenu === 'keyboard'
+                                        ? 'Interactive virtual keyboard and live text telemetry.'
+                                        : activeMenu === 'drawing'
+                                        ? 'Draw in real-time using index-thumb pinch.'
                                         : 'Calibrate input settings and device thresholds.'}
                                 </p>
                             </div>
@@ -1336,9 +2829,9 @@ HTML_CONTENT = """<!DOCTYPE html>
 
                                                     {/* Centered Camera Stream with responsive aspect ratio */}
                                                     <div className="flex-1 flex items-center justify-center bg-black/40 rounded-xl overflow-hidden border border-glass-border relative mt-3">
-                                                        {cameraStatus === 'Connected' && frame ? (
+                                                        {cameraStatus === 'Connected' && hasFrameState ? (
                                                             <img 
-                                                                src={frame} 
+                                                                id="dashboard-camera-preview"
                                                                 alt="Camera Feed" 
                                                                 className="w-full h-full object-contain rounded-xl"
                                                             />
@@ -1521,9 +3014,9 @@ HTML_CONTENT = """<!DOCTYPE html>
 
                                                     {/* Centered Camera Stream */}
                                                     <div className="flex-1 flex items-center justify-center bg-black/40 rounded-xl overflow-hidden border border-glass-border relative mt-3">
-                                                        {cameraStatus === 'Connected' && frame ? (
+                                                        {cameraStatus === 'Connected' && hasFrameState ? (
                                                             <img 
-                                                                src={frame} 
+                                                                id="mouse-camera-preview"
                                                                 alt="Camera Feed" 
                                                                 className="w-full h-full object-contain rounded-xl"
                                                             />
@@ -1709,10 +3202,34 @@ HTML_CONTENT = """<!DOCTYPE html>
                                                                 {brightnessLevel}%
                                                             </span>
                                                         </div>
-                                                        <div className="flex justify-between items-center text-sm">
+                                                        <div className="flex justify-between items-center text-sm border-b border-glass-border pb-2">
                                                             <span className="text-gray-400">Hand Distance</span>
                                                             <span className="font-mono font-bold text-white">
                                                                 {brightnessMode ? `${brightnessDistance.toFixed(1)} px` : '-- px'}
+                                                            </span>
+                                                        </div>
+
+                                                        {/* Drag & Drop Section */}
+                                                        <div className="text-[10px] uppercase tracking-widest text-gray-600 font-semibold pt-1">Drag & Drop (Thumb+Index Hold)</div>
+
+                                                        <div className="flex justify-between items-center text-sm border-b border-glass-border pb-2">
+                                                            <span className="text-gray-400">Drag Status</span>
+                                                            <span className={`font-semibold ${
+                                                                dragStatus === 'DRAGGING' ? 'text-green-400 animate-pulse' : (dragStatus === 'PINCHING' ? 'text-yellow-400 animate-pulse' : 'text-gray-400')
+                                                            }`}>
+                                                                {dragStatus}
+                                                            </span>
+                                                        </div>
+                                                        <div className="flex justify-between items-center text-sm border-b border-glass-border pb-2">
+                                                            <span className="text-gray-400">Drag Duration</span>
+                                                            <span className="font-mono font-bold text-green-400">
+                                                                {dragDuration.toFixed(1)}s
+                                                            </span>
+                                                        </div>
+                                                        <div className="flex justify-between items-center text-sm">
+                                                            <span className="text-gray-400">Drag Counter</span>
+                                                            <span className="font-mono font-bold text-white">
+                                                                {dragCounter}
                                                             </span>
                                                         </div>
                                                     </div>
@@ -1935,6 +3452,27 @@ HTML_CONTENT = """<!DOCTYPE html>
                                                             />
                                                         </div>
 
+                                                        {/* Drag Threshold Slider */}
+                                                        <div className="space-y-2 border-b border-glass-border pb-4">
+                                                            <div className="flex justify-between text-xs">
+                                                                <span className="text-gray-400">Drag Hold Threshold (ms)</span>
+                                                                <span className="text-white font-mono">{virtualMouseDragThresholdMs.toFixed(0)} ms</span>
+                                                            </div>
+                                                            <input 
+                                                                type="range" 
+                                                                min="50" 
+                                                                max="1000" 
+                                                                step="10"
+                                                                value={virtualMouseDragThresholdMs} 
+                                                                onChange={(e) => {
+                                                                    const val = parseFloat(e.target.value);
+                                                                    setVirtualMouseDragThresholdMs(val);
+                                                                    updateSetting('virtual_mouse_drag_threshold_ms', val);
+                                                                }}
+                                                                className="w-full h-1.5 bg-zinc-700 rounded-lg appearance-none cursor-pointer accent-blue-500" 
+                                                            />
+                                                        </div>
+
                                                         {/* Brightness Smoothing Slider */}
                                                         <div className="space-y-2">
                                                             <div className="flex justify-between text-xs">
@@ -1960,23 +3498,1217 @@ HTML_CONTENT = """<!DOCTYPE html>
                                             </div>
                                         </div>
                                     </>
-                                ) : (
-                                    <div className="glass-card rounded-2xl p-8 text-center text-gray-400">
-                                        <p>This page is currently under construction. Please use the Dashboard or Virtual Mouse navigation links.</p>
-                                    </div>
-                                )}
-                            </div>
-                        </div>
-                    </main>
-                </div>
-            );
-        }
+                                ) : activeMenu === 'keyboard' ? (
+                                    <>
+                                        {/* Hero Header Section */}
+                                        <div className="glass-panel rounded-3xl p-6 flex flex-col md:flex-row md:items-center justify-between border border-glass-border relative overflow-hidden">
+                                            <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 opacity-20" />
+                                            <div>
+                                                <h2 className="text-2xl font-bold tracking-wide text-white">Virtual Keyboard Controls</h2>
+                                                <p className="text-xs text-gray-400 mt-1 max-w-xl">
+                                                    Type text using standard mouse clicks or finger-pinch gestures. Customize your layouts and monitor live inputs.
+                                                </p>
+                                            </div>
+                                            <div className="mt-4 md:mt-0">
+                                                <span className="px-4 py-2 rounded-full text-xs font-semibold border bg-emerald-500/10 border-emerald-500/20 text-accent-green">
+                                                    Interactive
+                                                </span>
+                                            </div>
+                                        </div>
 
-        const root = ReactDOM.createRoot(document.getElementById('root'));
-        root.render(<App />);
-    </script>
-</body>
+                                        {/* Two-Column Main Content Layout */}
+                                        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                                            {/* Left: Camera Feed Preview (2 Columns) */}
+                                            <div className="lg:col-span-2 flex flex-col gap-4">
+                                                <div className="glass-card rounded-2xl p-4 flex flex-col h-[400px] justify-between relative group overflow-hidden">
+                                                    <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 opacity-20" />
+                                                    
+                                                    <div className="flex items-center justify-between pb-3 border-b border-glass-border">
+                                                        <div className="flex items-center gap-2 text-sm">
+                                                            <CameraIcon className="w-4 h-4 text-accent-blue" />
+                                                            <span className="font-semibold text-white">Live Camera Stream</span>
+                                                        </div>
+                                                        <div className="flex items-center gap-1.5 text-xs text-gray-400">
+                                                            <span className={`w-1.5 h-1.5 rounded-full ${
+                                                                cameraStatus === 'Connected' ? 'bg-accent-green animate-ping' : 'bg-red-400'
+                                                            }`} />
+                                                            {cameraStatus === 'Connected' ? 'Streaming live' : 'Offline'}
+                                                        </div>
+                                                    </div>
+                                                    
+                                                    <div className="flex-1 my-4 flex items-center justify-center bg-black/45 rounded-xl overflow-hidden border border-glass-border relative">
+                                                        {cameraStatus === 'Connected' && hasFrameState ? (
+                                                            <img 
+                                                                id="keyboard-camera-preview"
+                                                                alt="Camera Feed" 
+                                                                className="w-full h-full object-contain rounded-xl"
+                                                            />
+                                                        ) : (
+                                                            <div className="flex flex-col items-center justify-center p-8 text-center max-w-sm">
+                                                                <div className="w-16 h-16 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-gray-500 mb-4 animate-pulse">
+                                                                    <VideoOffIcon className="w-8 h-8" />
+                                                                </div>
+                                                                <h4 className="text-white font-medium mb-1">Camera Stream Inactive</h4>
+                                                                <p className="text-xs text-gray-400 leading-relaxed">
+                                                                    To analyze hand geometry and process keyboard inputs, please launch the camera from the Dashboard.
+                                                                </p>
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            {/* Right: Keyboard Telemetry Panel (1 Column) */}
+                                            <div className="flex flex-col gap-4">
+                                                <div className="glass-card rounded-2xl p-6 border border-glass-border flex flex-col justify-between h-[400px] relative overflow-hidden">
+                                                    <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 opacity-20" />
+                                                    
+                                                    <div>
+                                                        <h3 className="text-sm font-semibold text-white pb-3 border-b border-glass-border mb-4">
+                                                            Keyboard Telemetry
+                                                        </h3>
+                                                        <div className="grid grid-cols-2 gap-x-4 gap-y-2 mt-4">
+                                                            <div className="flex justify-between items-center text-xs">
+                                                                <span className="text-gray-400">Current Hovered Key</span>
+                                                                <span className="px-2 py-1 rounded bg-zinc-800 text-white font-mono font-bold">{hoveredKey}</span>
+                                                            </div>
+                                                            <div className="flex justify-between items-center text-xs">
+                                                                <span className="text-gray-400">Hover Duration</span>
+                                                                <span className="text-accent-blue font-bold">{hoverDuration.toFixed(2)}s</span>
+                                                            </div>
+                                                            <div className="flex justify-between items-center text-xs">
+                                                                <span className="text-gray-400">Pinch Distance</span>
+                                                                <span className="text-accent-blue font-mono font-bold">{pinchDistance.toFixed(4)}</span>
+                                                            </div>
+                                                            <div className="flex justify-between items-center text-xs">
+                                                                <span className="text-gray-400">Sound Feedback</span>
+                                                                <input
+                                                                    type="checkbox"
+                                                                    checked={enableKeyboardSound}
+                                                                    onChange={(e) => {
+                                                                        const val = e.target.checked;
+                                                                        setEnableKeyboardSound(val);
+                                                                        updateSetting('keyboard_sound_enabled', val);
+                                                                    }}
+                                                                    className="w-3.5 h-3.5 rounded border-zinc-700 bg-zinc-900 text-blue-500 focus:ring-blue-500/40 cursor-pointer"
+                                                                />
+                                                            </div>
+                                                            <div className="flex justify-between items-center text-xs">
+                                                                <span className="text-gray-400 font-semibold text-amber-400">System Typing (OS)</span>
+                                                                <input
+                                                                    type="checkbox"
+                                                                    checked={systemTypingEnabled}
+                                                                    onChange={(e) => {
+                                                                        const val = e.target.checked;
+                                                                        setSystemTypingEnabled(val);
+                                                                        updateSetting('keyboard_system_typing_enabled', val);
+                                                                    }}
+                                                                    className="w-3.5 h-3.5 rounded border-zinc-700 bg-zinc-900 text-amber-500 focus:ring-amber-500/40 cursor-pointer"
+                                                                />
+                                                            </div>
+                                                            <div className="flex justify-between items-center text-xs">
+                                                                <span className="text-gray-400">Word Suggestions</span>
+                                                                <input
+                                                                    type="checkbox"
+                                                                    checked={autocompleteEnabled}
+                                                                    onChange={(e) => {
+                                                                        const val = e.target.checked;
+                                                                        setAutocompleteEnabled(val);
+                                                                        updateSetting('keyboard_autocomplete_enabled', val);
+                                                                        if (!val) {
+                                                                            setPredictions([]);
+                                                                        }
+                                                                    }}
+                                                                    className="w-3.5 h-3.5 rounded border-zinc-700 bg-zinc-900 text-blue-500 focus:ring-blue-500/40 cursor-pointer"
+                                                                />
+                                                            </div>
+                                                            <div className="flex justify-between items-center text-xs">
+                                                                <span className="text-gray-400">Last Pressed Key</span>
+                                                                <span className="px-2 py-1 rounded bg-zinc-800 text-white font-mono font-bold">{lastPressedKey}</span>
+                                                            </div>
+                                                            <div className="flex justify-between items-center text-xs">
+                                                                <span className="text-gray-400">Stream FPS</span>
+                                                                <span className="text-accent-blue font-bold">{fps.toFixed(1)} FPS</span>
+                                                            </div>
+                                                            <div className="flex justify-between items-center text-xs">
+                                                                <span className="text-gray-400">Typing Speed</span>
+                                                                <span className="text-green-400 font-bold">{wpm} WPM</span>
+                                                            </div>
+                                                            <div className="flex justify-between items-center text-xs">
+                                                                <span className="text-gray-400">Accuracy</span>
+                                                                <span className="text-green-400 font-bold">{accuracy}%</span>
+                                                            </div>
+                                                            <div className="flex justify-between items-center text-xs">
+                                                                <span className="text-gray-400">Current Word</span>
+                                                                <span className="text-white font-semibold">{currentWord || 'None'}</span>
+                                                            </div>
+                                                            <div className="flex justify-between items-center text-xs">
+                                                                <span className="text-gray-400">Recent Words</span>
+                                                                <span className="text-gray-300 font-semibold truncate max-w-[120px]" title={recentWords.join(', ')}>{recentWords.join(', ') || 'None'}</span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div className="flex-1 flex flex-col gap-2 mt-4">
+                                                        <div className="flex justify-between items-center text-xs">
+                                                            <span className="text-gray-400 font-semibold">Live Typed Text</span>
+                                                            <button 
+                                                                onClick={handleClearBuffer}
+                                                                className="px-2.5 py-1 rounded-lg bg-red-500/10 hover:bg-red-500/20 text-red-400 text-[10px] font-semibold border border-red-500/10 transition-colors"
+                                                            >
+                                                                Clear Buffer
+                                                            </button>
+                                                        </div>
+                                                        <textarea 
+                                                            readOnly
+                                                            value={typedText}
+                                                            className="flex-1 w-full bg-zinc-950/60 rounded-xl p-3 border border-glass-border text-sm text-gray-200 focus:outline-none focus:border-blue-500/40 font-mono resize-none"
+                                                            placeholder="Typed output will stream here..."
+                                                        />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        {/* QWERTY Keyboard Grid Section */}
+                                        <div className="glass-panel rounded-3xl p-6 border border-glass-border relative overflow-hidden flex flex-col gap-4">
+                                            <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 opacity-20" />
+                                            <div>
+                                                <h3 className="text-lg font-bold text-white">QWERTY Keyboard Grid</h3>
+                                                <p className="text-xs text-gray-400">Click keys to trigger typing action. Layout dynamically matches Caps/Shift states.</p>
+                                            </div>
+
+                                            {/* Responsive Keyboard */}
+                                            <div className="flex flex-col gap-2 max-w-4xl mx-auto w-full bg-zinc-950/40 p-4 rounded-2xl border border-glass-border">
+                                                {/* Suggestions Bar */}
+                                                <div className="flex gap-2 w-full mb-2">
+                                                    {[0, 1, 2].map(idx => {
+                                                        const pred = predictions[idx] || '';
+                                                        return (
+                                                            <button
+                                                                key={`suggest-${idx}`}
+                                                                data-key={`Suggestion_${idx}`}
+                                                                disabled={!pred}
+                                                                onMouseEnter={() => pred && setHoveredKey(`Suggestion_${idx}`)}
+                                                                onMouseLeave={() => setHoveredKey('None')}
+                                                                onClick={() => pred && handleWebKeyPress(`Suggestion_${idx}`)}
+                                                                className={`flex-1 h-10 rounded-lg text-sm font-bold transition-all duration-100 ${
+                                                                    !pred
+                                                                        ? 'bg-zinc-900/40 text-zinc-600 border border-zinc-900/20 cursor-not-allowed'
+                                                                        : pressedKey === `Suggestion_${idx}`
+                                                                            ? 'bg-amber-500 text-black scale-95'
+                                                                            : hoveredKey === `Suggestion_${idx}`
+                                                                                ? 'bg-blue-600/40 text-white border border-blue-500/80 shadow-md shadow-blue-500/20'
+                                                                                : 'bg-zinc-800/80 hover:bg-zinc-700 text-blue-400 active:scale-95 border border-zinc-750'
+                                                                }`}
+                                                            >
+                                                                {pred}
+                                                            </button>
+                                                        );
+                                                    })}
+                                                </div>
+
+                                                {/* Row 1 (Numbers) */}
+                                                <div className="flex gap-1.5 w-full justify-between">
+                                                    {["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"].map(key => (
+                                                        <button 
+                                                            key={key}
+                                                            data-key={key}
+                                                            onMouseEnter={() => setHoveredKey(key)}
+                                                            onMouseLeave={() => setHoveredKey('None')}
+                                                            onClick={() => handleWebKeyPress(key)}
+                                                            className={`flex-1 h-12 rounded-lg text-sm font-semibold transition-all duration-100 ${
+                                                                pressedKey === key 
+                                                                    ? 'bg-amber-500 text-black scale-95' 
+                                                                    : hoveredKey === key
+                                                                        ? 'bg-blue-600/40 text-white border border-blue-500/80 shadow-md shadow-blue-500/20'
+                                                                        : 'bg-zinc-850 hover:bg-zinc-700 text-white active:scale-95 border border-zinc-750'
+                                                            }`}
+                                                        >
+                                                            {key}
+                                                        </button>
+                                                    ))}
+                                                </div>
+
+                                                {/* Row 2 */}
+                                                <div className="flex gap-1.5 w-full justify-between">
+                                                    <button 
+                                                        data-key="Tab"
+                                                        onMouseEnter={() => setHoveredKey('Tab')}
+                                                        onMouseLeave={() => setHoveredKey('None')}
+                                                        onClick={() => handleWebKeyPress('Tab')}
+                                                        className={`w-16 h-12 rounded-lg text-xs font-bold transition-all duration-100 ${
+                                                            pressedKey === 'Tab' 
+                                                                ? 'bg-amber-500 text-black scale-95' 
+                                                                : hoveredKey === 'Tab'
+                                                                    ? 'bg-blue-600/40 text-white border border-blue-500/80 shadow-md shadow-blue-500/20'
+                                                                    : 'bg-zinc-900 hover:bg-zinc-800 text-gray-300 border border-zinc-750'
+                                                        }`}
+                                                    >
+                                                        Tab
+                                                    </button>
+                                                    {["Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P"].map(key => {
+                                                        const label = isCapsLockActive || isShiftActive ? key.toUpperCase() : key.toLowerCase();
+                                                        return (
+                                                            <button 
+                                                                key={key}
+                                                                data-key={key}
+                                                                onMouseEnter={() => setHoveredKey(key)}
+                                                                onMouseLeave={() => setHoveredKey('None')}
+                                                                onClick={() => handleWebKeyPress(key)}
+                                                                className={`flex-1 h-12 rounded-lg text-sm font-semibold transition-all duration-100 ${
+                                                                    pressedKey === key 
+                                                                        ? 'bg-amber-500 text-black scale-95' 
+                                                                        : hoveredKey === key
+                                                                            ? 'bg-blue-600/40 text-white border border-blue-500/80 shadow-md shadow-blue-500/20'
+                                                                            : 'bg-zinc-850 hover:bg-zinc-700 text-white active:scale-95 border border-zinc-750'
+                                                                }`}
+                                                            >
+                                                                {label}
+                                                            </button>
+                                                        );
+                                                    })}
+                                                </div>
+
+                                                {/* Row 3 */}
+                                                <div className="flex gap-1.5 w-full justify-between">
+                                                    <button 
+                                                        data-key="Caps Lock"
+                                                        onMouseEnter={() => setHoveredKey('Caps Lock')}
+                                                        onMouseLeave={() => setHoveredKey('None')}
+                                                        onClick={() => handleWebKeyPress('Caps Lock')}
+                                                        className={`w-20 h-12 rounded-lg text-xs font-bold transition-all duration-100 ${
+                                                            pressedKey === 'Caps Lock' 
+                                                                ? 'bg-amber-500 text-black scale-95' 
+                                                                : hoveredKey === 'Caps Lock'
+                                                                    ? 'bg-blue-600/40 text-white border border-blue-500/80 shadow-md shadow-blue-500/20'
+                                                                    : isCapsLockActive 
+                                                                        ? 'bg-blue-600 hover:bg-blue-500 text-white' 
+                                                                        : 'bg-zinc-900 hover:bg-zinc-800 text-gray-300 border border-zinc-750'
+                                                        }`}
+                                                    >
+                                                        Caps
+                                                    </button>
+                                                    {["A", "S", "D", "F", "G", "H", "J", "K", "L"].map(key => {
+                                                        const label = isCapsLockActive || isShiftActive ? key.toUpperCase() : key.toLowerCase();
+                                                        return (
+                                                            <button 
+                                                                key={key}
+                                                                data-key={key}
+                                                                onMouseEnter={() => setHoveredKey(key)}
+                                                                onMouseLeave={() => setHoveredKey('None')}
+                                                                onClick={() => handleWebKeyPress(key)}
+                                                                className={`flex-1 h-12 rounded-lg text-sm font-semibold transition-all duration-100 ${
+                                                                    pressedKey === key 
+                                                                        ? 'bg-amber-500 text-black scale-95' 
+                                                                        : hoveredKey === key
+                                                                            ? 'bg-blue-600/40 text-white border border-blue-500/80 shadow-md shadow-blue-500/20'
+                                                                            : 'bg-zinc-850 hover:bg-zinc-700 text-white active:scale-95 border border-zinc-750'
+                                                                }`}
+                                                            >
+                                                                {label}
+                                                            </button>
+                                                        );
+                                                    })}
+                                                    <button 
+                                                        data-key="Enter"
+                                                        onMouseEnter={() => setHoveredKey('Enter')}
+                                                        onMouseLeave={() => setHoveredKey('None')}
+                                                        onClick={() => handleWebKeyPress('Enter')}
+                                                        className={`w-20 h-12 rounded-lg text-xs font-bold transition-all duration-100 ${
+                                                            pressedKey === 'Enter' 
+                                                                ? 'bg-amber-500 text-black scale-95' 
+                                                                : hoveredKey === 'Enter'
+                                                                    ? 'bg-blue-600/40 text-white border border-blue-500/80 shadow-md shadow-blue-500/20'
+                                                                    : 'bg-zinc-900 hover:bg-zinc-800 text-gray-300 border border-zinc-750'
+                                                        }`}
+                                                    >
+                                                        Enter
+                                                    </button>
+                                                </div>
+
+                                                {/* Row 4 */}
+                                                <div className="flex gap-1.5 w-full justify-between">
+                                                    <button 
+                                                        data-key="Shift"
+                                                        onMouseEnter={() => setHoveredKey('Shift')}
+                                                        onMouseLeave={() => setHoveredKey('None')}
+                                                        onClick={() => handleWebKeyPress('Shift')}
+                                                        className={`w-24 h-12 rounded-lg text-xs font-bold transition-all duration-100 ${
+                                                            pressedKey === 'Shift' 
+                                                                ? 'bg-amber-500 text-black scale-95' 
+                                                                : hoveredKey === 'Shift'
+                                                                    ? 'bg-blue-600/40 text-white border border-blue-500/80 shadow-md shadow-blue-500/20'
+                                                                    : isShiftActive 
+                                                                        ? 'bg-blue-600 hover:bg-blue-500 text-white' 
+                                                                        : 'bg-zinc-900 hover:bg-zinc-800 text-gray-300 border border-zinc-750'
+                                                        }`}
+                                                    >
+                                                        Shift
+                                                    </button>
+                                                    {["Z", "X", "C", "V", "B", "N", "M"].map(key => {
+                                                        const label = isCapsLockActive || isShiftActive ? key.toUpperCase() : key.toLowerCase();
+                                                        return (
+                                                            <button 
+                                                                key={key}
+                                                                data-key={key}
+                                                                onMouseEnter={() => setHoveredKey(key)}
+                                                                onMouseLeave={() => setHoveredKey('None')}
+                                                                onClick={() => handleWebKeyPress(key)}
+                                                                className={`flex-1 h-12 rounded-lg text-sm font-semibold transition-all duration-100 ${
+                                                                    pressedKey === key 
+                                                                        ? 'bg-amber-500 text-black scale-95' 
+                                                                        : hoveredKey === key
+                                                                            ? 'bg-blue-600/40 text-white border border-blue-500/80 shadow-md shadow-blue-500/20'
+                                                                            : 'bg-zinc-850 hover:bg-zinc-700 text-white active:scale-95 border border-zinc-750'
+                                                                }`}
+                                                            >
+                                                                {label}
+                                                            </button>
+                                                        );
+                                                    })}
+                                                    <button 
+                                                        data-key="Backspace"
+                                                        onMouseEnter={() => setHoveredKey('Backspace')}
+                                                        onMouseLeave={() => setHoveredKey('None')}
+                                                        onClick={() => handleWebKeyPress('Backspace')}
+                                                        className={`w-28 h-12 rounded-lg text-xs font-bold transition-all duration-100 ${
+                                                            pressedKey === 'Backspace' 
+                                                                ? 'bg-amber-500 text-black scale-95' 
+                                                                : hoveredKey === 'Backspace'
+                                                                    ? 'bg-blue-600/40 text-white border border-blue-500/80 shadow-md shadow-blue-500/20'
+                                                                    : 'bg-zinc-900 hover:bg-zinc-800 text-gray-300 border border-zinc-750'
+                                                        }`}
+                                                    >
+                                                        Backspace
+                                                    </button>
+                                                </div>
+
+                                                {/* Row 5 */}
+                                                <div className="flex gap-1.5 w-full justify-between">
+                                                    <button 
+                                                        data-key="Space"
+                                                        onMouseEnter={() => setHoveredKey('Space')}
+                                                        onMouseLeave={() => setHoveredKey('None')}
+                                                        onClick={() => handleWebKeyPress('Space')}
+                                                        className={`w-full h-12 rounded-lg text-sm font-semibold transition-all duration-100 ${
+                                                            pressedKey === 'Space' 
+                                                                ? 'bg-amber-500 text-black scale-95' 
+                                                                : hoveredKey === 'Space'
+                                                                    ? 'bg-blue-600/40 text-white border border-blue-500/80 shadow-md shadow-blue-500/20'
+                                                                    : 'bg-zinc-900 hover:bg-zinc-800 text-gray-300 border border-zinc-750 active:scale-95'
+                                                        }`}
+                                                    >
+                                                        Space
+                                                    </button>
+                                                </div>
+
+                                                {/* Row 6 (Emojis) */}
+                                                <div className="flex gap-1.5 w-full justify-between mt-2">
+                                                    {["😊", "😂", "👍", "🔥", "❤️", "🎉", "✨", "🚀", "👋", "👀"].map(emoji => (
+                                                        <button
+                                                            key={emoji}
+                                                            data-key={emoji}
+                                                            onMouseEnter={() => setHoveredKey(emoji)}
+                                                            onMouseLeave={() => setHoveredKey('None')}
+                                                            onClick={() => handleWebKeyPress(emoji)}
+                                                            className={`flex-1 h-10 rounded-lg text-base transition-all duration-100 ${
+                                                                pressedKey === emoji
+                                                                    ? 'bg-amber-500 text-black scale-95'
+                                                                    : hoveredKey === emoji
+                                                                        ? 'bg-blue-600/40 text-white border border-blue-500/80 shadow-md shadow-blue-500/20'
+                                                                        : 'bg-zinc-850 hover:bg-zinc-700 active:scale-95 border border-zinc-750'
+                                                            }`}
+                                                        >
+                                                            {emoji}
+                                                        </button>
+                                                    ))}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </>
+                                ) : activeMenu === 'drawing' ? (
+                                        <>
+                                            {/* Hero Header Section - Hidden in fullscreen mode */}
+                                            {!fullScreenMode && (
+                                                <div className="glass-panel rounded-3xl p-6 flex flex-col md:flex-row md:items-center justify-between border border-glass-border relative overflow-hidden">
+                                                    <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 opacity-20" />
+                                                    <div>
+                                                        <h2 className="text-2xl font-bold tracking-wide text-white">Air Drawing Canvas</h2>
+                                                        <p className="text-xs text-gray-400 mt-1 max-w-xl">
+                                                            Draw in the air using finger pinch gestures. Customize brush size and color, and manage drawings.
+                                                        </p>
+                                                    </div>
+                                                    <div className="mt-4 md:mt-0">
+                                                        <span className="px-4 py-2 rounded-full text-xs font-semibold border bg-emerald-500/10 border-emerald-500/20 text-accent-green">
+                                                            Live Canvas
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            )}
+
+                                            {/* Drawing Page Layout */}
+                                            <div className={`grid grid-cols-1 ${fullScreenMode ? '' : 'lg:grid-cols-3 gap-6 mt-6'}`}>
+                                                {/* Canvas Workspace Column */}
+                                                <div className={`relative ${
+                                                    fullScreenMode 
+                                                        ? 'fixed inset-0 w-screen h-screen z-50 p-0 m-0 overflow-hidden bg-[#0b0a15]' 
+                                                        : 'lg:col-span-2 glass-panel rounded-3xl p-6 border border-glass-border flex flex-col relative bg-black/40 min-h-[500px]'
+                                                }`} id="drawing-view-container">
+                                                    <div 
+                                                        id="drawing-canvas-wrapper" 
+                                                        className={`relative w-full h-full overflow-hidden rounded-2xl ${
+                                                            fullScreenMode ? 'rounded-none' : 'border border-glass-border'
+                                                        } ${backgroundMode === 'whiteboard' ? 'whiteboard-grid' : 'bg-zinc-950'}`}
+                                                        style={{ minHeight: fullScreenMode ? '100vh' : '450px' }}
+                                                    >
+                                                        {/* Camera Video Stream (Background in Camera mode) */}
+                                                        {backgroundMode === 'camera' && (
+                                                            <img 
+                                                                id="drawing-camera-preview"
+                                                                src="" 
+                                                                alt="Camera Stream"
+                                                                className="absolute inset-0 w-full h-full object-cover select-none pointer-events-none"
+                                                            />
+                                                        )}
+
+                                                        {/* HTML5 Canvas Drawing Overlay Layer */}
+                                                        <canvas 
+                                                            id="drawing-canvas"
+                                                            width={canvasWidth}
+                                                            height={canvasHeight}
+                                                            className="absolute inset-0 w-full h-full cursor-crosshair select-none z-10"
+                                                        />
+
+                                                        {/* Floating HUD Mode Pill (Phase 5.3) */}
+                                                        <div 
+                                                            id="drawing-hud-pill"
+                                                            className="absolute top-4 left-1/2 transform -translate-x-1/2 px-4 py-1.5 rounded-full backdrop-blur-md bg-[#0b0a15]/80 border border-white/10 flex items-center gap-2 shadow-xl z-30 transition-all duration-300"
+                                                            style={{ boxShadow: '0 0 10px rgba(255, 255, 255, 0.05)' }}
+                                                        >
+                                                            <span className="w-2.5 h-2.5 rounded-full bg-gray-400 hud-dot" />
+                                                            <span className="text-xs font-bold text-white tracking-wide uppercase font-sans hud-label">
+                                                                📷 Tracking
+                                                            </span>
+                                                        </div>
+
+                                                        {/* Floating Tool Menu Overlay (Phase 5.3) */}
+                                                        <div 
+                                                            id="drawing-tool-menu"
+                                                            className="absolute top-16 right-6 w-80 glass-panel rounded-2xl p-5 border border-white/10 bg-[#0b0a15]/85 backdrop-blur-md shadow-2xl z-30 transition-all duration-300 hidden"
+                                                        >
+                                                            {/* Header */}
+                                                            <div className="flex items-center justify-between pb-3 border-b border-white/10 mb-4">
+                                                                <h4 className="text-xs font-bold text-white flex items-center gap-1.5 uppercase tracking-wide">
+                                                                    ✋ Tool Settings
+                                                                </h4>
+                                                                <button 
+                                                                    onClick={() => {
+                                                                        const el = document.getElementById('drawing-tool-menu');
+                                                                        if (el) el.classList.add('hidden');
+                                                                    }}
+                                                                    className="text-xs text-gray-400 hover:text-white transition-all bg-white/5 hover:bg-white/10 w-5 h-5 rounded-full flex items-center justify-center font-bold"
+                                                                >
+                                                                    ✕
+                                                                </button>
+                                                            </div>
+                                                            
+                                                            {/* Tool Selector (Segmented) */}
+                                                            <div className="space-y-2 mb-4">
+                                                                <span className="text-[10px] text-gray-400 font-bold block uppercase tracking-wider">Drawing Tool</span>
+                                                                <div className="flex bg-zinc-900/50 p-1 rounded-xl border border-white/5">
+                                                                    {[
+                                                                        { id: 'pen', name: 'Pen' },
+                                                                        { id: 'highlighter', name: 'Highlighter' },
+                                                                        { id: 'eraser', name: 'Eraser' }
+                                                                    ].map(t => (
+                                                                        <button
+                                                                            key={`tool-${t.id}`}
+                                                                            onClick={() => {
+                                                                                setWebBrushTool(t.id);
+                                                                                updateSetting('brush_tool', t.id);
+                                                                            }}
+                                                                            className={`flex-1 py-1.5 rounded-lg text-xs font-bold transition-all ${
+                                                                                webBrushTool === t.id
+                                                                                    ? 'bg-blue-600/35 border border-blue-500/30 text-blue-200 shadow-md'
+                                                                                    : 'text-gray-400 hover:text-white'
+                                                                            }`}
+                                                                        >
+                                                                            {t.name}
+                                                                        </button>
+                                                                    ))}
+                                                                </div>
+                                                            </div>
+
+                                                            {/* Colors selection */}
+                                                            <div className="space-y-2 mb-4">
+                                                                <span className="text-[10px] text-gray-400 font-bold block uppercase tracking-wider">Select Color</span>
+                                                                <div className="flex flex-wrap gap-2">
+                                                                    {[
+                                                                        { name: "Mauve", color: "#c6a0f6" },
+                                                                        { name: "Blue", color: "#8aadf4" },
+                                                                        { name: "Green", color: "#a6da95" },
+                                                                        { name: "Yellow", color: "#eed49f" },
+                                                                        { name: "Red", color: "#ed8796" },
+                                                                        { name: "White", color: "#ffffff" }
+                                                                    ].map(item => (
+                                                                        <button 
+                                                                            key={`menu-color-${item.name}`}
+                                                                            onClick={() => {
+                                                                                setWebBrushColor(item.color);
+                                                                                setWebBrushColorName(item.name);
+                                                                                updateSetting('brush_color', item.color);
+                                                                                updateSetting('brush_color_name', item.name);
+                                                                            }}
+                                                                            style={{ backgroundColor: item.color }}
+                                                                            className={`w-7 h-7 rounded-full border-2 transition-all hover:scale-110 active:scale-95 ${
+                                                                                webBrushColor === item.color ? 'border-white ring-2 ring-blue-500/50' : 'border-transparent'
+                                                                            }`}
+                                                                            title={item.name}
+                                                                        />
+                                                                    ))}
+                                                                    <div className="relative w-7 h-7 rounded-full overflow-hidden border-2 border-dashed border-gray-500 hover:border-white hover:scale-110 active:scale-95 transition-all flex items-center justify-center cursor-pointer" title="Custom Color">
+                                                                        <span className="text-[10px] text-gray-400 font-bold select-none">+</span>
+                                                                        <input 
+                                                                            type="color"
+                                                                            value={webBrushColor}
+                                                                            onChange={(e) => {
+                                                                                const val = e.target.value;
+                                                                                setWebBrushColor(val);
+                                                                                setWebBrushColorName('Custom');
+                                                                                updateSetting('brush_color', val);
+                                                                                updateSetting('brush_color_name', 'Custom');
+                                                                            }}
+                                                                            className="absolute inset-0 opacity-0 cursor-pointer w-full h-full"
+                                                                        />
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            
+                                                            {/* Quick Sizes & Slider */}
+                                                            <div className="space-y-3 mb-4">
+                                                                <div className="flex justify-between items-center">
+                                                                    <span className="text-[10px] text-gray-400 font-bold block uppercase tracking-wider">Brush Size</span>
+                                                                    <span className="text-[10px] font-mono text-blue-300 font-bold">{webBrushSize}px</span>
+                                                                </div>
+                                                                
+                                                                {/* Preset Buttons */}
+                                                                <div className="flex gap-2">
+                                                                    {[
+                                                                        { name: 'Small', val: 5 },
+                                                                        { name: 'Medium', val: 15 },
+                                                                        { name: 'Large', val: 30 }
+                                                                    ].map(preset => (
+                                                                        <button
+                                                                            key={`menu-size-${preset.val}`}
+                                                                            onClick={() => {
+                                                                                setWebBrushSize(preset.val);
+                                                                                updateSetting('brush_size', preset.val);
+                                                                            }}
+                                                                            className={`flex-1 py-1.5 rounded-lg border text-[10px] font-semibold transition-all hover:scale-105 active:scale-95 ${
+                                                                                webBrushSize === preset.val 
+                                                                                    ? 'bg-blue-600/30 border-blue-500 text-blue-200 shadow-[0_0_10px_rgba(59,130,246,0.3)]' 
+                                                                                    : 'bg-zinc-800/50 border-zinc-700 text-gray-300'
+                                                                            }`}
+                                                                        >
+                                                                            {preset.name} ({preset.val}px)
+                                                                        </button>
+                                                                    ))}
+                                                                </div>
+
+                                                                {/* Continuous Range Slider */}
+                                                                <input 
+                                                                    type="range" 
+                                                                    min="1" 
+                                                                    max="50" 
+                                                                    step="1"
+                                                                    value={webBrushSize} 
+                                                                    onChange={(e) => {
+                                                                        const val = parseInt(e.target.value);
+                                                                        setWebBrushSize(val);
+                                                                        updateSetting('brush_size', val);
+                                                                    }}
+                                                                    className="w-full h-1 bg-zinc-800 rounded-lg appearance-none cursor-pointer accent-blue-500" 
+                                                                />
+                                                            </div>
+                                                            
+                                                            {/* Gesture Guide Cheat-Sheet */}
+                                                            <div className="border-t border-white/10 pt-3 mt-2 space-y-2">
+                                                                <span className="text-[10px] text-gray-450 font-bold block uppercase tracking-wider">Gesture Cheat-Sheet</span>
+                                                                <div className="space-y-1.5 text-[10px] text-gray-300 font-sans">
+                                                                    <div className="flex justify-between py-1 px-2 rounded bg-white/5 border border-white/5">
+                                                                        <span>☝️ Index UP</span>
+                                                                        <span className="font-semibold text-accent-green">✏️ Draw</span>
+                                                                    </div>
+                                                                    <div className="flex justify-between py-1 px-2 rounded bg-white/5 border border-white/5">
+                                                                        <span>✌️ Index + Middle UP</span>
+                                                                        <span className="font-semibold text-accent-yellow">⏸️ Pause</span>
+                                                                    </div>
+                                                                    <div className="flex justify-between py-1 px-2 rounded bg-white/5 border border-white/5">
+                                                                        <span>✊ Closed Fist</span>
+                                                                        <span className="font-semibold text-accent-red">🗑️ Clear Canvas</span>
+                                                                    </div>
+                                                                    <div className="flex justify-between py-1 px-2 rounded bg-white/5 border border-white/5">
+                                                                        <span>🖐️ Open Palm</span>
+                                                                        <span className="font-semibold text-accent-blue">✋ Show Menu</span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        {/* Floating PiP Camera Card (in Whiteboard mode) */}
+                                                        {backgroundMode === 'whiteboard' && !pipHidden && (
+                                                            <div 
+                                                                className={`absolute bottom-6 right-6 rounded-2xl overflow-hidden glass-panel border border-glass-border shadow-2xl z-20 transition-all duration-300 ${
+                                                                    pipSize === 'sm' ? 'w-48' : pipSize === 'md' ? 'w-72' : 'w-96'
+                                                                } aspect-video`}
+                                                            >
+                                                                {/* PiP Header controls */}
+                                                                <div className="absolute top-0 inset-x-0 h-8 bg-black/60 backdrop-blur-sm border-b border-white/5 flex items-center justify-between px-3 z-30 select-none opacity-0 hover:opacity-100 transition-opacity duration-200">
+                                                                    <span className="text-[10px] text-gray-400 font-semibold">Camera Feed</span>
+                                                                    <div className="flex items-center gap-1.5">
+                                                                        <button 
+                                                                            onClick={() => setPipSize(prev => prev === 'sm' ? 'md' : prev === 'md' ? 'lg' : 'sm')}
+                                                                            className="text-[10px] text-white hover:text-blue-400 bg-white/5 px-1.5 py-0.5 rounded border border-white/5"
+                                                                            title="Resize Preview"
+                                                                        >
+                                                                            ⤢
+                                                                        </button>
+                                                                        <button 
+                                                                            onClick={() => setPipHidden(true)}
+                                                                            className="text-[10px] text-white hover:text-red-400 bg-white/5 px-1.5 py-0.5 rounded border border-white/5"
+                                                                            title="Hide Preview"
+                                                                        >
+                                                                            ✕
+                                                                        </button>
+                                                                    </div>
+                                                                </div>
+                                                                <img 
+                                                                    id="drawing-camera-preview-pip"
+                                                                    src="" 
+                                                                    alt="Camera Stream PiP"
+                                                                    className="w-full h-full object-cover select-none pointer-events-none"
+                                                                />
+                                                            </div>
+                                                        )}
+                                                        
+                                                        {/* Button to restore PiP if hidden */}
+                                                        {backgroundMode === 'whiteboard' && pipHidden && (
+                                                            <button
+                                                                onClick={() => setPipHidden(false)}
+                                                                className="absolute bottom-6 right-6 z-20 px-3 py-1.5 rounded-xl bg-blue-600/30 hover:bg-blue-600/50 border border-blue-500/30 text-xs font-semibold text-white transition-all active:scale-95"
+                                                            >
+                                                                📷 Show Camera
+                                                            </button>
+                                                        )}
+
+                                                        {/* Custom Circular Cursor Indicator */}
+                                                        <div 
+                                                            id="drawing-cursor"
+                                                            className="absolute pointer-events-none transform -translate-x-1/2 -translate-y-1/2 hidden z-30 transition-all duration-75"
+                                                        >
+                                                            {/* Outer tracking ring */}
+                                                            <div 
+                                                                className="w-10 h-10 rounded-full border border-dashed flex items-center justify-center animate-spin-slow cursor-ring" 
+                                                                style={{ borderColor: '#8aadf4' }} 
+                                                            />
+                                                            
+                                                            {/* Core brush pointer */}
+                                                            <div 
+                                                                className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 rounded-full border border-white/30 cursor-dot"
+                                                                style={{ 
+                                                                    width: '5px', 
+                                                                    height: '5px',
+                                                                    backgroundColor: '#c6a0f6' 
+                                                                }}
+                                                            />
+
+                                                            {/* Telemetry Tooltip Pill */}
+                                                            <div className="absolute top-full mt-3 left-1/2 transform -translate-x-1/2 px-3 py-1.5 rounded-xl bg-zinc-950/90 border border-white/10 flex flex-col gap-1 text-[9px] font-semibold text-white pointer-events-none whitespace-nowrap shadow-xl">
+                                                                <div className="flex items-center gap-1.5 justify-center">
+                                                                    <span className="w-1.5 h-1.5 rounded-full cursor-color-badge" style={{ backgroundColor: '#c6a0f6' }} />
+                                                                    <span className="cursor-size">5px</span>
+                                                                    <span className="text-gray-500">|</span>
+                                                                    <span className="cursor-state" style={{ color: '#8aadf4' }}>HOVER</span>
+                                                                </div>
+                                                                <div className="flex items-center gap-1.5 text-gray-400 border-t border-white/5 pt-1 mt-0.5 justify-center font-mono">
+                                                                    <span>Dist: <span className="cursor-dist">0.0000</span></span>
+                                                                    <span>|</span>
+                                                                    <span>Conf: <span className="cursor-confidence">--%</span></span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    {/* Floating Toolbar/Dock in Full Screen Mode */}
+                                                    {fullScreenMode && (
+                                                        <div className="fixed bottom-6 left-1/2 transform -translate-x-1/2 glass-panel border border-glass-border px-6 py-3 rounded-2xl flex items-center gap-5 shadow-2xl z-40 transition-all duration-300">
+                                                            {/* Exit Full Screen */}
+                                                            <button 
+                                                                onClick={() => setFullScreenMode(false)}
+                                                                className="p-2 rounded-lg bg-zinc-855 hover:bg-zinc-750 text-white font-semibold text-xs border border-zinc-700 transition-all active:scale-95 flex items-center gap-1"
+                                                                title="Exit Full Screen"
+                                                            >
+                                                                🗙 Exit Fullscreen
+                                                            </button>
+
+                                                            <span className="w-px h-6 bg-glass-border" />
+
+                                                            {/* View Mode Toggle */}
+                                                            <div className="flex bg-zinc-900 rounded-lg p-0.5 border border-zinc-800">
+                                                                <button 
+                                                                    onClick={() => setBackgroundMode('camera')}
+                                                                    className={`px-3 py-1 rounded-md text-[10px] font-bold transition-all ${
+                                                                        backgroundMode === 'camera' ? 'bg-blue-600 text-white' : 'text-gray-400 hover:text-white'
+                                                                    }`}
+                                                                >
+                                                                    📷 Camera
+                                                                </button>
+                                                                <button 
+                                                                    onClick={() => setBackgroundMode('whiteboard')}
+                                                                    className={`px-3 py-1 rounded-md text-[10px] font-bold transition-all ${
+                                                                        backgroundMode === 'whiteboard' ? 'bg-blue-600 text-white' : 'text-gray-400 hover:text-white'
+                                                                    }`}
+                                                                >
+                                                                    ✏️ Whiteboard
+                                                                </button>
+                                                            </div>
+
+                                                            <span className="w-px h-6 bg-glass-border" />
+
+                                                            <span className="w-px h-6 bg-glass-border" />
+
+                                                            {/* Tool Selector (Mini) */}
+                                                            <div className="flex bg-zinc-900 rounded-lg p-0.5 border border-zinc-800">
+                                                                {[
+                                                                    { id: 'pen', name: 'Pen' },
+                                                                    { id: 'highlighter', name: 'High' },
+                                                                    { id: 'eraser', name: 'Eraser' }
+                                                                ].map(t => (
+                                                                    <button
+                                                                        key={`mini-tool-${t.id}`}
+                                                                        onClick={() => {
+                                                                            setWebBrushTool(t.id);
+                                                                            updateSetting('brush_tool', t.id);
+                                                                        }}
+                                                                        className={`px-2.5 py-1 rounded-md text-[10px] font-bold transition-all ${
+                                                                            webBrushTool === t.id ? 'bg-blue-600 text-white' : 'text-gray-400 hover:text-white'
+                                                                        }`}
+                                                                    >
+                                                                        {t.name}
+                                                                    </button>
+                                                                ))}
+                                                            </div>
+
+                                                            <span className="w-px h-6 bg-glass-border" />
+
+                                                            {/* Color Palette (Mini) */}
+                                                            <div className="flex gap-1.5">
+                                                                {[
+                                                                    { name: "Mauve", color: "#c6a0f6" },
+                                                                    { name: "Blue", color: "#8aadf4" },
+                                                                    { name: "Green", color: "#a6da95" },
+                                                                    { name: "Yellow", color: "#eed49f" },
+                                                                    { name: "Red", color: "#ed8796" },
+                                                                    { name: "White", color: "#ffffff" }
+                                                                ].map(item => (
+                                                                    <button 
+                                                                        key={`mini-${item.name}`}
+                                                                        onClick={() => {
+                                                                            setWebBrushColor(item.color);
+                                                                            setWebBrushColorName(item.name);
+                                                                            updateSetting('brush_color', item.color);
+                                                                            updateSetting('brush_color_name', item.name);
+                                                                        }}
+                                                                        style={{ backgroundColor: item.color }}
+                                                                        className={`w-6 h-6 rounded-full border-2 transition-all ${
+                                                                            webBrushColor === item.color ? 'border-white scale-110' : 'border-transparent hover:scale-105'
+                                                                        }`}
+                                                                        title={item.name}
+                                                                    />
+                                                                ))}
+                                                                <div className="relative w-6 h-6 rounded-full overflow-hidden border-2 border-dashed border-gray-500 hover:border-white transition-all flex items-center justify-center cursor-pointer" title="Custom Color">
+                                                                    <span className="text-[10px] text-gray-400 font-bold select-none">+</span>
+                                                                    <input 
+                                                                        type="color"
+                                                                        value={webBrushColor}
+                                                                        onChange={(e) => {
+                                                                            const val = e.target.value;
+                                                                            setWebBrushColor(val);
+                                                                            setWebBrushColorName('Custom');
+                                                                            updateSetting('brush_color', val);
+                                                                            updateSetting('brush_color_name', 'Custom');
+                                                                        }}
+                                                                        className="absolute inset-0 opacity-0 cursor-pointer w-full h-full"
+                                                                    />
+                                                                </div>
+                                                            </div>
+
+                                                            <span className="w-px h-6 bg-glass-border" />
+
+                                                            {/* Size Slider (Mini) */}
+                                                            <div className="flex items-center gap-2">
+                                                                <span className="text-[10px] text-gray-400 w-8">{webBrushSize}px</span>
+                                                                <input 
+                                                                    type="range"
+                                                                    min="1"
+                                                                    max="50"
+                                                                    value={webBrushSize}
+                                                                    onChange={(e) => {
+                                                                        const val = parseInt(e.target.value);
+                                                                        setWebBrushSize(val);
+                                                                        updateSetting('brush_size', val);
+                                                                    }}
+                                                                    className="w-24 h-1 bg-zinc-800 rounded-lg appearance-none cursor-pointer accent-blue-500"
+                                                                />
+                                                            </div>
+
+                                                            <span className="w-px h-6 bg-glass-border" />
+
+                                                            {/* Action Buttons */}
+                                                            <div className="flex gap-1.5">
+                                                                <button 
+                                                                    onClick={handleWebUndo}
+                                                                    disabled={undoStack.length === 0}
+                                                                    className={`p-1.5 rounded-lg border transition-all text-xs ${
+                                                                        undoStack.length === 0 ? 'text-zinc-600 border-zinc-900/10 cursor-not-allowed' : 'text-white border-zinc-700 bg-zinc-800 hover:bg-zinc-700 active:scale-95'
+                                                                    }`}
+                                                                    title="Undo"
+                                                                >
+                                                                    ↶
+                                                                </button>
+                                                                <button 
+                                                                    onClick={handleWebRedo}
+                                                                    disabled={redoStack.length === 0}
+                                                                    className={`p-1.5 rounded-lg border transition-all text-xs ${
+                                                                        redoStack.length === 0 ? 'text-zinc-600 border-zinc-900/10 cursor-not-allowed' : 'text-white border-zinc-700 bg-zinc-800 hover:bg-zinc-700 active:scale-95'
+                                                                    }`}
+                                                                    title="Redo"
+                                                                >
+                                                                    ↷
+                                                                </button>
+                                                                <button 
+                                                                    onClick={handleWebClear}
+                                                                    className="p-1.5 rounded-lg bg-red-500/20 hover:bg-red-500/30 border border-red-500/30 text-red-200 text-xs active:scale-95 transition-all"
+                                                                    title="Clear Canvas"
+                                                                >
+                                                                    🗑
+                                                                </button>
+                                                                <button 
+                                                                    onClick={handleWebSave}
+                                                                    disabled={undoStack.length === 0}
+                                                                    className={`p-1.5 rounded-lg border transition-all text-xs ${
+                                                                        undoStack.length === 0 ? 'text-zinc-650 border-zinc-900/10 cursor-not-allowed' : 'bg-blue-600/20 hover:bg-blue-600/30 border-blue-500/30 text-blue-200 active:scale-95'
+                                                                    }`}
+                                                                    title="Save Drawing"
+                                                                >
+                                                                    💾
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    )}
+                                                </div>
+
+                                                {/* Right Column: Telemetry & Controls Panel - Hidden in fullscreen mode */}
+                                                {!fullScreenMode && (
+                                                    <div className="space-y-6">
+                                                        {/* Telemetry Card */}
+                                                        <div className="glass-panel rounded-3xl p-6 border border-glass-border">
+                                                            <h3 className="text-lg font-bold text-white mb-4">Drawing Telemetry</h3>
+                                                            <div className="space-y-3">
+                                                                <div className="flex justify-between items-center py-2 border-b border-white/5">
+                                                                    <span className="text-xs text-gray-400">Drawing Status</span>
+                                                                    <span id="telemetry-drawing-status" className={`text-sm font-bold ${drawingStatus === 'Drawing' ? 'text-accent-green' : drawingStatus === 'Hovering' ? 'text-accent-yellow' : 'text-gray-450'}`}>
+                                                                        {drawingStatus}
+                                                                    </span>
+                                                                </div>
+                                                                <div className="flex justify-between items-center py-2 border-b border-white/5">
+                                                                    <span className="text-xs text-gray-400">Pointer Coordinates</span>
+                                                                    <span id="telemetry-pointer-coords" className="text-sm font-bold text-white font-mono">
+                                                                        {drawingStatus !== 'Idle' && lastPointRef.current ? `${Math.round(lastPointRef.current.x)}, ${Math.round(lastPointRef.current.y)}` : '-- , --'}
+                                                                    </span>
+                                                                </div>
+                                                                <div className="flex justify-between items-center py-2 border-b border-white/5">
+                                                                    <span className="text-xs text-gray-400">Pinch Distance</span>
+                                                                    <span id="telemetry-pinch-distance" className="text-sm font-bold text-white font-mono">{pinchDistance.toFixed(4)}</span>
+                                                                </div>
+                                                                <div className="flex justify-between items-center py-2 border-b border-white/5">
+                                                                    <span className="text-xs text-gray-400">Pinch Confidence</span>
+                                                                    <span id="telemetry-pinch-confidence" className="text-sm font-bold text-white font-mono">
+                                                                        --%
+                                                                    </span>
+                                                                </div>
+                                                                <div className="flex justify-between items-center py-2 border-b border-white/5">
+                                                                    <span className="text-xs text-gray-400">Pinch State</span>
+                                                                    <span id="telemetry-pinch-state" className="text-sm font-bold text-gray-450">
+                                                                        Idle
+                                                                    </span>
+                                                                </div>
+                                                                <div className="flex justify-between items-center py-2 border-b border-white/5">
+                                                                    <span className="text-xs text-gray-400">Active Gesture</span>
+                                                                    <span id="telemetry-active-gesture" className="text-sm font-bold text-white font-mono">
+                                                                        NONE
+                                                                    </span>
+                                                                </div>
+                                                                <div className="flex justify-between items-center py-2 border-b border-white/5">
+                                                                    <span className="text-xs text-gray-400">Pinch / Release Frames</span>
+                                                                    <span className="text-sm font-bold text-white font-mono">
+                                                                        P: <span id="telemetry-pinch-frames">0</span> | R: <span id="telemetry-release-frames">0</span>
+                                                                    </span>
+                                                                </div>
+                                                                <div className="flex justify-between items-center py-2 border-b border-white/5">
+                                                                    <span className="text-xs text-gray-400">Stream FPS</span>
+                                                                    <span id="telemetry-stream-fps" className="text-sm font-bold text-white font-mono">{streamFps.toFixed(1)} FPS</span>
+                                                                </div>
+                                                                <div className="flex justify-between items-center py-2 border-b border-white/5">
+                                                                    <span className="text-xs text-gray-400">Active Brush Size</span>
+                                                                    <span id="telemetry-brush-size" className="text-sm font-bold text-white font-mono">{webBrushSize} px</span>
+                                                                </div>
+                                                                <div className="flex justify-between items-center py-2 border-b border-white/5">
+                                                                    <span className="text-xs text-gray-400">Active Brush Color</span>
+                                                                    <span className="text-sm font-bold text-white flex items-center gap-1.5">
+                                                                        <span className="w-2.5 h-2.5 rounded-full inline-block" style={{ backgroundColor: webBrushColor }} />
+                                                                        {webBrushColorName}
+                                                                    </span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        {/* Settings Controls Card */}
+                                                        <div className="glass-panel rounded-3xl p-6 border border-glass-border space-y-5">
+                                                            <h3 className="text-lg font-bold text-white pb-3 border-b border-glass-border mb-0">Drawing Controls</h3>
+                                                            
+                                                            {/* View Configuration */}
+                                                            <div className="space-y-3">
+                                                                <span className="text-xs text-gray-400 block font-semibold">View Options</span>
+                                                                <div className="flex gap-2">
+                                                                    <button 
+                                                                        onClick={() => setFullScreenMode(true)}
+                                                                        className="flex-1 py-2 px-3 rounded-xl bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 text-white font-semibold text-xs active:scale-95 transition-all flex items-center justify-center gap-1.5"
+                                                                    >
+                                                                        🖥️ Fullscreen
+                                                                    </button>
+                                                                    <button 
+                                                                        onClick={() => setBackgroundMode(prev => prev === 'camera' ? 'whiteboard' : 'camera')}
+                                                                        className="flex-1 py-2 px-3 rounded-xl bg-blue-600/20 hover:bg-blue-600/30 border border-blue-500/30 text-blue-200 font-semibold text-xs active:scale-95 transition-all"
+                                                                    >
+                                                                        {backgroundMode === 'camera' ? '✏️ Whiteboard' : '📷 Camera'}
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+
+                                                            {/* Jitter Reduction Filter */}
+                                                            <div className="space-y-2">
+                                                                <div className="flex justify-between text-xs text-gray-400">
+                                                                    <span>Jitter Filter</span>
+                                                                    <span>{filterIntensity === 1 ? 'Off' : filterIntensity === 2 ? 'Low' : filterIntensity === 3 ? 'Medium' : filterIntensity === 4 ? 'High' : 'Super'}</span>
+                                                                </div>
+                                                                <input 
+                                                                    type="range"
+                                                                    min="1"
+                                                                    max="5"
+                                                                    value={filterIntensity}
+                                                                    onChange={(e) => {
+                                                                        const val = parseInt(e.target.value);
+                                                                        setFilterIntensity(val);
+                                                                        updateFilterParams(val);
+                                                                    }}
+                                                                    className="w-full h-1.5 bg-zinc-800 rounded-lg appearance-none cursor-pointer accent-blue-500"
+                                                                />
+                                                            </div>
+
+                                                            {/* Hover Trail Toggle */}
+                                                            <div className="flex justify-between items-center text-xs">
+                                                                <span className="text-gray-400">Fading Hover Trail</span>
+                                                                <input
+                                                                    type="checkbox"
+                                                                    checked={showHoverTrail}
+                                                                    onChange={(e) => setShowHoverTrail(e.target.checked)}
+                                                                    className="w-3.5 h-3.5 rounded border-zinc-700 bg-zinc-900 text-blue-500 focus:ring-blue-500/40 cursor-pointer"
+                                                                />
+                                                            </div>
+                                                            
+                                                                      {/* Tool Selector */}
+                                                            <div className="space-y-2">
+                                                                <span className="text-xs text-gray-400 block font-sans">Drawing Tool</span>
+                                                                <div className="flex bg-zinc-900/40 p-1 rounded-xl border border-white/5">
+                                                                    {[
+                                                                        { id: 'pen', name: 'Pen' },
+                                                                        { id: 'highlighter', name: 'High' },
+                                                                        { id: 'eraser', name: 'Eraser' }
+                                                                    ].map(t => (
+                                                                        <button
+                                                                            key={`sidebar-tool-${t.id}`}
+                                                                            onClick={() => {
+                                                                                setWebBrushTool(t.id);
+                                                                                updateSetting('brush_tool', t.id);
+                                                                            }}
+                                                                            className={`flex-1 py-1.5 rounded-lg text-xs font-bold transition-all ${
+                                                                                webBrushTool === t.id
+                                                                                    ? 'bg-blue-600/35 border border-blue-500/30 text-blue-200 shadow-md'
+                                                                                    : 'text-gray-400 hover:text-white'
+                                                                            }`}
+                                                                        >
+                                                                            {t.name}
+                                                                        </button>
+                                                                    ))}
+                                                                </div>
+                                                            </div>
+
+                                                            <span className="w-full h-px bg-glass-border block" />
+
+                                                            {/* Size Slider */}
+                                                            <div>
+                                                                <div className="flex justify-between text-xs text-gray-400 mb-2">
+                                                                    <span>Brush Size</span>
+                                                                    <span>{webBrushSize} px</span>
+                                                                </div>
+                                                                <input 
+                                                                    type="range"
+                                                                    min="1"
+                                                                    max="50"
+                                                                    value={webBrushSize}
+                                                                    onChange={(e) => {
+                                                                        const val = parseInt(e.target.value);
+                                                                        setWebBrushSize(val);
+                                                                        updateSetting('brush_size', val);
+                                                                    }}
+                                                                    className="w-full h-1.5 bg-zinc-800 rounded-lg appearance-none cursor-pointer accent-blue-500"
+                                                                />
+                                                            </div>
+ 
+                                                            {/* Color Palette */}
+                                                            <div>
+                                                                <span className="text-xs text-gray-400 block mb-2">Brush Color</span>
+                                                                <div className="grid grid-cols-4 gap-2">
+                                                                    {[
+                                                                        { name: "Mauve", color: "#c6a0f6" },
+                                                                        { name: "Blue", color: "#8aadf4" },
+                                                                        { name: "Green", color: "#a6da95" },
+                                                                        { name: "Yellow", color: "#eed49f" },
+                                                                        { name: "Peach", color: "#f5a97f" },
+                                                                        { name: "Red", color: "#ed8796" },
+                                                                        { name: "White", color: "#ffffff" }
+                                                                    ].map((item) => (
+                                                                        <button
+                                                                            key={item.name}
+                                                                            onClick={() => {
+                                                                                setWebBrushColor(item.color);
+                                                                                setWebBrushColorName(item.name);
+                                                                                updateSetting('brush_color', item.color);
+                                                                                updateSetting('brush_color_name', item.name);
+                                                                            }}
+                                                                            style={{ backgroundColor: item.color }}
+                                                                            className={`h-8 rounded-lg border-2 transition-all ${
+                                                                                webBrushColor === item.color ? 'border-white scale-110' : 'border-transparent hover:scale-105'
+                                                                            }`}
+                                                                            title={item.name}
+                                                                        />
+                                                                    ))}
+                                                                    <div className="relative h-8 rounded-lg border-2 border-dashed border-gray-500 hover:border-white transition-all flex items-center justify-center cursor-pointer" title="Custom Color">
+                                                                        <span className="text-xs text-gray-400 font-bold select-none">+</span>
+                                                                        <input 
+                                                                            type="color"
+                                                                            value={webBrushColor}
+                                                                            onChange={(e) => {
+                                                                                const val = e.target.value;
+                                                                                setWebBrushColor(val);
+                                                                                setWebBrushColorName('Custom');
+                                                                                updateSetting('brush_color', val);
+                                                                                updateSetting('brush_color_name', 'Custom');
+                                                                            }}
+                                                                            className="absolute inset-0 opacity-0 cursor-pointer w-full h-full"
+                                                                        />
+                                                                    </div>
+                                                                </div>
+                                                            </div>                         ))}
+                                                                </div>
+                                                            </div>
+
+                                                            {/* Toolbar buttons */}
+                                                            <div className="grid grid-cols-2 gap-2">
+                                                                <button 
+                                                                    onClick={handleWebUndo}
+                                                                    disabled={undoStack.length === 0}
+                                                                    className={`py-2 px-3 rounded-xl font-semibold text-xs border transition-all ${
+                                                                        undoStack.length === 0
+                                                                            ? 'bg-zinc-850/40 border-zinc-900/10 text-zinc-650 cursor-not-allowed'
+                                                                            : 'bg-zinc-800 hover:bg-zinc-700 border-zinc-700 text-white active:scale-95'
+                                                                    }`}
+                                                                >
+                                                                    ↶ Undo
+                                                                </button>
+                                                                <button 
+                                                                    onClick={handleWebRedo}
+                                                                    disabled={redoStack.length === 0}
+                                                                    className={`py-2 px-3 rounded-xl font-semibold text-xs border transition-all ${
+                                                                        redoStack.length === 0
+                                                                            ? 'bg-zinc-850/40 border-zinc-900/10 text-zinc-650 cursor-not-allowed'
+                                                                            : 'bg-zinc-800 hover:bg-zinc-700 border-zinc-700 text-white active:scale-95'
+                                                                    }`}
+                                                                >
+                                                                    ↷ Redo
+                                                                </button>
+                                                                <button 
+                                                                    onClick={handleWebClear}
+                                                                    className="py-2 px-3 rounded-xl font-semibold text-xs bg-red-500/20 hover:bg-red-500/30 border border-red-500/30 text-red-200 active:scale-95 transition-all"
+                                                                >
+                                                                    🗑 Clear
+                                                                </button>
+                                                                <button 
+                                                                    onClick={handleWebSave}
+                                                                    disabled={undoStack.length === 0}
+                                                                    className={`py-2 px-3 rounded-xl font-semibold text-xs border transition-all ${
+                                                                        undoStack.length === 0
+                                                                            ? 'bg-zinc-850/40 border-zinc-900/10 text-zinc-650 cursor-not-allowed'
+                                                                            : 'bg-blue-600/20 hover:bg-blue-600/30 border-blue-500/30 text-blue-200 active:scale-95'
+                                                                    }`}
+                                                                >
+                                                                    💾 Save PNG
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </>
+                                    ) : (
+                                        <div className="glass-card rounded-2xl p-8 text-center text-gray-400">
+                                            <p>This page is currently under construction. Please use the Dashboard or Virtual Mouse navigation links.</p>
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                        </main>
+                    </div>
+                );
+            }
+
+            const root = ReactDOM.createRoot(document.getElementById('root'));
+            root.render(<App />);
+        </script>
+    </body>
 </html>"""
+
+@app.get("/static/react.min.js")
+def get_react():
+    from fastapi.responses import FileResponse
+    return FileResponse("static/react.min.js", media_type="application/javascript")
+
+@app.get("/static/react-dom.min.js")
+def get_react_dom():
+    from fastapi.responses import FileResponse
+    return FileResponse("static/react-dom.min.js", media_type="application/javascript")
+
+@app.get("/static/babel.min.js")
+def get_babel():
+    from fastapi.responses import FileResponse
+    return FileResponse("static/babel.min.js", media_type="application/javascript")
+
+@app.get("/static/tailwind.js")
+def get_tailwind():
+    from fastapi.responses import FileResponse
+    return FileResponse("static/tailwind.js", media_type="application/javascript")
 
 @app.get("/", response_class=HTMLResponse)
 async def get_dashboard():

@@ -1,0 +1,57 @@
+Created At: 2026-06-12T10:59:57Z
+Completed At: 2026-06-12T10:59:57Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 4256
+Total Bytes: 294748
+Showing lines 1851 to 1950
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1851:                                                     ? 'text-amber-500 animate-pulse' 
+1852:                                                     : 'text-accent-yellow'
+1853:                                         }`;
+1854:                                     }
+1855:                                     
+1856:                                     const coordsEl = document.getElementById('telemetry-pointer-coords');
+1857:                                     if (coordsEl) {
+1858:                                         coordsEl.textContent = `${Math.round(smoothedX)}, ${Math.round(smoothedY)}`;
+1859:                                     }
+1860:                                     
+1861:                                     const pinchDistEl = document.getElementById('telemetry-pinch-distance');
+1862:                                     if (pinchDistEl) {
+1863:                                         pinchDistEl.textContent = `${ipDist.toFixed(4)} (raw: ${rawPinchDist.toFixed(4)})`;
+1864:                                     }
+1865:                                     
+1866:                                     const confEl = document.getElementById('telemetry-pinch-confidence');
+1867:                                     if (confEl) {
+1868:                                         confEl.textContent = `${Math.round(handScore * 100)}%`;
+1869:                                     }
+1870:                                     
+1871:                                     const pinchFramesEl = document.getElementById('telemetry-pinch-frames');
+1872:                           
+<truncated 4222 bytes>
+olorRef.current;
+1926:                                         
+1927:                                         const stateBadge = cursorEl.querySelector('.cursor-state');
+1928:                                         if (stateBadge) {
+1929:                                             stateBadge.textContent = currentStatus.toUpperCase();
+1930:                                             stateBadge.style.color = currentStatus === 'Drawing' 
+1931:                                                 ? '#a6da95' 
+1932:                                                 : currentStatus === 'Grace Period' 
+1933:                                                     ? '#f5a97f' 
+1934:                                                     : '#8aadf4';
+1935:                                         }
+1936:                                         
+1937:                                         const distBadge = cursorEl.querySelector('.cursor-dist');
+1938:                                         if (distBadge) {
+1939:                                             distBadge.textContent = ipDist.toFixed(4);
+1940:                                         }
+1941:                                         
+1942:                                         const confBadge = cursorEl.querySelector('.cursor-confidence');
+1943:                                         if (confBadge) {
+1944:                                             confBadge.textContent = `${Math.round(handScore * 100)}%`;
+1945:                                         }
+1946:                                     }
+1947:                                 } else {
+1948:                                     // Hand not detected or too low confidence
+1949:                                     consecutivePinchFramesRef.current = 0;
+1950:                                     consecutiveReleaseFramesRef.current += 1;
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

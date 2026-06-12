@@ -1,0 +1,44 @@
+Created At: 2026-06-12T04:54:43Z
+Completed At: 2026-06-12T04:54:44Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 2113
+Total Bytes: 144209
+Showing lines 1160 to 1195
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1160:                 <div className="flex h-screen bg-[#080710] font-sans antialiased text-gray-200 overflow-hidden">
+1161:                     
+1162:                     {/* Left Sidebar */}
+1163:                     <aside className="w-72 glass-panel border-r border-glass-border flex flex-col justify-between h-full z-10">
+1164:                         <div>
+1165:                             {/* Logo section - centered, minimal empty space */}
+1166:                             <div className="flex items-center gap-3 px-6 py-6 border-b border-glass-border justify-center">
+1167:                                 <div className="p-2.5 bg-blue-500/10 rounded-xl border border-blue-500/20 text-accent-blue">
+1168:                                     <HandIcon className="w-6 h-6 stroke-[2]" />
+1169:                                 </div>
+1170:                                 <div>
+1171:                                     <h1 className="text-lg font-bold tracking-wider bg-gradient-to-r from-white via-gray-200 to-gray-400 bg-clip-text text-transparent">
+1172:                                         GestureOS
+1173:                                     </h1>
+1174:                                     <p className="text-[10px] text-gray-500 uppercase tracking-widest font-semibold">Intelligence Edition</p>
+1175:                                 </div>
+1176:                             </div>
+1177: 
+1178:                             {/* Navigation */}
+1179:                             <nav className="px-4 py-6 space-y-2">
+1180:                                 {[
+1181:                                     { id: 'dashboard', name: 'Dashboard', icon: LayersIcon },
+1182:                                     { id: 'mouse', name: 'Virtual Mouse', icon: MousePointerIcon },
+1183:                                     { id: 'shortcuts', name: 'Gestures Map', icon: SlidersIcon },
+1184:                                     { id: 'analytics', name: 'Real-time Metrics', icon: TrendingUpIcon },
+1185:                                     { id: 'settings', name: 'System Settings', icon: SettingsIcon }
+1186:                                 ].map((item) => {
+1187:                                     const Icon = item.icon;
+1188:                                     const isActive = activeMenu === item.id;
+1189:                                     return (
+1190:                                         <button
+1191:                                             key={item.id}
+1192:                                             onClick={() => {
+1193:                                                 setActiveMenu(item.id);
+1194:                                                 logSystemEvent(`Navigated to page: ${item.name}`);
+1195:                                             }}
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

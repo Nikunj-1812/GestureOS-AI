@@ -1,0 +1,41 @@
+Created At: 2026-06-12T10:44:39Z
+Completed At: 2026-06-12T10:44:40Z
+File Path: `file:///C:/Users/nikun/.gemini/antigravity/brain/f71acb1b-ab5a-4de9-85a5-1a298f3c313a/.system_generated/tasks/task-2965.log`
+Total Lines: 33
+Total Bytes: 2480
+Showing lines 1 to 33
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1: C:\Users\nikun\OneDrive\Desktop\GestureOS-AI-main\web_backend.py:555: SyntaxWarning: invalid escape sequence '\s'
+2:   HTML_CONTENT = """<!DOCTYPE html>
+3: 2026-06-12 16:14:38.253 | INFO     | modules.gesture_engine:_load_model:106 - Loaded gesture model: models\weights\gesture_classifier_v1.onnx
+4: 2026-06-12 16:14:38.254 | INFO     | modules.gesture_engine:_load_model:112 - Loaded 4 gesture labels.
+5: 2026-06-12 16:14:38.336 | INFO     | modules.volume_controller:_initialize_pycaw:56 - VolumeController initialized. Synced with system volume: 97%
+6: 2026-06-12 16:14:38.482 | INFO     | modules.brightness_controller:_initialize_sbc:45 - BrightnessController initialized. Synced with system brightness: 48%
+7: C:\Users\nikun\OneDrive\Desktop\GestureOS-AI-main\web_backend.py:130: DeprecationWarning: 
+8:         on_event is deprecated, use lifespan event handlers instead.
+9: 
+10:         Read more about it in the
+11:         [FastAPI docs for Lifespan Events](https://fastapi.tiangolo.com/advanced/events/).
+12:         
+13:   @app.on_event("startup")
+14: C:\Users\nikun\OneDrive\Desktop\GestureOS-AI-main\web_backend.py:135: DeprecationWarning: 
+15:         on_event is deprecated, use lifespan event handlers instead.
+16: 
+17:         Read more about it in the
+18:         [FastAPI docs for Lifespan Events](https://fastapi.tiangolo.com/advanced/events/).
+19:         
+20:   @app.on_event("shutdown")
+21: C:\Users\nikun\OneDrive\Desktop\GestureOS-AI-main\web_backend.py:555: SyntaxWarning: invalid escape sequence '\s'
+22:   HTML_CONTENT = """<!DOCTYPE html>
+23: 2026-06-12 16:14:38.945 | INFO     | modules.gesture_engine:_load_model:106 - Loaded gesture model: models\weights\gesture_classifier_v1.onnx
+24: 2026-06-12 16:14:38.945 | INFO     | modules.gesture_engine:_load_model:112 - Loaded 4 gesture labels.
+25: 2026-06-12 16:14:38.966 | INFO     | modules.volume_controller:_initialize_pycaw:56 - VolumeController initialized. Synced with system volume: 97%
+26: 2026-06-12 16:14:38.983 | INFO     | modules.brightness_controller:_initialize_sbc:45 - BrightnessController initialized. Synced with system brightness: 48%
+27: INFO:     Started server process [26744]
+28: INFO:     Waiting for application startup.
+29: 2026-06-12 16:14:39.299 | INFO     | modules.camera:start:81 - Camera 0 started (640x360 @ 30fps)
+30: 2026-06-12 16:14:39.299 | INFO     | web_backend:start_camera_stream:111 - Camera stream started on index 0.
+31: INFO:     Application startup complete.
+32: INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
+33: 
+The above content shows the entire, complete file contents of the requested file.

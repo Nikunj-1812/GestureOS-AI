@@ -1,0 +1,49 @@
+Created At: 2026-06-12T09:20:56Z
+Completed At: 2026-06-12T09:20:56Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 2726
+Total Bytes: 188650
+Showing lines 1380 to 1420
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1380:                     osc.stop(audioCtx.currentTime + 0.05);
+1381:                 } catch (e) {
+1382:                     console.error("Failed to play audio click:", e);
+1383:                 }
+1384:             };
+1385: 
+1386:             // Virtual Keyboard UI event handlers
+1387:             const handleWebKeyPress = (key) => {
+1388:                 setPressedKey(key);
+1389:                 setTimeout(() => setPressedKey(null), 100);
+1390:                 setLastPressedKey(key);
+1391: 
+1392:                 if (key === 'Shift') {
+1393:                     setIsShiftActive(!isShiftActive);
+1394:                 } else if (key === 'Caps Lock') {
+1395:                     setIsCapsLockActive(!isCapsLockActive);
+1396:                 } else if (key === 'Backspace') {
+1397:                     setTypedText(prev => prev.slice(0, -1));
+1398:                 } else if (key === 'Space') {
+1399:                     setTypedText(prev => prev + ' ');
+1400:                     autoReleaseShift();
+1401:                 } else if (key === 'Tab') {
+1402:                     setTypedText(prev => prev + '    ');
+1403:                     autoReleaseShift();
+1404:                 } else if (key === 'Enter') {
+1405:                     setTypedText(prev => prev + '\\n');
+1406:                     autoReleaseShift();
+1407:                 } else {
+1408:                     const isUpper = isCapsLockActive || isShiftActive;
+1409:                     const char = isUpper ? key.toUpperCase() : key.toLowerCase();
+1410:                     setTypedText(prev => prev + char);
+1411:                     autoReleaseShift();
+1412:                 }
+1413:             };
+1414: 
+1415:             const autoReleaseShift = () => {
+1416:                 setIsShiftActive(false);
+1417:             };
+1418: 
+1419:             return (
+1420:                 <div className="flex h-screen bg-[#080710] font-sans antialiased text-gray-200 overflow-hidden">
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

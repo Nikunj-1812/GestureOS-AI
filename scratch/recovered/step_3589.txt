@@ -1,0 +1,39 @@
+Created At: 2026-06-12T11:00:34Z
+Completed At: 2026-06-12T11:00:34Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 4256
+Total Bytes: 294748
+Showing lines 650 to 680
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+650:     <script src="/static/react-dom.min.js"></script>
+651:     <script src="/static/babel.min.js"></script>
+652: 
+653:     <style>
+654:         body {
+655:             background-color: #080710;
+656:             color: #e2e8f0;
+657:             font-family: 'Outfit', 'Inter', sans-serif;
+658:         }
+659:         .glass-panel {
+660:             background: rgba(255, 255, 255, 0.03);
+661:             backdrop-filter: blur(16px);
+662:             -webkit-backdrop-filter: blur(16px);
+663:             border: 1px solid rgba(255, 255, 255, 0.06);
+664:         }
+665:         .glass-card {
+666:             background: rgba(255, 255, 255, 0.04);
+667:             backdrop-filter: blur(12px);
+668:             -webkit-backdrop-filter: blur(12px);
+669:             border: 1px solid rgba(255, 255, 255, 0.08);
+670:             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+671:         }
+672:         .glass-card:hover {
+673:             background: rgba(255, 255, 255, 0.06);
+674:             border-color: rgba(59, 130, 246, 0.3);
+675:             box-shadow: 0 10px 30px -10px rgba(59, 130, 246, 0.15);
+676:         }
+677:         .scrollbar-thin::-webkit-scrollbar {
+678:             width: 6px;
+679:             height: 6px;
+680:         }
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

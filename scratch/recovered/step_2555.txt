@@ -1,0 +1,43 @@
+Created At: 2026-06-12T09:42:22Z
+Completed At: 2026-06-12T09:42:22Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 2763
+Total Bytes: 190961
+Showing lines 2450 to 2515
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+2450:                                                             <div className="flex justify-between items-center text-xs">
+2451:                                                                 <span className="text-gray-400">Current Hovered Key</span>
+2452:                                                                 <span className="px-2 py-1 rounded bg-zinc-800 text-white font-mono font-bold">{hoveredKey}</span>
+2453:                                                             </div>
+2454:                                                             <div className="flex justify-between items-center text-xs">
+2455:                                                                 <span className="text-gray-400">Hover Duration</span>
+2456:                                                                 <span className="text-accent-blue font-bold">{hoverDuration.toFixed(2)}s</span>
+2457:                                                             </div>
+2458:                                                             <div className="flex justify-between items-center text-xs">
+2459:                                                                 <span className="text-gray-400">Pinch Distance</span>
+2460:                                                                 <span className="text-accent-blue font-mono font-bold">{pinchDistance.toFixed(4)}</span>
+2461:                                                             </div>
+2462:                                                             <div className="flex justify-between items-center text-xs">
+2463:    
+<truncated 3534 bytes>
+                                                    className="px-2.5 py-1 rounded-lg bg-red-500/10 hover:bg-red-500/20 text-red-400 text-[10px] font-semibold border border-red-500/10 transition-colors"
+2497:                                                             >
+2498:                                                                 Clear Buffer
+2499:                                                             </button>
+2500:                                                         </div>
+2501:                                                         <textarea 
+2502:                                                             readOnly
+2503:                                                             value={typedText}
+2504:                                                             className="flex-1 w-full bg-zinc-950/60 rounded-xl p-3 border border-glass-border text-sm text-gray-200 focus:outline-none focus:border-blue-500/40 font-mono resize-none"
+2505:                                                             placeholder="Typed output will stream here..."
+2506:                                                         />
+2507:                                                     </div>
+2508:                                                 </div>
+2509:                                             </div>
+2510:                                         </div>
+2511: 
+2512:                                         {/* QWERTY Keyboard Grid Section */}
+2513:                                         <div className="glass-panel rounded-3xl p-6 border border-glass-border relative overflow-hidden flex flex-col gap-4">
+2514:                                             <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 opacity-20" />
+2515:                                             <div>
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

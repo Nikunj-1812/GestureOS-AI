@@ -1,0 +1,29 @@
+Created At: 2026-06-12T10:09:01Z
+Completed At: 2026-06-12T10:09:01Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 3213
+Total Bytes: 215912
+Showing lines 1520 to 1540
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1520:                         setScrollDirection('NONE');
+1521:                         setDragStatus('IDLE');
+1522:                         setDragDuration(0.0);
+1523:                         logSystemEvent('\u26a0 EMERGENCY STOP: Virtual mouse disabled via ESC key.');
+1524:                     }
+1525: 
+1526:                 };
+1527:                 window.addEventListener('keydown', handleEscape);
+1528: 
+1529:                 return () => {
+1530:                     window.removeEventListener('keydown', handleEscape);
+1531:                     if (socketRef.current) {
+1532:                         socketRef.current.close();
+1533:                     }
+1534:                 };
+1535:             }, []);
+1536: 
+1537:             const logSystemEvent = (msg) => {
+1538:                 const timeString = new Date().toLocaleTimeString();
+1539:                 eventIdCounterRef.current += 1;
+1540:                 const newEvent = {
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

@@ -1,0 +1,64 @@
+Created At: 2026-06-11T10:57:38Z
+Completed At: 2026-06-11T10:57:38Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 1192
+Total Bytes: 69773
+Showing lines 275 to 330
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+275:     last_fps_tick = time.perf_counter()
+276:     fps_smooth = 0.0
+277:     last_frame_id = -1
+278:     last_gesture = "unknown"
+279:     
+280:     last_resource_tick = 0.0
+281:     cpu_usage = 0.0
+282:     ram_usage = 0.0
+283:     
+284:     try:
+285:         while True:
+286:             # Update resources rate-limited to 500ms
+287:             now_perf = time.perf_counter()
+288:             if now_perf - last_resource_tick >= 0.5:
+289:                 try:
+290:                     cpu_usage = psutil.cpu_percent()
+291:                     ram_usage = psutil.virtual_memory().percent
+292:                 except Exception:
+293:                     pass
+294:                 last_resource_tick = now_perf
+295: 
+296:             # Capture frame & run pipeline if running
+297:             if not camera_running or camera_stream is None:
+298:                 # Send empty / disconnected state
+299:                 await websocket.send_json({
+300:                     "fps": 0.0,
+301:                     "hands": 0,
+302:                     "gesture": "None",
+303:                     "confidence": 0.0,
+304:                     "camera_status": "Disconnected",
+305:                     "frame": None,
+306:                     "cpu_usage": float(cpu_usage),
+307:                     "ram_usage": float(ram_usage),
+308:                     "drag_status": "INACTIVE",
+309:                     "drag_counter": 0,
+310:                     "drag_duration": 0.0,
+311:                 })
+312:                 await asyncio.sleep(0.1)
+313:                 continue
+314:                 
+315:             frame = camera_stream.read()
+316:             if frame is None:
+317:                 await websocket.send_json({
+318:                     "fps": 0.0,
+319:                     "hands": 0,
+320:                     "gesture": "None",
+321:                     "confidence": 0.0,
+322:                     "camera_status": "Starting",
+323:                     "frame": None,
+324:                     "cpu_usage": float(cpu_usage),
+325:                     "ram_usage": float(ram_usage),
+326:                     "drag_status": "INACTIVE",
+327:                     "drag_counter": 0,
+328:                     "drag_duration": 0.0,
+329:                 })
+330:                 await asyncio.sleep(0.05)
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

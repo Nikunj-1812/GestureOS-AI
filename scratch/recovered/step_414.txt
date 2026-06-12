@@ -1,0 +1,88 @@
+Created At: 2026-06-11T10:12:22Z
+Completed At: 2026-06-11T10:12:22Z
+File Path: `file:///C:/Users/nikun/.gemini/antigravity/brain/f71acb1b-ab5a-4de9-85a5-1a298f3c313a/implementation_plan.md`
+Total Lines: 106
+Total Bytes: 4780
+Showing lines 1 to 106
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1: # Phase 3.4 — Thumb + Pinky Gesture Volume Control for GestureOS
+2: 
+3: This plan outlines the design and implementation steps for Phase 3.4 (Volume Control) in GestureOS.
+4: 
+5: ## User Review Required
+6: 
+7: > [!NOTE]
+8: > System Volume integration uses `pycaw` under Windows. If run on a non-Windows environment, a fallback simulation will be used to ensure the application starts and runs correctly.
+9: 
+10: > [!IMPORTANT]
+11: > The Volume Gesture (Thumb + Pinky extended, others folded) runs concurrently with the Virtual Mouse system. When active, it takes precedence over normal cursor navigation and scrolling, freezing the cursor to allow precise volume scaling.
+12: 
+13: ## Open Questions
+14: - *None* at this stage. The requirements explicitly specify mapping `30px` to `0%` volume and `250px` to `100%` volume with clamping.
+15: 
+16: ---
+17: 
+18: ## Proposed Changes
+19: 
+20: ### Dependencies
+21: 
+22: #### [MODIFY] [requirements.txt](file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/requirements.txt)
+23: - Add `pycaw` to automated dependencies.
+24: 
+25: ---
+26: 
+27: ### Configuration
+28: 
+29: #### [MODIFY] [settings.yaml](file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/config/settings.yaml)
+30: - Add default configuration options for Volume Control:
+31:   - `volume_min_distance_px`: 30.0
+32:   - `volume_max_distance_px`: 250.0
+33:   - `volume_smoothing`: 0.15
+34: 
+35: #### [MODIFY] [app_config.py](file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/config/app_config.py)
+36: - Load new parameters from `set
+<truncated 1679 bytes>
+ visual line between the Thumb and Pinky tips.
+65: - Display the current distance in pixels.
+66: - Draw a prominent text banner e.g., `VOLUME: 50%` or similar on the screen.
+67: 
+68: ---
+69: 
+70: ### Web Backend & Frontend
+71: 
+72: #### [MODIFY] [web_backend.py](file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py)
+73: - Instantiate `VolumeController`.
+74: - Pass current system volume and volume status to the WebSocket telemetry payload.
+75: - Update `process_hand` call to supply actual `frame_w` and `frame_h` properties.
+76: 
+77: #### [MODIFY] [App.tsx](file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web/src/App.tsx)
+78: - Add volume telemetry parsing on WebSocket message received.
+79: - Add components in Dashboard page to show:
+80:   - Volume Mode Status (Active/Inactive)
+81:   - Current Volume Level (0%-100%)
+82:   - Hand Distance (px)
+83: - Render volume level visual indicators on screen.
+84: 
+85: ---
+86: 
+87: ### Desktop UI
+88: 
+89: #### [MODIFY] [virtual_mouse_page.py](file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/dashboard/pages/virtual_mouse_page.py)
+90: - Update desktop GUI widgets to show the same volume telemetry (Volume Status, Volume Level, Pinky Distance) under the Virtual Mouse Telemetry card.
+91: 
+92: ---
+93: 
+94: ## Verification Plan
+95: 
+96: ### Automated Tests
+97: - Run `pytest tests/test_virtual_mouse.py` (after updating tests to support signature changes if necessary).
+98: - Create a test script in `scratch/test_volume.py` to verify volume calculation, mapping, and clamping logic.
+99: 
+100: ### Manual Verification
+101: - Run backend with `python web_backend.py`.
+102: - Open browser at `http://127.0.0.1:8000`.
+103: - Verify hand detection: normal cursor control works.
+104: - Extend only Thumb and Pinky: verify Volume Mode triggers, volume adjustments match distance, and actual Windows volume changes.
+105: - Verify logs indicate `[VOLUME] 50%` without spamming logs.
+106: 
+The above content shows the entire, complete file contents of the requested file.

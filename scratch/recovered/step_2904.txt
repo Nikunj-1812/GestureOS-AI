@@ -1,0 +1,39 @@
+Created At: 2026-06-12T10:06:07Z
+Completed At: 2026-06-12T10:06:08Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 3040
+Total Bytes: 208293
+Showing lines 490 to 520
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+490:                 "scroll_direction": vm_result.get("scroll_direction", "NONE") if vm_result else "NONE",
+491:                 "scroll_speed": vm_result.get("scroll_speed", 0.0) if vm_result else 0.0,
+492:                 "scroll_counter": vm_result.get("scroll_counter", 0) if vm_result else 0,
+493:                 # Phase 3.4 — Volume telemetry
+494:                 "volume_mode": vm_result.get("volume_mode", False) if vm_result else False,
+495:                 "volume_level": vm_result.get("volume_level", 0) if vm_result else 0,
+496:                 "volume_distance": vm_result.get("volume_distance", 0.0) if vm_result else 0.0,
+497:                 # Phase 3.5 — Mode Manager & Brightness telemetry
+498:                 "active_mode": vm_result.get("active_mode", "CURSOR") if vm_result else "CURSOR",
+499:                 "brightness_mode": vm_result.get("brightness_mode", False) if vm_result else False,
+500:                 "brightness_level": vm_result.get("brightness_level", 0) if vm_result else 0,
+501:                 "brightness_distance": vm_result.get("brightness_distance", 0.0) if vm_result else 0.0,
+502:                 "drag_status": vm_result.get("drag_status", "IDLE") if vm_result else "IDLE",
+503:                 "drag_duration": vm_result.get("drag_duration", 0.0) if vm_result else 0.0,
+504:                 "drag_counter": vm_result.get("drag_counter", 0) if vm_result else 0,
+505:             }
+506: 
+507:             
+508:             t_send_start = time.perf_counter()
+509:             await websocket.send_json(payload)
+510:             t_send = time.perf_counter() - t_send_start
+511:             
+512:             t_total = time.perf_counter() - t0
+513:             
+514:             # Maintain roughly target frame rate
+515:             elapsed = time.perf_counter() - loop_start
+516:             interval = max(0.001, 1.0 / max(config.camera_fps, 1) - elapsed)
+517:             await asyncio.sleep(interval)
+518:             
+519:     except WebSocketDisconnect:
+520:         logger.info("WebSocket client disconnected")
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

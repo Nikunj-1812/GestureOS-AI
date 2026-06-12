@@ -1,0 +1,39 @@
+Created At: 2026-06-11T10:08:54Z
+Completed At: 2026-06-11T10:08:54Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 1639
+Total Bytes: 106428
+Showing lines 1390 to 1420
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1390:                                                         <div className="flex justify-between items-center text-sm border-b border-glass-border pb-2">
+1391:                                                             <span className="text-gray-400">Tracking State</span>
+1392:                                                             <span className={`font-semibold ${
+1393:                                                                 trackingState === 'Tracking' ? 'text-accent-green' : trackingState === 'Disabled' ? 'text-gray-400' : 'text-rose-400'
+1394:                                                             }`}>
+1395:                                                                 {trackingState}
+1396:                                                             </span>
+1397:                                                         </div>
+1398:                                                         <div className="flex justify-between items-center text-sm border-b border-glass-border pb-2">
+1399:                                                             <span className="text-gray-400">Stream FPS</span>
+1400:                                                             <span className="font-mono font-bold text-white">
+1401:                                                                 {fps > 0 ? `${fps.toFixed(1)} FPS` : '-- FPS'}
+1402:                                                             </span>
+1403:                                                         </div>
+1404:                                                         <div className="flex justify-between items-center text-sm border-b border-glass-border pb-2">
+1405:                                                             <span className="text-gray-400">Current Action</span>
+1406:                                                             <span className={`font-semibold ${
+1407:                                                                 currentAction === 'Left Click' ? 'text-accent-green' :
+1408:                                                                 currentAction === 'Right Click' ? 'text-orange-400' : 'text-white'
+1409:                                                             }`}>
+1410:                                                                 {currentAction}
+1411:                                                             </span>
+1412:                                                         </div>
+1413: 
+1414:                                                         {/* Separator */}
+1415:                                                         <div className="text-[10px] uppercase tracking-widest text-gray-600 font-semibold pt-1">Left Click (Index + Thumb)</div>
+1416: 
+1417:                                                         <div className="flex justify-between items-center text-sm border-b border-glass-border pb-2">
+1418:                                                             <span className="text-gray-400">Click Status</span>
+1419:                                                             <span className={`font-semibold ${
+1420:                                                                 clickStatus === 'LEFT_CLICK' || clickStatus === 'PINCH' ? 'text-accent-green' : clickStatus === 'RELEASE' ? 'text-accent-blue' : 'text-white'
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

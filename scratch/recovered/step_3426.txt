@@ -1,0 +1,54 @@
+Created At: 2026-06-12T10:50:50Z
+Completed At: 2026-06-12T10:50:51Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 4034
+Total Bytes: 278198
+Showing lines 475 to 535
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+475:             instant_fps = 1.0 / delta
+476:             fps_smooth = instant_fps if fps_smooth == 0 else (fps_smooth * 0.85 + instant_fps * 0.15)
+477:             last_fps_tick = now
+478:             
+479:             primary_hand = detected_hands[0] if detected_hands else None
+480:             index_tip_x = float(round(primary_hand.landmarks[8][0], 4)) if (primary_hand and len(primary_hand.landmarks) > 8) else None
+481:             index_tip_y = float(round(primary_hand.landmarks[8][1], 4)) if (primary_hand and len(primary_hand.landmarks) > 8) else None
+482: 
+483:             # Compute live pinch distance for virtual keyboard: Middle Finger (12) and Thumb (4)
+484:             live_pinch_dist = 0.0
+485:             if primary_hand and len(primary_hand.landmarks) > 12:
+486:                 mx, my, mz = primary_hand.landmarks[12]
+487:                 tx, ty, tz = primary_hand.landmarks[4]
+488:                 live_pinch_dist = math.sqrt((mx - tx)**2 + (my - ty)**2 + (mz - tz)**2)
+489: 
+490:             # Compute live index-thumb pinch distance for Air Drawing
+491:             index_pinch_dist = 0.0
+492:             if primary_hand and len(primary_hand.landmarks) > 8:
+493:                 ix_3d, iy_3d, iz_3d = primary_hand.landmarks[8]
+494:                 tx_3d, ty_3d, tz_3d = primary_hand.landmarks[4]
+495:                 index_pinch_dist = math.sqrt((ix_3d - tx_3d)**2 + (iy_3d - ty_3d)**2 + (iz_3d - tz_3d)**2)
+496: 
+497:             # Send live telemetry + frame over WebSocket
+498:             payload = {
+499:                 "fps": float(round(fps_smooth, 1)
+<truncated 1163 bytes>
+atus": vm_result.get("right_click_status", "OPEN") if vm_result else "OPEN",
+517:                 "right_click_counter": vm_result.get("right_click_counter", 0) if vm_result else 0,
+518:                 "right_pinch_distance": vm_result.get("right_pinch_distance", 0.0) if vm_result else 0.0,
+519:                 # Phase 3.4 — Scroll telemetry
+520:                 "scroll_mode": vm_result.get("scroll_mode", False) if vm_result else False,
+521:                 "scroll_direction": vm_result.get("scroll_direction", "NONE") if vm_result else "NONE",
+522:                 "scroll_speed": vm_result.get("scroll_speed", 0.0) if vm_result else 0.0,
+523:                 "scroll_counter": vm_result.get("scroll_counter", 0) if vm_result else 0,
+524:                 # Phase 3.4 — Volume telemetry
+525:                 "volume_mode": vm_result.get("volume_mode", False) if vm_result else False,
+526:                 "volume_level": vm_result.get("volume_level", 0) if vm_result else 0,
+527:                 "volume_distance": vm_result.get("volume_distance", 0.0) if vm_result else 0.0,
+528:                 # Phase 3.5 — Mode Manager & Brightness telemetry
+529:                 "active_mode": vm_result.get("active_mode", "CURSOR") if vm_result else "CURSOR",
+530:                 "brightness_mode": vm_result.get("brightness_mode", False) if vm_result else False,
+531:                 "brightness_level": vm_result.get("brightness_level", 0) if vm_result else 0,
+532:                 "brightness_distance": vm_result.get("brightness_distance", 0.0) if vm_result else 0.0,
+533:                 "drag_status": vm_result.get("drag_status", "IDLE") if vm_result else "IDLE",
+534:                 "drag_duration": vm_result.get("drag_duration", 0.0) if vm_result else 0.0,
+535:                 "drag_counter": vm_result.get("drag_counter", 0) if vm_result else 0,
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

@@ -1,0 +1,66 @@
+Created At: 2026-06-12T10:20:35Z
+Completed At: 2026-06-12T10:20:35Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 3488
+Total Bytes: 240174
+Showing lines 3190 to 3488
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+3190:                                                                         : 'bg-zinc-900 hover:bg-zinc-800 text-gray-300 border border-zinc-750'
+3191:                                                         }`}
+3192:                                                     >
+3193:                                                         Shift
+3194:                                                     </button>
+3195:                                                     {["Z", "X", "C", "V", "B", "N", "M"].map(key => {
+3196:                                                         const label = isCapsLockActive || isShiftActive ? key.toUpperCase() : key.toLowerCase();
+3197:                                                         return (
+3198:                                                             <button 
+3199:                                                                 key={key}
+3200:                                                                 data-key={key}
+3201:                                                                 onMouseEnter={() => setHoveredKey(key)}
+3202:                                                                 onMouseLeave={() => setHoveredKey('None')}
+3203:                                                                 onClick={() => handleWebKeyPress(key)}
+3204:                                                                 className={`flex-1 h-12 rounded-lg text-sm font-semibold transition-all duration-100 ${
+3205:                                                                     pressedKey === key 
+3206:                 
+<truncated 23996 bytes>
+                       </div>
+3450:                                                     </div>
+3451:                                                 </div>
+3452:                                             </div>
+3453:                                             ) : (
+3454:                                         <div className="glass-card rounded-2xl p-8 text-center text-gray-400">
+3455:                                             <p>This page is currently under construction. Please use the Dashboard or Virtual Mouse navigation links.</p>
+3456:                                         </div>
+3457:                                     )}
+3458:                                 </div>
+3459:                             </div>
+3460: </html>"""
+3461: 
+3462: @app.get("/static/react.min.js")
+3463: def get_react():
+3464:     from fastapi.responses import FileResponse
+3465:     return FileResponse("static/react.min.js", media_type="application/javascript")
+3466: 
+3467: @app.get("/static/react-dom.min.js")
+3468: def get_react_dom():
+3469:     from fastapi.responses import FileResponse
+3470:     return FileResponse("static/react-dom.min.js", media_type="application/javascript")
+3471: 
+3472: @app.get("/static/babel.min.js")
+3473: def get_babel():
+3474:     from fastapi.responses import FileResponse
+3475:     return FileResponse("static/babel.min.js", media_type="application/javascript")
+3476: 
+3477: @app.get("/static/tailwind.js")
+3478: def get_tailwind():
+3479:     from fastapi.responses import FileResponse
+3480:     return FileResponse("static/tailwind.js", media_type="application/javascript")
+3481: 
+3482: @app.get("/", response_class=HTMLResponse)
+3483: async def get_dashboard():
+3484:     return HTML_CONTENT
+3485: 
+3486: if __name__ == "__main__":
+3487:     uvicorn.run("web_backend:app", host="127.0.0.1", port=8000, log_level="info")
+3488: 
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

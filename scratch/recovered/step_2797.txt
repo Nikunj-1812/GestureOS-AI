@@ -1,0 +1,75 @@
+Created At: 2026-06-12T10:01:38Z
+Completed At: 2026-06-12T10:01:38Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 3040
+Total Bytes: 208293
+Showing lines 640 to 830
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+640:         .glass-card:hover {
+641:             background: rgba(255, 255, 255, 0.06);
+642:             border-color: rgba(59, 130, 246, 0.3);
+643:             box-shadow: 0 10px 30px -10px rgba(59, 130, 246, 0.15);
+644:         }
+645:         .scrollbar-thin::-webkit-scrollbar {
+646:             width: 6px;
+647:             height: 6px;
+648:         }
+649:         .scrollbar-thin::-webkit-scrollbar-track {
+650:             background: transparent;
+651:         }
+652:         .scrollbar-thin::-webkit-scrollbar-thumb {
+653:             background: rgba(255, 255, 255, 0.1);
+654:             border-radius: 9999px;
+655:         }
+656:         .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+657:             background: rgba(255, 255, 255, 0.25);
+658:         }
+659:     </style>
+660: </head>
+661: <body class="bg-[#080710] text-gray-200 overflow-hidden">
+662:     <div id="root"></div>
+663:     <script type="text/babel">
+664:         const { useState, useEffect, useRef } = React;
+665: 
+666:         // Custom Inline SVG Icons to match Lucide React exactly
+667:         const HandIcon = (props) => (
+668:             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+669:                 <path d="M18 11V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v5" />
+670:                 <path d="M14 10V4a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v6" />
+671:                 <path d="M10 10.5V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v8.5" />
+672:                 <path d="M10 18H5a2 2 0
+<truncated 8801 bytes>
+      <polygon points="12 2 2 7 12 12 22 7 12 2"/>
+799:                 <polygon points="2 17 12 22 22 17"/>
+800:                 <polygon points="2 12 12 17 22 12"/>
+801:             </svg>
+802:         );
+803: 
+804:         const MousePointerIcon = (props) => (
+805:             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+806:                 <path d="m3 3 7.07 16.97 2.51-7.39 7.39-2.51L3 3z" />
+807:                 <path d="m13 13 6 6" />
+808:             </svg>
+809:         );
+810: 
+811:         const SunIcon = (props) => (
+812:             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+813:                 <circle cx="12" cy="12" r="4" />
+814:                 <path d="M12 2v2" />
+815:                 <path d="M12 20v2" />
+816:                 <path d="m4.93 4.93 1.41 1.41" />
+817:                 <path d="m17.66 17.66 1.41 1.41" />
+818:                 <path d="M2 12h2" />
+819:                 <path d="M20 12h2" />
+820:                 <path d="m6.34 17.66-1.41 1.41" />
+821:                 <path d="m19.07 4.93-1.41 1.41" />
+822:             </svg>
+823:         );
+824: 
+825:         const Volume2Icon = (props) => (
+826:             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+827:                 <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
+828:                 <path d="M15.54 8.46a5 5 0 0 1 0 7.07" />
+829:                 <path d="M19.07 4.93a10 10 0 0 1 0 14.14" />
+830:             </svg>
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

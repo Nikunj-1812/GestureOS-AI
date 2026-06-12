@@ -1,0 +1,33 @@
+Created At: 2026-06-12T11:01:09Z
+Completed At: 2026-06-12T11:01:09Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 4256
+Total Bytes: 294748
+Showing lines 360 to 384
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+360:             if not camera_running or camera_stream is None:
+361:                 # Send empty / disconnected state
+362:                 await websocket.send_json({
+363:                     "fps": 0.0,
+364:                     "hands": 0,
+365:                     "gesture": "None",
+366:                     "confidence": 0.0,
+367:                     "camera_status": "Disconnected",
+368:                     "frame": None
+369:                 })
+370:                 await asyncio.sleep(0.1)
+371:                 continue
+372:                 
+373:             frame = camera_stream.read()
+374:             if frame is None:
+375:                 await websocket.send_json({
+376:                     "fps": 0.0,
+377:                     "hands": 0,
+378:                     "gesture": "None",
+379:                     "confidence": 0.0,
+380:                     "camera_status": "Starting",
+381:                     "frame": None
+382:                 })
+383:                 await asyncio.sleep(0.05)
+384:                 continue
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

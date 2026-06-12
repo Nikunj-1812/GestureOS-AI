@@ -1,0 +1,63 @@
+Created At: 2026-06-12T09:20:26Z
+Completed At: 2026-06-12T09:20:26Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 2694
+Total Bytes: 187527
+Showing lines 1101 to 1400
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1101:                                     confidence: 1.0,
+1102:                                     action: `[DRAG] Drag Start | Count = ${data.drag_counter || 0}`
+1103:                                 }, ...prev].slice(0, 50));
+1104:                             } else if (newDS === 'IDLE' && prevDS === 'DRAGGING') {
+1105:                                 const timeString = new Date().toLocaleTimeString();
+1106:                                 eventIdCounterRef.current += 1;
+1107:                                 setEvents(prev => [{
+1108:                                     id: `${Date.now()}-${eventIdCounterRef.current}`,
+1109:                                     timestamp: timeString,
+1110:                                     gesture: 'Drag End',
+1111:                                     confidence: 1.0,
+1112:                                     action: `[DRAG] Drag End | Duration = ${(data.drag_duration || 0.0).toFixed(2)}s`
+1113:                                 }, ...prev].slice(0, 50));
+1114:                             }
+1115:                             prevDragStatusRef.current = newDS;
+1116: 
+1117:                             // Phase 3.5 — Mode Manager
+1118:                             const newAM = data.active_mode || 'CURSOR';
+1119:                             setActiveMode(newAM);
+1120:                             if (newAM !== prevActiveModeRef.current) {
+1121:                                 const timeString = new Date().toLocaleTimeString();
+1122:                                 eventIdCounterRef.current += 1;
+1123:                            
+<truncated 13803 bytes>
+edText(prev => prev + '    ');
+1371:                     autoReleaseShift();
+1372:                 } else if (key === 'Enter') {
+1373:                     setTypedText(prev => prev + '\\n');
+1374:                     autoReleaseShift();
+1375:                 } else {
+1376:                     const isUpper = isCapsLockActive || isShiftActive;
+1377:                     const char = isUpper ? key.toUpperCase() : key.toLowerCase();
+1378:                     setTypedText(prev => prev + char);
+1379:                     autoReleaseShift();
+1380:                 }
+1381:             };
+1382: 
+1383:             const autoReleaseShift = () => {
+1384:                 setIsShiftActive(false);
+1385:             };
+1386: 
+1387:             return (
+1388:                 <div className="flex h-screen bg-[#080710] font-sans antialiased text-gray-200 overflow-hidden">
+1389:                     
+1390:                     {/* Left Sidebar */}
+1391:                     <aside className="w-72 glass-panel border-r border-glass-border flex flex-col justify-between h-full z-10">
+1392:                         <div>
+1393:                             {/* Logo section - centered, minimal empty space */}
+1394:                             <div className="flex items-center gap-3 px-6 py-6 border-b border-glass-border justify-center">
+1395:                                 <div className="p-2.5 bg-blue-500/10 rounded-xl border border-blue-500/20 text-accent-blue">
+1396:                                     <HandIcon className="w-6 h-6 stroke-[2]" />
+1397:                                 </div>
+1398:                                 <div>
+1399:                                     <h1 className="text-lg font-bold tracking-wider bg-gradient-to-r from-white via-gray-200 to-gray-400 bg-clip-text text-transparent">
+1400:                                         GestureOS
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

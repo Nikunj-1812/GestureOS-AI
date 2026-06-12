@@ -1,0 +1,29 @@
+Created At: 2026-06-12T10:21:18Z
+Completed At: 2026-06-12T10:21:19Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 3488
+Total Bytes: 240174
+Showing lines 2310 to 2330
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+2310:                                                                 ))}
+2311:                                                             </div>
+2312:                                                         )}
+2313:                                                     </div>
+2314:                                                 </div>
+2315:                                             </div>
+2316: 
+2317:                                         </div>
+2318:                                     </>
+2319:                                 ) : activeMenu === 'mouse' ? (
+2320:                                     <>
+2321:                                         {/* Hero Header Section */}
+2322:                                         <div className="glass-panel rounded-3xl p-6 flex flex-col md:flex-row md:items-center justify-between border border-glass-border relative overflow-hidden">
+2323:                                             <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 opacity-20" />
+2324:                                             <div>
+2325:                                                 <h2 className="text-2xl font-bold tracking-wide text-white">Virtual Mouse Controls</h2>
+2326:                                                 <p className="text-xs text-gray-400 mt-1 max-w-xl">
+2327:                                                     Control your system cursor in real-time using your index finger. Calibrate tracking properties below.
+2328:                                                 </p>
+2329:                                             </div>
+2330:                                             <div className="mt-4 md:mt-0">
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

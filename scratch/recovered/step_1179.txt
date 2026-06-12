@@ -1,0 +1,44 @@
+Created At: 2026-06-11T11:24:03Z
+Completed At: 2026-06-11T11:24:03Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 1364
+Total Bytes: 89652
+Showing lines 250 to 285
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+250:         if hasattr(config, 'virtual_mouse_scroll_smoothing'):
+251:             virtual_mouse.scroll_smoothing = config.virtual_mouse_scroll_smoothing
+252:         if hasattr(config, 'virtual_mouse_volume_min_distance_px') and virtual_mouse._volume_controller:
+253:             virtual_mouse._volume_controller.min_distance = config.virtual_mouse_volume_min_distance_px
+254:         if hasattr(config, 'virtual_mouse_volume_max_distance_px') and virtual_mouse._volume_controller:
+255:             virtual_mouse._volume_controller.max_distance = config.virtual_mouse_volume_max_distance_px
+256:         if hasattr(config, 'virtual_mouse_volume_smoothing') and virtual_mouse._volume_controller:
+257:             virtual_mouse._volume_controller.smoothing = config.virtual_mouse_volume_smoothing
+258:         if hasattr(config, 'virtual_mouse_brightness_min_distance_px') and virtual_mouse._brightness_controller:
+259:             virtual_mouse._brightness_controller.min_distance = config.virtual_mouse_brightness_min_distance_px
+260:         if hasattr(config, 'virtual_mouse_brightness_max_distance_px') and virtual_mouse._brightness_controller:
+261:             virtual_mouse._brightness_controller.max_distance = config.virtual_mouse_brightness_max_distance_px
+262:         if hasattr(config, 'virtual_mouse_brightness_smoothing') and virtual_mouse._brightness_controller:
+263:             virtual_mouse._brightness_controller.smoothing = config.virtual_mouse_brightness_smoothing
+264:         
+265:         # Apply Phase 3.6 Settings to live instance
+266:         virtual_mouse.mode_cursor_enabled = getattr(config, 'mode_cursor_enabled', True)
+267:         virtual_mouse.mode_click_enabled = getattr(config, 'mode_click_enabled', True)
+268:         virtual_mouse.mode_scroll_enabled = getattr(config, 'mode_scroll_enabled', True)
+269:         virtual_mouse.mode_volume_enabled = getattr(config, 'mode_volume_enabled', True)
+270:         virtual_mouse.mode_brightness_enabled = getattr(config, 'mode_brightness_enabled', True)
+271:         virtual_mouse.mode_drag_enabled = getattr(config, 'mode_drag_enabled', True)
+272:         virtual_mouse.drag_hold_threshold_ms = getattr(config, 'drag_hold_threshold_ms', 300.0)
+273:         virtual_mouse.cursor_acceleration_enabled = getattr(config, 'cursor_acceleration_enabled', True)
+274:         virtual_mouse.click_cooldown_ms = getattr(config, 'click_cooldown_ms', 300.0)
+275:         virtual_mouse.debounce_ms = getattr(config, 'click_cooldown_ms', 300.0)
+276:         virtual_mouse.right_debounce_ms = getattr(config, 'click_cooldown_ms', 300.0)
+277:         virtual_mouse.volume_cooldown_ms = getattr(config, 'volume_cooldown_ms', 100.0)
+278:         virtual_mouse.brightness_cooldown_ms = getattr(config, 'brightness_cooldown_ms', 100.0)
+279:         if virtual_mouse._brightness_controller:
+280:             virtual_mouse._brightness_controller.cooldown_ms = getattr(config, 'brightness_cooldown_ms', 100.0)
+281:         virtual_mouse.show_overlays = getattr(config, 'show_overlays', True)
+282:         virtual_mouse.show_event_logs = getattr(config, 'show_event_logs', True)
+283:         virtual_mouse.enable_sounds = getattr(config, 'enable_sounds', True)
+284:         virtual_mouse.enable_telemetry = getattr(config, 'enable_telemetry', True)
+285:     return {"status": "success"}
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

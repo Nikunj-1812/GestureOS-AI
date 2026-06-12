@@ -1,0 +1,24 @@
+Created At: 2026-06-12T09:58:10Z
+Completed At: 2026-06-12T09:58:10Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 3021
+Total Bytes: 207053
+Showing lines 2580 to 2595
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+2580:                                                                 cameraStatus === 'Connected' ? 'bg-accent-green animate-ping' : 'bg-red-400'
+2581:                                                             }`} />
+2582:                                                             {cameraStatus === 'Connected' ? 'Streaming live' : 'Offline'}
+2583:                                                         </div>
+2584:                                                     </div>
+2585:                                                     
+2586:                                                     <div className="flex-1 my-4 flex items-center justify-center bg-black/45 rounded-xl overflow-hidden border border-glass-border relative">
+2587:                                                         {cameraStatus === 'Connected' && frame ? (
+2588:                                                             <img 
+2589:                                                                 src={frame} 
+2590:                                                                 alt="Camera Feed" 
+2591:                                                                 className="w-full h-full object-contain rounded-xl"
+2592:                                                             />
+2593:                                                         ) : (
+2594:                                                             <div className="flex flex-col items-center justify-center p-8 text-center max-w-sm">
+2595:                                                                 <div className="w-16 h-16 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-gray-500 mb-4 animate-pulse">
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

@@ -1,0 +1,52 @@
+Created At: 2026-06-11T10:49:23Z
+Completed At: 2026-06-11T10:49:23Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 2053
+Total Bytes: 138910
+Showing lines 1150 to 1250
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1150:                             {/* Logo section - centered, minimal empty space */}
+1151:                             <div className="flex items-center gap-3 px-6 py-6 border-b border-glass-border justify-center">
+1152:                                 <div className="p-2.5 bg-blue-500/10 rounded-xl border border-blue-500/20 text-accent-blue">
+1153:                                     <HandIcon className="w-6 h-6 stroke-[2]" />
+1154:                                 </div>
+1155:                                 <div>
+1156:                                     <h1 className="text-lg font-bold tracking-wider bg-gradient-to-r from-white via-gray-200 to-gray-400 bg-clip-text text-transparent">
+1157:                                         GestureOS
+1158:                                     </h1>
+1159:                                     <p className="text-[10px] text-gray-500 uppercase tracking-widest font-semibold">Intelligence Edition</p>
+1160:                                 </div>
+1161:                             </div>
+1162: 
+1163:                             {/* Navigation */}
+1164:                             <nav className="px-4 py-6 space-y-2">
+1165:                                 {[
+1166:                                     { id: 'dashboard', name: 'Dashboard', icon: LayersIcon },
+1167:                                     { id: 'mouse', name: 'Virtual Mouse', icon: MousePointerIcon },
+1168:                                     { id: 'shortcuts', name: 'Gestures Map', icon: SlidersIcon },
+1169:                                     { id: 'analytics', name: '
+<truncated 4736 bytes>
+lipse_at_top,_var(--tw-gradient-stops))] from-blue-950/15 via-[#080710] to-[#080710]">
+1229:                         
+1230:                         {/* Header Row - vertically aligned profile, mode status, notifications, settings, exit */}
+1231:                         <header className="h-20 border-b border-glass-border px-8 flex items-center justify-between backdrop-blur-md z-10 shrink-0">
+1232:                             <div>
+1233:                                 <h2 className="text-xl font-bold tracking-wide text-white">
+1234:                                     {activeMenu === 'dashboard' ? 'System Monitor' : activeMenu === 'mouse' ? 'Virtual Mouse Monitor' : 'System Configuration'}
+1235:                                 </h2>
+1236:                                 <p className="text-xs text-gray-400 mt-0.5">
+1237:                                     {activeMenu === 'dashboard' 
+1238:                                         ? 'Telemetry overview and input gesture mapping controls.' 
+1239:                                         : activeMenu === 'mouse' 
+1240:                                         ? 'Real-time mouse tracking coordinates, status, and settings.' 
+1241:                                         : 'Calibrate input settings and device thresholds.'}
+1242:                                 </p>
+1243:                             </div>
+1244: 
+1245:                             <div className="flex items-center gap-4">
+1246:                                 <div className="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-xs text-emerald-400 font-medium">
+1247:                                     <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+1248:                                     Engine Online
+1249:                                 </div>
+1250: 
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

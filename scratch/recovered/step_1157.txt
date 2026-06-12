@@ -1,0 +1,40 @@
+Created At: 2026-06-11T11:21:35Z
+Completed At: 2026-06-11T11:21:35Z
+File Path: `file:///C:/Users/nikun/.gemini/antigravity/brain/f71acb1b-ab5a-4de9-85a5-1a298f3c313a/.system_generated/tasks/task-1184.log`
+Total Lines: 32
+Total Bytes: 2361
+Showing lines 1 to 32
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1: 2026-06-11 16:51:31.494 | INFO     | modules.gesture_engine:_load_model:106 - Loaded gesture model: models\weights\gesture_classifier_v1.onnx
+2: 2026-06-11 16:51:31.495 | INFO     | modules.gesture_engine:_load_model:112 - Loaded 4 gesture labels.
+3: 2026-06-11 16:51:31.547 | INFO     | modules.volume_controller:_initialize_pycaw:56 - VolumeController initialized. Synced with system volume: 72%
+4: 2026-06-11 16:51:31.630 | INFO     | modules.brightness_controller:_initialize_sbc:47 - BrightnessController initialized. Synced with system brightness: 61%
+5: C:\Users\nikun\OneDrive\Desktop\GestureOS-AI-main\web_backend.py:115: DeprecationWarning: 
+6:         on_event is deprecated, use lifespan event handlers instead.
+7: 
+8:         Read more about it in the
+9:         [FastAPI docs for Lifespan Events](https://fastapi.tiangolo.com/advanced/events/).
+10:         
+11:   @app.on_event("startup")
+12: C:\Users\nikun\OneDrive\Desktop\GestureOS-AI-main\web_backend.py:120: DeprecationWarning: 
+13:         on_event is deprecated, use lifespan event handlers instead.
+14: 
+15:         Read more about it in the
+16:         [FastAPI docs for Lifespan Events](https://fastapi.tiangolo.com/advanced/events/).
+17:         
+18:   @app.on_event("shutdown")
+19: 2026-06-11 16:51:32.085 | INFO     | modules.gesture_engine:_load_model:106 - Loaded gesture model: models\weights\gesture_classifier_v1.onnx
+20: 2026-06-11 16:51:32.086 | INFO     | modules.gesture_engine:_load_model:112 - Loaded 4 gesture labels.
+21: 2026-06-11 16:51:32.102 | INFO     | modules.volume_controller:_initialize_pycaw:56 - VolumeController initialized. Synced with system volume: 72%
+22: 2026-06-11 16:51:32.114 | INFO     | modules.brightness_controller:_initialize_sbc:47 - BrightnessController initialized. Synced with system brightness: 61%
+23: INFO:     Started server process [11080]
+24: INFO:     Waiting for application startup.
+25: 2026-06-11 16:51:32.431 | INFO     | modules.camera:start:81 - Camera 0 started (1280x720 @ 30fps)
+26: 2026-06-11 16:51:32.431 | INFO     | web_backend:start_camera_stream:96 - Camera stream started on index 0.
+27: INFO:     Application startup complete.
+28: INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
+29: INFO:     127.0.0.1:59833 - "WebSocket /ws" [accepted]
+30: 2026-06-11 16:51:32.603 | INFO     | web_backend:websocket_endpoint:290 - WebSocket client connected
+31: INFO:     connection open
+32: 
+The above content shows the entire, complete file contents of the requested file.

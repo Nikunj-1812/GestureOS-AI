@@ -1,0 +1,53 @@
+Created At: 2026-06-11T11:02:05Z
+Completed At: 2026-06-11T11:02:06Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 1347
+Total Bytes: 88491
+Showing lines 1101 to 1347
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1101:                 <div className="flex h-screen bg-[#080710] font-sans antialiased text-gray-200 overflow-hidden">
+1102:                     <aside className="w-72 glass-panel border-r border-glass-border flex flex-col justify-between h-full z-10">
+1103:                         <div>
+1104:                             <div className="flex items-center gap-3 px-6 py-6 border-b border-glass-border justify-center">
+1105:                                 <div className="p-2.5 bg-blue-500/10 rounded-xl border border-blue-500/20 text-accent-blue"><HandIcon className="w-6 h-6 stroke-[2]" /></div>
+1106:                                 <div>
+1107:                                     <h1 className="text-lg font-bold tracking-wider bg-gradient-to-r from-white via-gray-200 to-gray-400 bg-clip-text text-transparent">GestureOS</h1>
+1108:                                     <p className="text-[10px] text-gray-500 uppercase tracking-widest font-semibold font-mono">Intelligence Pro</p>
+1109:                                 </div>
+1110:                             </div>
+1111:                             <nav className="px-4 py-6 space-y-2">
+1112:                                 {[ { id: 'dashboard', name: 'Dashboard', icon: LayersIcon }, { id: 'mouse', name: 'Camera Stream', icon: VideoIcon }, { id: 'logs', name: 'Event Logs', icon: FileTextIcon }, { id: 'settings', name: 'System Settings', icon: SettingsIcon } ].map((item) => (
+1113:                                     <button key={item.id} onClick={() => setActiveMenu(item.id)} className={`w-full flex items-center justify-be
+<truncated 26181 bytes>
+l key={i} className="flex items-center justify-between cursor-pointer group">
+1318:                                                     <span className="text-xs font-semibold text-gray-300 group-hover:text-white">{m.label}</span>
+1319:                                                     <div className="relative">
+1320:                                                         <input type="checkbox" checked={m.val} onChange={e => { const val = e.target.checked; m.setter(val); updateSetting(m.key, val); }} className="sr-only peer" />
+1321:                                                         <div className="w-9 h-5 bg-zinc-700 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-blue-600"></div>
+1322:                                                     </div>
+1323:                                                 </label>
+1324:                                             ))}
+1325:                                         </div>
+1326:                                     </div>
+1327:                                 )}
+1328:                             </div>
+1329:                         </div>
+1330:                     </main>
+1331:                 </div>
+1332:             );
+1333:         }
+1334: 
+1335:         const root = ReactDOM.createRoot(document.getElementById('root'));
+1336:         root.render(<App />);
+1337:     </script>
+1338: </body>
+1339: </html>"""
+1340: 
+1341: @app.get("/", response_class=HTMLResponse)
+1342: async def get_dashboard():
+1343:     return HTML_CONTENT
+1344: 
+1345: if __name__ == "__main__":
+1346:     uvicorn.run("web_backend:app", host="127.0.0.1", port=8000, log_level="info")
+1347: 
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

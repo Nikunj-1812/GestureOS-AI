@@ -1,0 +1,29 @@
+Created At: 2026-06-11T10:03:14Z
+Completed At: 2026-06-11T10:03:14Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 1626
+Total Bytes: 105190
+Showing lines 60 to 80
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+60: action_dispatcher = ActionDispatcher(cooldown_ms=800)
+61: 
+62: from modules.virtual_mouse import VirtualMouse
+63: virtual_mouse = VirtualMouse(
+64:     enabled=config.virtual_mouse_enabled,
+65:     sensitivity=config.virtual_mouse_sensitivity,
+66:     dead_zone=config.virtual_mouse_dead_zone,
+67:     smoothing=config.virtual_mouse_smoothing,
+68:     click_threshold=getattr(config, 'virtual_mouse_click_threshold', 0.05),
+69:     right_click_threshold=getattr(config, 'virtual_mouse_right_click_threshold', 0.05),
+70:     scroll_sensitivity=getattr(config, 'virtual_mouse_scroll_sensitivity', 5.0),
+71:     scroll_dead_zone=getattr(config, 'virtual_mouse_scroll_dead_zone', 0.04),
+72:     scroll_smoothing=getattr(config, 'virtual_mouse_scroll_smoothing', 0.25),
+73: )
+74: 
+75: camera_running = False
+76: 
+77: def start_camera_stream():
+78:     global camera_stream, camera_running
+79:     if camera_stream is not None:
+80:         try:
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

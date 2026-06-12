@@ -1,0 +1,29 @@
+Created At: 2026-06-12T09:43:19Z
+Completed At: 2026-06-12T09:43:19Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 2763
+Total Bytes: 190961
+Showing lines 875 to 895
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+875:             const [virtualMouseDragThresholdMs, setVirtualMouseDragThresholdMs] = useState(200.0);
+876:             const prevDragStatusRef = useRef('IDLE');
+877: 
+878:             // Virtual Keyboard UI States
+879:             const [hoveredKey, setHoveredKey] = useState('None');
+880:             const [lastPressedKey, setLastPressedKey] = useState('None');
+881:             const [typedText, setTypedText] = useState('');
+882:             const [isShiftActive, setIsShiftActive] = useState(false);
+883:             const [isCapsLockActive, setIsCapsLockActive] = useState(false);
+884:             const [pressedKey, setPressedKey] = useState(null);
+885:             const [hoverDuration, setHoverDuration] = useState(0.0);
+886:             const [enableKeyboardSound, setEnableKeyboardSound] = useState(true);
+887:             const [systemTypingEnabled, setSystemTypingEnabled] = useState(false);
+888:             
+889:             const smoothXRef = useRef(null);
+890:             const smoothYRef = useRef(null);
+891:             const candidateKeyRef = useRef(null);
+892:             const candidateStartTimeRef = useRef(null);
+893:             const lastHoverDetectTimeRef = useRef(null);
+894:             const hoveredKeyRef = useRef('None');
+895:             const pinchActiveRef = useRef(false);
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

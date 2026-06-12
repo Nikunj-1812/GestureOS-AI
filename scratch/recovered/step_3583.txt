@@ -1,0 +1,46 @@
+Created At: 2026-06-12T11:00:23Z
+Completed At: 2026-06-12T11:00:23Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 4256
+Total Bytes: 294748
+Showing lines 3901 to 4000
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+3901:                                                                         backgroundMode === 'camera' ? 'bg-blue-600 text-white' : 'text-gray-400 hover:text-white'
+3902:                                                                     }`}
+3903:                                                                 >
+3904:                                                                     📷 Camera
+3905:                                                                 </button>
+3906:                                                                 <button 
+3907:                                                                     onClick={() => setBackgroundMode('whiteboard')}
+3908:                                                                     className={`px-3 py-1 rounded-md text-[10px] font-bold transition-all ${
+3909:                                                                         backgroundMode === 'whiteboard' ? 'bg-blue-600 text-white' : 'text-gray-400 hover:text-white'
+3910:                                                                     }`}
+3911:                                                                 >
+3912:                                                                     ✏️ Whiteboard
+3913:                                                                 </button>
+3914:                                                             </div>
+3915: 
+3916:                                                             <span className="w-px h-6 bg-glass-border" />
+3917: 
+3918:                                                         
+<truncated 6197 bytes>
+ <button 
+3983:                                                                     onClick={handleWebClear}
+3984:                                                                     className="p-1.5 rounded-lg bg-red-500/20 hover:bg-red-500/30 border border-red-500/30 text-red-200 text-xs active:scale-95 transition-all"
+3985:                                                                     title="Clear Canvas"
+3986:                                                                 >
+3987:                                                                     🗑
+3988:                                                                 </button>
+3989:                                                                 <button 
+3990:                                                                     onClick={handleWebSave}
+3991:                                                                     disabled={undoStack.length === 0}
+3992:                                                                     className={`p-1.5 rounded-lg border transition-all text-xs ${
+3993:                                                                         undoStack.length === 0 ? 'text-zinc-650 border-zinc-900/10 cursor-not-allowed' : 'bg-blue-600/20 hover:bg-blue-600/30 border-blue-500/30 text-blue-200 active:scale-95'
+3994:                                                                     }`}
+3995:                                                                     title="Save Drawing"
+3996:                                                                 >
+3997:                                                                     💾
+3998:                                                                 </button>
+3999:                                                             </div>
+4000:                                                         </div>
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

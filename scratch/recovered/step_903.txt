@@ -1,0 +1,80 @@
+Created At: 2026-06-11T10:50:04Z
+Completed At: 2026-06-11T10:50:05Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 2053
+Total Bytes: 138910
+Showing lines 1045 to 1150
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1045:                 };
+1046:                 window.addEventListener('keydown', handleEscape);
+1047: 
+1048:                 return () => {
+1049:                     window.removeEventListener('keydown', handleEscape);
+1050:                     if (socketRef.current) {
+1051:                         socketRef.current.close();
+1052:                     }
+1053:                 };
+1054:             }, []);
+1055: 
+1056:             const logSystemEvent = (msg) => {
+1057:                 const timeString = new Date().toLocaleTimeString();
+1058:                 eventIdCounterRef.current += 1;
+1059:                 const newEvent = {
+1060:                     id: `${Date.now()}-${eventIdCounterRef.current}`,
+1061:                     timestamp: timeString,
+1062:                     gesture: 'System',
+1063:                     confidence: 1.0,
+1064:                     action: msg
+1065:                 };
+1066:                 setEvents(prev => [newEvent, ...prev].slice(0, 50));
+1067:             };
+1068: 
+1069:             // REST API Actions
+1070:             const handleStartCamera = async () => {
+1071:                 setIsCameraLoading(true);
+1072:                 logSystemEvent("Camera stream start requested.");
+1073:                 try {
+1074:                     const res = await fetch('/api/camera/start', { method: 'POST' });
+1075:                     const data = await res.json();
+1076:                     if (data.status === 'success') {
+1077:                         setCameraStatus('Connected');
+1078:                         logSystemEvent("Camera stream s
+<truncated 1638 bytes>
+prevGestureRef.current = 'None';
+1115:                     logSystemEvent("Tracking reset complete.");
+1116:                 } catch (err) {
+1117:                     console.error('Error resetting tracking:', err);
+1118:                     logSystemEvent("Failed to reset tracking.");
+1119:                 } finally {
+1120:                     setTimeout(() => setIsResetting(false), 800);
+1121:                 }
+1122:             };
+1123: 
+1124:             const updateSetting = async (key, val) => {
+1125:                 try {
+1126:                     await fetch('/api/settings/update', {
+1127:                         method: 'POST',
+1128:                         headers: { 'Content-Type': 'application/json' },
+1129:                         body: JSON.stringify({ [key]: val })
+1130:                     });
+1131:                 } catch (err) {
+1132:                     console.error('Error updating switch setting:', err);
+1133:                 }
+1134:             };
+1135: 
+1136:             // Format confidence displays based on gesture states
+1137:             const formatConfidence = () => {
+1138:                 if (gesture === 'None' || gesture === 'unknown' || gesture === 'No Model' || hands === 0) {
+1139:                     return '0%';
+1140:                 }
+1141:                 return `${(confidence * 100).toFixed(0)}%`;
+1142:             };
+1143: 
+1144:             return (
+1145:                 <div className="flex h-screen bg-[#080710] font-sans antialiased text-gray-200 overflow-hidden">
+1146:                     
+1147:                     {/* Left Sidebar */}
+1148:                     <aside className="w-72 glass-panel border-r border-glass-border flex flex-col justify-between h-full z-10">
+1149:                         <div>
+1150:                             {/* Logo section - centered, minimal empty space */}
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

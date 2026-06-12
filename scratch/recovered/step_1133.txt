@@ -1,0 +1,59 @@
+Created At: 2026-06-11T11:19:38Z
+Completed At: 2026-06-11T11:19:38Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 1347
+Total Bytes: 88491
+Showing lines 750 to 800
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+750:                 <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3" />
+751:             </svg>
+752:         );
+753: 
+754:         function ResourceChart({ label, dataPoints, color, maxVal = 100 }) {
+755:             const canvasRef = useRef(null);
+756: 
+757:             useEffect(() => {
+758:                 const canvas = canvasRef.current;
+759:                 if (!canvas) return;
+760:                 const ctx = canvas.getContext('2d');
+761:                 const width = canvas.width;
+762:                 const height = canvas.height;
+763: 
+764:                 ctx.clearRect(0, 0, width, height);
+765: 
+766:                 ctx.strokeStyle = 'rgba(255, 255, 255, 0.05)';
+767:                 ctx.lineWidth = 1;
+768:                 for (let i = 1; i < 4; i++) {
+769:                     const y = (height / 4) * i;
+770:                     ctx.beginPath();
+771:                     ctx.moveTo(0, y);
+772:                     ctx.lineTo(width, y);
+773:                     ctx.stroke();
+774:                 }
+775: 
+776:                 if (dataPoints.length === 0) return;
+777: 
+778:                 ctx.beginPath();
+779:                 ctx.strokeStyle = color;
+780:                 ctx.lineWidth = 2;
+781:                 ctx.lineJoin = 'round';
+782: 
+783:                 const step = width / 29;
+784:                 dataPoints.forEach((val, idx) => {
+785:                     const x = idx * step;
+786:                     const y = height - (val / maxVal) * (height - 12) - 6;
+787:                     if (idx === 0) {
+788:                         ctx.moveTo(x, y);
+789:                     } else {
+790:                         ctx.lineTo(x, y);
+791:                     }
+792:                 });
+793:                 ctx.stroke();
+794: 
+795:                 ctx.lineTo((dataPoints.length - 1) * step, height);
+796:                 ctx.lineTo(0, height);
+797:                 ctx.closePath();
+798:                 const grad = ctx.createLinearGradient(0, 0, 0, height);
+799:                 grad.addColorStop(0, color.replace('1)', '0.2)'));
+800:                 grad.addColorStop(1, color.replace('1)', '0.0)'));
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

@@ -1,0 +1,46 @@
+Created At: 2026-06-11T10:49:42Z
+Completed At: 2026-06-11T10:49:42Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 2053
+Total Bytes: 138910
+Showing lines 1540 to 1700
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1540:                                                     </div>
+1541:                                                 </div>
+1542:                                             </div>
+1543: 
+1544:                                         </div>
+1545:                                     </>
+1546:                                 ) : activeMenu === 'mouse' ? (
+1547:                                     <>
+1548:                                         {/* Hero Header Section */}
+1549:                                         <div className="glass-panel rounded-3xl p-6 flex flex-col md:flex-row md:items-center justify-between border border-glass-border relative overflow-hidden">
+1550:                                             <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 opacity-20" />
+1551:                                             <div>
+1552:                                                 <h2 className="text-2xl font-bold tracking-wide text-white">Virtual Mouse Controls</h2>
+1553:                                                 <p className="text-xs text-gray-400 mt-1 max-w-xl">
+1554:                                                     Control your system cursor in real-time using your index finger. Calibrate tracking properties below.
+1555:                                                 </p>
+1556:                                             </div>
+1557:                                             <div className="mt-4 md:mt-0">
+1558:                                                 <span className={`px-4 
+<truncated 12545 bytes>
+     <span className={`font-semibold ${
+1684:                                                                 rightClickStatus === 'RIGHT_CLICK' ? 'text-orange-400' :
+1685:                                                                 rightClickStatus === 'PINCH' ? 'text-amber-300' :
+1686:                                                                 rightClickStatus === 'RELEASE' ? 'text-accent-blue' : 'text-white'
+1687:                                                             }`}>
+1688:                                                                 {rightClickStatus}
+1689:                                                             </span>
+1690:                                                         </div>
+1691:                                                         <div className="flex justify-between items-center text-sm border-b border-glass-border pb-2">
+1692:                                                             <span className="text-gray-400">Right Pinch Distance</span>
+1693:                                                             <span className="font-mono font-bold text-white">
+1694:                                                                 {rightPinchDistance.toFixed(4)}
+1695:                                                             </span>
+1696:                                                         </div>
+1697:                                                         <div className="flex justify-between items-center text-sm border-b border-glass-border pb-2">
+1698:                                                             <span className="text-gray-400">Right Click Counter</span>
+1699:                                                             <span className="font-mono font-bold text-orange-400">
+1700:                                                                 {rightClickCounter}
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

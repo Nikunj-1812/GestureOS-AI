@@ -1,0 +1,59 @@
+Created At: 2026-06-12T11:00:09Z
+Completed At: 2026-06-12T11:00:09Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 4256
+Total Bytes: 294748
+Showing lines 1100 to 1150
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1100:             const [showHoverTrail, _setShowHoverTrail] = useState(true);
+1101:             const showHoverTrailRef = useRef(true);
+1102:             const setShowHoverTrail = (val) => {
+1103:                 _setShowHoverTrail(val);
+1104:                 showHoverTrailRef.current = val;
+1105:             };
+1106: 
+1107:             const [canvasWidth, _setCanvasWidth] = useState(640);
+1108:             const canvasWidthRef = useRef(640);
+1109:             const setCanvasWidth = (val) => {
+1110:                 _setCanvasWidth(val);
+1111:                 canvasWidthRef.current = val;
+1112:             };
+1113: 
+1114:             const [canvasHeight, _setCanvasHeight] = useState(360);
+1115:             const canvasHeightRef = useRef(360);
+1116:             const setCanvasHeight = (val) => {
+1117:                 _setCanvasHeight(val);
+1118:                 canvasHeightRef.current = val;
+1119:             };
+1120: 
+1121:             // Hand detection state ref
+1122:             const wasHandDetectedRef = useRef(false);
+1123: 
+1124:             // One Euro Filters for X and Y coordinates
+1125:             const filterXRef = useRef(new OneEuroFilter(0.8, 0.03));
+1126:             const filterYRef = useRef(new OneEuroFilter(0.8, 0.03));
+1127: 
+1128:             const updateFilterParams = (level) => {
+1129:                 let minCutoff = 0.8;
+1130:                 let beta = 0.03;
+1131:                 if (level === 1) { minCutoff = 100.0; beta = 0.0; } // Bypass
+1132:                 else if (level === 2) { minCutoff = 1.5; beta = 0.05; }
+1133:                 else if (level === 3) { minCutoff = 0.8; beta = 0.03; }
+1134:                 else if (level === 4) { minCutoff = 0.4; beta = 0.01; }
+1135:                 else if (level === 5) { minCutoff = 0.15; beta = 0.003; }
+1136:                 
+1137:                 filterXRef.current.minCutoff = minCutoff;
+1138:                 filterXRef.current.beta = beta;
+1139:                 filterYRef.current.minCutoff = minCutoff;
+1140:                 filterYRef.current.beta = beta;
+1141:             };
+1142: 
+1143:             // Hover Trail Points Queue
+1144:             const hoverTrailRef = useRef([]);
+1145: 
+1146:             useEffect(() => {
+1147:                 activeMenuRef.current = activeMenu;
+1148:             }, [activeMenu]);
+1149: 
+1150:             // Resize Observer to dynamically size canvas
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

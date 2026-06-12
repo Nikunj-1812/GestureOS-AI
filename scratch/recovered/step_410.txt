@@ -1,0 +1,73 @@
+Created At: 2026-06-11T10:12:14Z
+Completed At: 2026-06-11T10:12:14Z
+File Path: `file:///C:/Users/nikun/.gemini/antigravity/brain/f71acb1b-ab5a-4de9-85a5-1a298f3c313a/phase_3_4_report.md`
+Total Lines: 129
+Total Bytes: 6073
+Showing lines 1 to 129
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1: # Phase 3.4 — Virtual Mouse Scroll Control: Implementation Report
+2: 
+3: ## Summary
+4: 
+5: Implements gesture-controlled scrolling: **Index Finger UP + Middle Finger UP** enters Scroll
+6: Mode. Hand moving **UP → Scroll Up**, hand moving **DOWN → Scroll Down**. Uses EMA-smoothed
+7: wrist Y-delta driving `pyautogui.scroll()`, with dead zone, configurable sensitivity, and clean
+8: start/stop logging. All existing Phase 3.3 right-click behaviour is preserved.
+9: 
+10: ---
+11: 
+12: ## Files Modified
+13: 
+14: | File | Change |
+15: |------|--------|
+16: | [`modules/virtual_mouse.py`](file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/modules/virtual_mouse.py) | **Core** — Full rewrite: added `scroll_sensitivity`, `scroll_dead_zone`, `scroll_smoothing` params; scroll state fields (`scroll_mode`, `scroll_direction`, `scroll_speed`, `scroll_counter`, `scroll_anchor_y`, `scroll_vel_smooth`); `_reset_scroll_state()`; scroll detection using LM6/10 PIP vs LM8/12 tip Y; EMA-smoothed Y-delta; `pyautogui.scroll()`; click freeze during scroll; cursor tracking paused during scroll; full logging |
+17: | [`modules/visualizer.py`](file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/modules/visualizer.py) | **Visual** — `C_TEAL` colour; scroll field extraction; teal rings on LM8+LM12 during scroll; `SCROLL UP` / `SCROLL DOWN` / `SCROLL MODE` banner above index; arrow indicator; HUD scroll section (status, Cnt, Speed) |
+18: | [`config/app_config.py`](file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/config/app_config.py) | **
+<truncated 3084 bytes>
+ lower |
+85: | VM ON/OFF toggle | Disabling resets scroll state |
+86: | ESC emergency stop | Disables VM + resets `scrollMode`, `scrollDirection` in React UI |
+87: | Dead zone | `scroll_dead_zone=0.04` prevents micro-drift scrolling |
+88: 
+89: ---
+90: 
+91: ## Testing Steps
+92: 
+93: ```
+94: cd C:\Users\nikun\OneDrive\Desktop\GestureOS-AI-main
+95: python web_backend.py
+96: # Open http://127.0.0.1:8000
+97: # → Virtual Mouse page → Enable toggle
+98: ```
+99: 
+100: ### Validation Tests
+101: 
+102: | # | Test | Expected |
+103: |---|------|----------|
+104: | 1 | Raise Index + Middle fingers | Scroll Mode = ACTIVE, teal rings appear |
+105: | 2 | Move hand UP | SCROLL UP banner, ▲ in dashboard, page scrolls up |
+106: | 3 | Move hand DOWN | SCROLL DOWN banner, ▼ in dashboard, page scrolls down |
+107: | 4 | Hold still (< dead zone) | No scroll fires, Direction = `—` |
+108: | 5 | Lower any finger | Scroll Mode = IDLE, cursor resumes movement |
+109: | 6 | Normal cursor movement | Unaffected when scroll mode off |
+110: | 7 | Left click (LM4+LM8) | Only fires when NOT in scroll mode |
+111: | 8 | Right click (LM4+LM12) | Only fires when NOT in scroll mode |
+112: | 9 | Dashboard telemetry | Scroll Mode, Direction, Speed, Counter update live |
+113: | 10 | Scroll Sensitivity slider | Higher = faster scroll immediately |
+114: | 11 | Scroll Dead Zone slider | Higher = less sensitive, ignores small movements |
+115: | 12 | Activity Log | `Scroll Start` + `Scroll Stop` events logged |
+116: | 13 | ESC key | VM stops, all states (scroll, click) reset |
+117: | 14 | FPS ≥ 25 | No frame drop during continuous scrolling |
+118: 
+119: ---
+120: 
+121: ## Log Format
+122: 
+123: ```
+124: [15:06:45.123] Scroll Start | gesture=index_middle_up | anchor_y=0.4821
+125: [15:06:45.210] Scroll UP | vel=-0.0051 | amount=2 | count=1
+126: [15:06:45.294] Scroll DOWN | vel=0.0038 | amount=-1 | count=2
+127: [15:06:47.891] Scroll Stop | Total scroll events=14
+128: ```
+129: 
+The above content shows the entire, complete file contents of the requested file.

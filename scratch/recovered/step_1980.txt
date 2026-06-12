@@ -1,0 +1,83 @@
+Created At: 2026-06-12T05:10:19Z
+Completed At: 2026-06-12T05:10:19Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 2630
+Total Bytes: 183310
+Showing lines 250 to 445
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+250: 
+251: @app.websocket("/ws")
+252: async def websocket_endpoint(websocket: WebSocket):
+253:     await websocket.accept()
+254:     logger.info("WebSocket client connected")
+255:     
+256:     last_fps_tick = time.perf_counter()
+257:     fps_smooth = 0.0
+258:     last_frame_id = -1
+259:     last_gesture = "unknown"
+260:     
+261:     try:
+262:         while True:
+263:             # Capture frame & run pipeline if running
+264:             if not camera_running or camera_stream is None:
+265:                 # Send empty / disconnected state
+266:                 await websocket.send_json({
+267:                     "fps": 0.0,
+268:                     "hands": 0,
+269:                     "gesture": "None",
+270:                     "confidence": 0.0,
+271:                     "camera_status": "Disconnected",
+272:                     "frame": None
+273:                 })
+274:                 await asyncio.sleep(0.1)
+275:                 continue
+276:                 
+277:             frame = camera_stream.read()
+278:             if frame is None:
+279:                 await websocket.send_json({
+280:                     "fps": 0.0,
+281:                     "hands": 0,
+282:                     "gesture": "None",
+283:                     "confidence": 0.0,
+284:                     "camera_status": "Starting",
+285:                     "frame": None
+286:                 })
+287:                 await asyncio.sleep(0.05)
+288:                 continue
+289:                 
+290:             # Avoid duplicate frame processing
+291:             current_frame_id = camera_stream.fra
+<truncated 6624 bytes>
+        "volume_mode": vm_result.get("volume_mode", False) if vm_result else False,
+415:                 "volume_level": vm_result.get("volume_level", 0) if vm_result else 0,
+416:                 "volume_distance": vm_result.get("volume_distance", 0.0) if vm_result else 0.0,
+417:                 # Phase 3.5 — Mode Manager & Brightness telemetry
+418:                 "active_mode": vm_result.get("active_mode", "CURSOR") if vm_result else "CURSOR",
+419:                 "brightness_mode": vm_result.get("brightness_mode", False) if vm_result else False,
+420:                 "brightness_level": vm_result.get("brightness_level", 0) if vm_result else 0,
+421:                 "brightness_distance": vm_result.get("brightness_distance", 0.0) if vm_result else 0.0,
+422:                 "drag_status": vm_result.get("drag_status", "IDLE") if vm_result else "IDLE",
+423:                 "drag_duration": vm_result.get("drag_duration", 0.0) if vm_result else 0.0,
+424:                 "drag_counter": vm_result.get("drag_counter", 0) if vm_result else 0,
+425:             }
+426: 
+427:             
+428:             t_send_start = time.perf_counter()
+429:             await websocket.send_json(payload)
+430:             t_send = time.perf_counter() - t_send_start
+431:             
+432:             t_total = time.perf_counter() - t0
+433:             
+434:             # Maintain roughly target frame rate
+435:             elapsed = time.perf_counter() - loop_start
+436:             interval = max(0.001, 1.0 / max(config.camera_fps, 1) - elapsed)
+437:             await asyncio.sleep(interval)
+438:             
+439:     except WebSocketDisconnect:
+440:         logger.info("WebSocket client disconnected")
+441:     except Exception as e:
+442:         logger.error(f"Error in websocket loop: {e}")
+443: 
+444: HTML_CONTENT = """<!DOCTYPE html>
+445: <html lang="en">
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

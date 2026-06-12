@@ -1,0 +1,76 @@
+Created At: 2026-06-11T10:59:29Z
+Completed At: 2026-06-11T10:59:29Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 1192
+Total Bytes: 69773
+Showing lines 480 to 620
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+480:         logger.info("WebSocket client disconnected")
+481:     except Exception as e:
+482:         logger.error(f"Error in websocket loop: {e}")
+483: 
+484: HTML_CONTENT = """<!DOCTYPE html>
+485: <html lang="en">
+486: <head>
+487:     <meta charset="UTF-8">
+488:     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+489:     <title>GestureOS AI - Web Dashboard</title>
+490:     <!-- Tailwind CSS CDN -->
+491:     <script src="https://cdn.tailwindcss.com"></script>
+492:     <script>
+493:         tailwind.config = {
+494:             theme: {
+495:                 extend: {
+496:                     colors: {
+497:                         background: "#080710",
+498:                         glass: {
+499:                             light: "rgba(255, 255, 255, 0.05)",
+500:                             border: "rgba(255, 255, 255, 0.06)",
+501:                             glow: "rgba(59, 130, 246, 0.15)",
+502:                         },
+503:                         accent: {
+504:                             blue: "#3b82f6",
+505:                             purple: "#8b5cf6",
+506:                             green: "#10b981",
+507:                         }
+508:                     },
+509:                     fontFamily: {
+510:                         sans: ["Outfit", "Inter", "sans-serif"],
+511:                         mono: ["JetBrains Mono", "Fira Code", "monospace"],
+512:                     }
+513:                 }
+514:             }
+515:         }
+516:     </script>
+517:     <!-- Google Fonts -->
+518:     <link rel="preconnect" href="https://fonts.goo
+<truncated 4127 bytes>
+4.5 6h.84M17 17H7a2.5 2.5 0 0 1-2.5-2.5V10.5"/>
+594:             </svg>
+595:         );
+596: 
+597:         const CpuIcon = (props) => (
+598:             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+599:                 <rect x="4" y="4" width="16" height="16" rx="2"/>
+600:                 <path d="M9 9h6v6H9zM9 1v3M15 1v3M9 20v3M15 20v3M20 9h3M20 15h3M1 9h3M1 15h3"/>
+601:             </svg>
+602:         );
+603: 
+604:         const SparklesIcon = (props) => (
+605:             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+606:                 <path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/>
+607:             </svg>
+608:         );
+609: 
+610:         const UserIcon = (props) => (
+611:             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+612:                 <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/>
+613:                 <circle cx="12" cy="7" r="4"/>
+614:             </svg>
+615:         );
+616: 
+617:         const BellIcon = (props) => (
+618:             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+619:                 <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9M10.3 21a1.94 1.94 0 0 0 3.4 0"/>
+620:             </svg>
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

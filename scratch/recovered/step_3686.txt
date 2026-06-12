@@ -1,0 +1,49 @@
+Created At: 2026-06-12T11:09:00Z
+Completed At: 2026-06-12T11:09:00Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 4482
+Total Bytes: 313447
+Showing lines 2120 to 2160
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+2120:                         }
+2121:                     };
+2122: 
+2123:                     ws.onclose = () => {
+2124:                         setSocketStatus('disconnected');
+2125:                         console.log('WebSocket connection lost, retrying in 3 seconds...');
+2126:                         setTimeout(connectWS, 3000);
+2127:                     };
+2128: 
+2129:                     ws.onerror = (error) => {
+2130:                         console.error('WebSocket encountered an error:', error);
+2131:                     };
+2132:                 };
+2133: 
+2134:                 connectWS();
+2135: 
+2136:                 // Fetch initial switches configuration from backend
+2137:                 fetch('/api/settings')
+2138:                     .then(res => res.json())
+2139:                     .then(data => {
+2140:                         setShowLandmarks(data.show_landmarks);
+2141:                         setShowConnections(data.show_connections);
+2142:                         setShowBoundingBox(data.show_bounding_box);
+2143:                         setShowFingerStates(data.show_finger_states);
+2144:                         setShowDistanceMeter(data.show_distance_meter);
+2145:                         setShowDebugPanel(data.show_debug_panel);
+2146:                         setShowHud(data.show_hud);
+2147:                         
+2148:                         setVirtualMouseEnabled(data.virtual_mouse_enabled);
+2149:                         setVirtualMouseSensitivity(data.virtual_mouse_sensitivity);
+2150:                         setVirtualMouseDeadZone(data.virtual_mouse_dead_zone);
+2151:                         setVirtualMouseSmoothing(data.virtual_mouse_smoothing);
+2152:                         if (data.virtual_mouse_click_threshold !== undefined) {
+2153:                             setVirtualMouseClickThreshold(data.virtual_mouse_click_threshold);
+2154:                         }
+2155:                         if (data.virtual_mouse_right_click_threshold !== undefined) {
+2156:                             setVirtualMouseRightClickThreshold(data.virtual_mouse_right_click_threshold);
+2157:                         }
+2158:                         if (data.virtual_mouse_scroll_sensitivity !== undefined) {
+2159:                             setVirtualMouseScrollSensitivity(data.virtual_mouse_scroll_sensitivity);
+2160:                         }
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

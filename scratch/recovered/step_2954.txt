@@ -1,0 +1,59 @@
+Created At: 2026-06-12T10:07:57Z
+Completed At: 2026-06-12T10:07:58Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 3194
+Total Bytes: 215157
+Showing lines 1165 to 1215
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1165: 
+1166:                                 // Smooth coordinates using exponential moving average (EMA)
+1167:                                 const smoothing = 0.20;
+1168:                                 if (smoothXRef.current === null || smoothYRef.current === null) {
+1169:                                     smoothXRef.current = xMirrored;
+1170:                                     smoothYRef.current = rawY;
+1171:                                 } else {
+1172:                                     smoothXRef.current += (xMirrored - smoothXRef.current) * smoothing;
+1173:                                     smoothYRef.current += (rawY - smoothYRef.current) * smoothing;
+1174:                                 }
+1175: 
+1176:                                 // Map to viewport coordinates
+1177:                                 const clientX = smoothXRef.current * window.innerWidth;
+1178:                                 const clientY = smoothYRef.current * window.innerHeight;
+1179: 
+1180:                                 // Resolve HTML element at the cursor point
+1181:                                 try {
+1182:                                     const element = document.elementFromPoint(clientX, clientY);
+1183:                                     if (element) {
+1184:                                         let curr = element;
+1185:                                         while (curr) {
+1186:                                             if (curr.getAttribute && curr.getAttribute('data-key')) {
+1187:                                                 detectedKey = curr.getAttribute('data-key');
+1188:                                                 break;
+1189:                                             }
+1190:                                             curr = curr.parentElement;
+1191:                                         }
+1192:                                     }
+1193:                                 } catch (e) {
+1194:                                     console.error("Error resolving hovered element:", e);
+1195:                                 }
+1196:                             } else {
+1197:                                 smoothXRef.current = null;
+1198:                                 smoothYRef.current = null;
+1199:                             }
+1200: 
+1201:                             // Hover Delay (150ms) and Debouncing (100ms)
+1202:                             if (detectedKey) {
+1203:                                 lastHoverDetectTimeRef.current = wsNow;
+1204:                                 if (detectedKey === candidateKeyRef.current) {
+1205:                                     const elapsed = (wsNow - candidateStartTimeRef.current) / 1000;
+1206:                                     setHoverDuration(elapsed);
+1207:                                     if (elapsed >= 0.150) {
+1208:                                         setHoveredKey(detectedKey);
+1209:                                         hoveredKeyRef.current = detectedKey;
+1210:                                     }
+1211:                                 } else {
+1212:                                     candidateKeyRef.current = detectedKey;
+1213:                                     candidateStartTimeRef.current = wsNow;
+1214:                                     setHoverDuration(0.0);
+1215:                                 }
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

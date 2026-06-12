@@ -1,0 +1,81 @@
+Created At: 2026-06-12T10:12:59Z
+Completed At: 2026-06-12T10:12:59Z
+File Path: `file:///C:/Users/nikun/.gemini/antigravity/brain/f71acb1b-ab5a-4de9-85a5-1a298f3c313a/walkthrough.md`
+Total Lines: 85
+Total Bytes: 4522
+Showing lines 1 to 85
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1: # Walkthrough — Phase 4.5: Smart Keyboard
+2: 
+3: We have successfully implemented and verified **Phase 4.5 — Smart Keyboard** for the GestureOS virtual keyboard on both the CustomTkinter desktop dashboard and the React web dashboard.
+4: 
+5: This phase adds advanced features to the virtual keyboard:
+6: 1. **Predictive Text & Autocomplete**: Displays the top 3 suggestions based on the current word prefix. Pinched/clicked suggestions autocomplete the word in the text fields.
+7: 2. **Real-time Analytics**: Computes Words Per Minute (WPM) and Accuracy percentage.
+8: 3. **Telemetry Display**: Renders real-time telemetry card elements (WPM, Accuracy, Current Word, and last 5 Recent Words).
+9: 4. **Emoji Panel**: Renders a dedicated panel of common emojis for single-pinch typing.
+10: 5. **Config Persistence**: Saves keyboard preferences dynamically to the system's JSON configuration settings.
+11: 
+12: ---
+13: 
+14: ## Summary of Changes
+15: 
+16: ### 1. Common Word Predictor Module
+17: * **[NEW] [word_predictor.py](file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/modules/word_predictor.py)**:
+18:   * Exposes `get_suggestions(prefix: str)` which performs case-insensitive vocab matching and returns the top 3 words.
+19:   * Preserves styling (UPPERCASE and Titlecase) of the prefix in recommendations.
+20:   * Exposes `get_current_word(text: str)` extracting the last word/partial word prefix.
+21: 
+22: ### 2. Desktop GUI (CustomTkinter)
+23: * **[MODIFY] [virtual_keyboard_page.py](file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/dashb
+<truncated 1320 bytes>
+kend settings configuration via `/api/settings/update` on checkbox change events.
+38: 
+39: ---
+40: 
+41: ## Technical Details
+42: 
+43: ### Analytics Calculations
+44: * **Words Per Minute (WPM)**:
+45:   $$\text{WPM} = \frac{\text{len(Text)} / 5}{\text{ElapsedTime (Minutes)}}$$
+46:   *(Elapsed time is clamped to a minimum of 5 seconds to prevent initial divisor spikes).*
+47: * **Accuracy Percentage**:
+48:   $$\text{Accuracy} = \max\left(0, \frac{\text{Keystrokes} - 2 \times \text{Backspaces}}{\text{Keystrokes}} \times 100\right)$$
+49:   *(Treats Backspace keypresses as correction cycles that require a deletion keystroke plus a correction keystroke).*
+50: 
+51: ---
+52: 
+53: ## Verification Results
+54: 
+55: ### Automated Tests
+56: All virtual keyboard and predictor unit tests pass successfully:
+57: ```bash
+58: $ pytest tests/test_word_predictor.py tests/test_virtual_keyboard.py
+59: ============================== 6 passed in 2.60s ==============================
+60: ```
+61: This includes the new `test_keyboard_stats_and_suggestions` test checking:
+62: * Telemetry initialization.
+63: * Auto-suggestions matching lookup (e.g. typing `"ges"` populates `"gesture"`).
+64: * Autocomplete replacement logic.
+65: * Accuracy and backspace telemetry calculation correctness.
+66: 
+67: ---
+68: 
+69: ## Verification and Deployment Steps
+70: 
+71: ### Manual Testing
+72: 1. Run the backend web server:
+73:    ```bash
+74:    .venv\Scripts\python.exe web_backend.py
+75:    ```
+76: 2. Navigate to `http://127.0.0.1:8000` and open **Virtual Keyboard**:
+77:    * Type `"hello"` and select suggestions.
+78:    * View WPM and Accuracy metrics updates in the telemetry list.
+79:    * Click/Pinch emojis and check that they are appended.
+80: 3. Open the desktop dashboard:
+81:    ```bash
+82:    .venv\Scripts\python.exe run_dashboard.py
+83:    ```
+84:    * Open the keyboard page and check that settings (Sound, Typing, Suggestions) match the values saved in `settings.json`.
+85: 
+The above content shows the entire, complete file contents of the requested file.

@@ -1,0 +1,39 @@
+Created At: 2026-06-12T04:55:00Z
+Completed At: 2026-06-12T04:55:00Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 2114
+Total Bytes: 144465
+Showing lines 1240 to 1270
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1240:                         </div>
+1241:                     </aside>
+1242: 
+1243:                     {/* Main Content Area */}
+1244:                     <main className="flex-1 flex flex-col h-full overflow-hidden bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-blue-950/15 via-[#080710] to-[#080710]">
+1245:                         
+1246:                         {/* Header Row - vertically aligned profile, mode status, notifications, settings, exit */}
+1247:                         <header className="h-20 border-b border-glass-border px-8 flex items-center justify-between backdrop-blur-md z-10 shrink-0">
+1248:                                 <h2 className="text-xl font-bold tracking-wide text-white">
+1249:                                     {activeMenu === 'dashboard' ? 'System Monitor' : activeMenu === 'mouse' ? 'Virtual Mouse Monitor' : activeMenu === 'keyboard' ? 'Virtual Keyboard Monitor' : 'System Configuration'}
+1250:                                 </h2>
+1251:                                 <p className="text-xs text-gray-400 mt-0.5">
+1252:                                     {activeMenu === 'dashboard' 
+1253:                                         ? 'Telemetry overview and input gesture mapping controls.' 
+1254:                                         : activeMenu === 'mouse' 
+1255:                                         ? 'Real-time mouse tracking coordinates, status, and settings.' 
+1256:                                         : activeMenu === 'keyboard'
+1257:                                         ? 'Interactive virtual keyboard and live text telemetry.'
+1258:                                         : 'Calibrate input settings and device thresholds.'}
+1259:                                 </p>
+1260: 
+1261:                             <div className="flex items-center gap-4">
+1262:                                 <div className="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-xs text-emerald-400 font-medium">
+1263:                                     <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+1264:                                     Engine Online
+1265:                                 </div>
+1266: 
+1267:                                 <span className="w-px h-6 bg-glass-border hidden md:inline-block" />
+1268: 
+1269:                                 <button className="p-2.5 rounded-xl glass-card text-gray-400 hover:text-white relative group">
+1270:                                     <BellIcon className="w-5 h-5" />
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

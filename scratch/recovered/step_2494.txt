@@ -1,0 +1,56 @@
+Created At: 2026-06-12T09:40:08Z
+Completed At: 2026-06-12T09:40:08Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 2747
+Total Bytes: 190204
+Showing lines 155 to 247
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+155:         tracking_confidence=0.5
+156:     )
+157:     return {"status": "success"}
+158: 
+159: @app.get("/api/settings")
+160: def api_get_settings():
+161:     state = settings_manager.state
+162:     return {
+163:         "show_landmarks": state.show_landmarks,
+164:         "show_connections": state.show_connections,
+165:         "show_bounding_box": state.show_bounding_box,
+166:         "show_finger_states": state.show_finger_states,
+167:         "show_distance_meter": state.show_distance_meter,
+168:         "show_debug_panel": state.show_debug_panel,
+169:         "show_hud": state.show_hud,
+170:         "virtual_mouse_enabled": state.virtual_mouse_enabled,
+171:         "virtual_mouse_sensitivity": state.virtual_mouse_sensitivity,
+172:         "virtual_mouse_dead_zone": state.virtual_mouse_dead_zone,
+173:         "virtual_mouse_smoothing": state.virtual_mouse_smoothing,
+174:         "virtual_mouse_click_threshold": getattr(state, 'virtual_mouse_click_threshold', 0.05),
+175:         "virtual_mouse_right_click_threshold": getattr(state, 'virtual_mouse_right_click_threshold', 0.05),
+176:         "virtual_mouse_scroll_sensitivity": getattr(state, 'virtual_mouse_scroll_sensitivity', 5.0),
+177:         "virtual_mouse_scroll_dead_zone": getattr(state, 'virtual_mouse_scroll_dead_zone', 0.04),
+178:         "virtual_mouse_scroll_smoothing": getattr(state, 'virtual_mouse_scroll_smoothing', 0.25),
+179:         "virtual_mouse_volume_min_distance_px": getattr(state, 'virtual_mouse_volume_min_distance_px', 30.0),
+180:         "virtual_mouse_volume_max_distance_px": getattr(st
+<truncated 2819 bytes>
+croll_sensitivity
+228:         if hasattr(config, 'virtual_mouse_scroll_dead_zone'):
+229:             virtual_mouse.scroll_dead_zone = config.virtual_mouse_scroll_dead_zone
+230:         if hasattr(config, 'virtual_mouse_scroll_smoothing'):
+231:             virtual_mouse.scroll_smoothing = config.virtual_mouse_scroll_smoothing
+232:         if hasattr(config, 'virtual_mouse_volume_min_distance_px') and virtual_mouse._volume_controller:
+233:             virtual_mouse._volume_controller.min_distance = config.virtual_mouse_volume_min_distance_px
+234:         if hasattr(config, 'virtual_mouse_volume_max_distance_px') and virtual_mouse._volume_controller:
+235:             virtual_mouse._volume_controller.max_distance = config.virtual_mouse_volume_max_distance_px
+236:         if hasattr(config, 'virtual_mouse_volume_smoothing') and virtual_mouse._volume_controller:
+237:             virtual_mouse._volume_controller.smoothing = config.virtual_mouse_volume_smoothing
+238:         if hasattr(config, 'virtual_mouse_brightness_min_distance_px') and virtual_mouse._brightness_controller:
+239:             virtual_mouse._brightness_controller.min_distance = config.virtual_mouse_brightness_min_distance_px
+240:         if hasattr(config, 'virtual_mouse_brightness_max_distance_px') and virtual_mouse._brightness_controller:
+241:             virtual_mouse._brightness_controller.max_distance = config.virtual_mouse_brightness_max_distance_px
+242:         if hasattr(config, 'virtual_mouse_brightness_smoothing') and virtual_mouse._brightness_controller:
+243:             virtual_mouse._brightness_controller.smoothing = config.virtual_mouse_brightness_smoothing
+244:         if hasattr(config, 'virtual_mouse_drag_threshold_ms'):
+245:             virtual_mouse.drag_threshold_ms = config.virtual_mouse_drag_threshold_ms
+246:     return {"status": "success"}
+247: 
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

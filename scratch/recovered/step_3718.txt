@@ -1,0 +1,51 @@
+Created At: 2026-06-12T11:10:04Z
+Completed At: 2026-06-12T11:10:04Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 4482
+Total Bytes: 313447
+Showing lines 1836 to 1890
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1836:                                             borderColor = 'rgba(166, 218, 149, 0.5)';
+1837:                                         } else if (activeGestureRef.current === 'pause') {
+1838:                                             labelText = '⏸️ Paused';
+1839:                                             dotClass = 'w-2.5 h-2.5 rounded-full bg-[#eed49f]';
+1840:                                             glowShadow = '0 0 15px rgba(238, 212, 159, 0.5)';
+1841:                                             borderColor = 'rgba(238, 212, 159, 0.5)';
+1842:                                         } else if (activeGestureRef.current === 'clear') {
+1843:                                             labelText = '🗑️ Clearing...';
+1844:                                             dotClass = 'w-2.5 h-2.5 rounded-full bg-[#ed8796] animate-ping';
+1845:                                             glowShadow = '0 0 15px rgba(237, 135, 150, 0.5)';
+1846:                                             borderColor = 'rgba(237, 135, 150, 0.5)';
+1847:                                         } else if (activeGestureRef.current === 'menu') {
+1848:                                             labelText = '✋ Menu Open';
+1849:                                             dotClass = 'w-2.5 h-2.5 rounded-full bg-[#8aadf4]';
+1850:                                             glowShadow = '0 0 15px rgba(138, 173, 244, 0.5)';
+1851:                                             borderColor = 'rgba(138, 173, 244, 0.5)';
+1852:                                         }
+1853:              
+<truncated 1033 bytes>
+                         }
+1868:                                         
+1869:                                         setDrawingStatus('Drawing');
+1870:                                         hoverTrailRef.current = [];
+1871:                                         
+1872:                                         if (!isDrawingStateRef.current) {
+1873:                                             isDrawingStateRef.current = true;
+1874:                                             currentStrokeRef.current = {
+1875:                                                 points: [{ x: smoothedX, y: smoothedY }],
+1876:                                                 color: webBrushColorRef.current,
+1877:                                                 size: webBrushSizeRef.current
+1878:                                             };
+1879:                                             lastPointRef.current = { x: smoothedX, y: smoothedY };
+1880:                                         } else {
+1881:                                             currentStrokeRef.current.points.push({ x: smoothedX, y: smoothedY });
+1882:                                             lastPointRef.current = { x: smoothedX, y: smoothedY };
+1883:                                         }
+1884:                                     } else {
+1885:                                         // Activate grace period instead of stopping immediately
+1886:                                         if (isDrawingStateRef.current) {
+1887:                                             if (!inGracePeriodRef.current) {
+1888:                                                 inGracePeriodRef.current = true;
+1889:                                                 setDrawingStatus('Grace Period');
+1890:                                                 gracePeriodTimeoutRef.current = setTimeout(() => {
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

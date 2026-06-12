@@ -114,7 +114,7 @@ class GestureOSApp(ctk.CTk):
         # HandDetector is always created (MediaPipe is always available).
         # We decouple detector confidence (set to 0.5) from model confidence for stable tracking.
         self._hand_detector = HandDetector(
-            max_hands=2,
+            max_hands=1,
             detection_confidence=0.5,
             tracking_confidence=0.5,
         )
@@ -142,7 +142,12 @@ class GestureOSApp(ctk.CTk):
             volume_min_distance_px=getattr(self._config, 'virtual_mouse_volume_min_distance_px', 30.0),
             volume_max_distance_px=getattr(self._config, 'virtual_mouse_volume_max_distance_px', 250.0),
             volume_smoothing=getattr(self._config, 'virtual_mouse_volume_smoothing', 0.15),
+            brightness_min_distance_px=getattr(self._config, 'virtual_mouse_brightness_min_distance_px', 30.0),
+            brightness_max_distance_px=getattr(self._config, 'virtual_mouse_brightness_max_distance_px', 250.0),
+            brightness_smoothing=getattr(self._config, 'virtual_mouse_brightness_smoothing', 0.15),
+            drag_threshold_ms=getattr(self._config, 'virtual_mouse_drag_threshold_ms', 200.0),
         )
+
 
         # ActionDispatcher fires OS-level actions.
         self._action_dispatcher = ActionDispatcher(cooldown_ms=800)
@@ -235,7 +240,7 @@ class GestureOSApp(ctk.CTk):
         except Exception:
             pass
         self._hand_detector = HandDetector(
-            max_hands=2,
+            max_hands=1,
             detection_confidence=0.5,
             tracking_confidence=0.5,
         )
@@ -366,7 +371,7 @@ class GestureOSApp(ctk.CTk):
         cursor_y = vm_result["cursor_y"] if vm_result else 0
         tracking_state = vm_result["tracking_state"] if vm_result else "Disabled"
 
-        if isinstance(self._current_page, (DashboardPage, VirtualMousePage)):
+        if isinstance(self._current_page, DashboardPage) or self._current_page.__class__.__name__ in ("VirtualMousePage", "VirtualKeyboardPage", "AirDrawingPage"):
             from modules.visualizer import draw_visuals
             frame = draw_visuals(
                 frame=frame,
@@ -386,7 +391,7 @@ class GestureOSApp(ctk.CTk):
                     confidence=gesture_confidence,
                     hands_detected=len(detected_hands)
                 )
-            elif isinstance(self._current_page, VirtualMousePage):
+            elif self._current_page.__class__.__name__ == "VirtualMousePage":
                 self._current_page.set_camera_frame(
                     frame,
                     fps=self._fps_smooth,
@@ -407,7 +412,23 @@ class GestureOSApp(ctk.CTk):
                     brightness_mode=vm_result.get("brightness_mode", False) if vm_result else False,
                     brightness_level=vm_result.get("brightness_level", 0) if vm_result else 0,
                     brightness_distance=vm_result.get("brightness_distance", 0.0) if vm_result else 0.0,
+                    drag_status=vm_result.get("drag_status", "IDLE") if vm_result else "IDLE",
+                    drag_duration=vm_result.get("drag_duration", 0.0) if vm_result else 0.0,
+                    drag_counter=vm_result.get("drag_counter", 0) if vm_result else 0,
                 )
+            elif self._current_page.__class__.__name__ == "VirtualKeyboardPage":
+                self._current_page.set_camera_frame(
+                    frame,
+                    fps=self._fps_smooth,
+                    detected_hands=detected_hands,
+                )
+            elif self._current_page.__class__.__name__ == "AirDrawingPage":
+                self._current_page.set_camera_frame(
+                    frame,
+                    fps=self._fps_smooth,
+                    detected_hands=detected_hands,
+                )
+
 
         # Schedule next poll
         elapsed_ms = int((time.perf_counter() - start_time) * 1000)
@@ -451,6 +472,9 @@ class GestureOSApp(ctk.CTk):
             self._virtual_mouse._volume_controller.max_distance = settings.virtual_mouse_volume_max_distance_px
         if hasattr(settings, 'virtual_mouse_volume_smoothing') and self._virtual_mouse._volume_controller:
             self._virtual_mouse._volume_controller.smoothing = settings.virtual_mouse_volume_smoothing
+        if hasattr(settings, 'virtual_mouse_drag_threshold_ms'):
+            self._virtual_mouse.drag_threshold_ms = settings.virtual_mouse_drag_threshold_ms
+
 
         ctk.set_appearance_mode(settings.theme)
 
@@ -505,7 +529,9 @@ class GestureOSApp(ctk.CTk):
             )
         if key == "virtual_keyboard":
             return page_class(
-                self._content_frame, on_navigate=self._show_page
+                self._content_frame,
+                on_navigate=self._show_page,
+                settings_manager=self._settings_manager,
             )
         if key == "settings":
             return page_class(

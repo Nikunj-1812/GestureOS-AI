@@ -1,0 +1,60 @@
+Created At: 2026-06-12T11:14:00Z
+Completed At: 2026-06-12T11:14:00Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 2369
+Total Bytes: 129583
+Showing lines 2100 to 2200
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+2100:                                         
+2101:                                         const stateBadge = cursorEl.querySelector('.cursor-state');
+2102:                                         if (stateBadge) {
+2103:                                             let cursorStateText = currentStatus.toUpperCase();
+2104:                                             if (currentStatus === 'Drawing') {
+2105:                                                 cursorStateText = webBrushToolRef.current.toUpperCase();
+2106:                                             }
+2107:                                             stateBadge.textContent = cursorStateText;
+2108:                                             
+2109:                                             if (currentStatus === 'Drawing') {
+2110:                                                 stateBadge.style.color = webBrushToolRef.current === 'eraser' ? '#ed8796'
+2111:                                                                        : webBrushToolRef.current === 'highlighter' ? '#eed49f'
+2112:                                                                        : '#a6da95';
+2113:                                             } else {
+2114:                                                 stateBadge.style.color = currentStatus === 'Grace Period' ? '#f5a97f' : '#8aadf4';
+2115:                                             }
+2116:                                         }
+2117:                                         
+2118:                                         const distBadge = cursorEl.querySelector('.cursor-dis
+<truncated 3902 bytes>
+font-bold text-gray-450';
+2170:                                                 }
+2171:                                             }, 250);
+2172:                                         }
+2173:                                     } else if (!inGracePeriodRef.current) {
+2174:                                         setDrawingStatus('Idle');
+2175:                                         hoverTrailRef.current = [];
+2176:                                         
+2177:                                         const statusEl = document.getElementById('telemetry-drawing-status');
+2178:                                         if (statusEl) {
+2179:                                             statusEl.textContent = 'Idle';
+2180:                                             statusEl.className = 'text-sm font-bold text-gray-450';
+2181:                                         }
+2182:                                         
+2183:                                         renderAll();
+2184:                                         
+2185:                                         const cursorEl = document.getElementById('drawing-cursor');
+2186:                                         if (cursorEl) cursorEl.style.display = 'none';
+2187:                                     }
+2188:                                 }
+2189:                             }
+2190:                         } catch (err) {
+2191:                             console.error('Error decoding WebSocket JSON payload:', err);
+2192:                         }
+2193:                     };
+2194: 
+2195:                     ws.onclose = () => {
+2196:                         setSocketStatus('disconnected');
+2197:                         console.log('WebSocket connection lost, retrying in 3 seconds...');
+2198:                         setTimeout(connectWS, 3000);
+2199:                     };
+2200: 
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

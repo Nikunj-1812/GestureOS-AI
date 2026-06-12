@@ -1,0 +1,49 @@
+Created At: 2026-06-11T10:27:04Z
+Completed At: 2026-06-11T10:27:04Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 1772
+Total Bytes: 117640
+Showing lines 945 to 985
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+945:                 setIsResetting(true);
+946:                 logSystemEvent("Reset tracking requested.");
+947:                 try {
+948:                     await fetch('/api/camera/reset', { method: 'POST' });
+949:                     setEvents([]);
+950:                     prevGestureRef.current = 'None';
+951:                     logSystemEvent("Tracking reset complete.");
+952:                 } catch (err) {
+953:                     console.error('Error resetting tracking:', err);
+954:                     logSystemEvent("Failed to reset tracking.");
+955:                 } finally {
+956:                     setTimeout(() => setIsResetting(false), 800);
+957:                 }
+958:             };
+959: 
+960:             const updateSetting = async (key, val) => {
+961:                 try {
+962:                     await fetch('/api/settings/update', {
+963:                         method: 'POST',
+964:                         headers: { 'Content-Type': 'application/json' },
+965:                         body: JSON.stringify({ [key]: val })
+966:                     });
+967:                 } catch (err) {
+968:                     console.error('Error updating switch setting:', err);
+969:                 }
+970:             };
+971: 
+972:             // Format confidence displays based on gesture states
+973:             const formatConfidence = () => {
+974:                 if (gesture === 'None' || gesture === 'unknown' || gesture === 'No Model' || hands === 0) {
+975:                     return '0%';
+976:                 }
+977:                 return `${(confidence * 100).toFixed(0)}%`;
+978:             };
+979: 
+980:             return (
+981:                 <div className="flex h-screen bg-[#080710] font-sans antialiased text-gray-200 overflow-hidden">
+982:                     
+983:                     {/* Left Sidebar */}
+984:                     <aside className="w-72 glass-panel border-r border-glass-border flex flex-col justify-between h-full z-10">
+985:                         <div>
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

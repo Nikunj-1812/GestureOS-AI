@@ -1,0 +1,39 @@
+Created At: 2026-06-12T10:08:04Z
+Completed At: 2026-06-12T10:08:05Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 3194
+Total Bytes: 215157
+Showing lines 1320 to 1350
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1320:                                 }
+1321:                             } else if (!newVM) {
+1322:                                 prevVolumeLevelRef.current = -1;
+1323:                             }
+1324: 
+1325:                             // Phase 3.5 — Brightness
+1326:                             const newBM = data.brightness_mode || false;
+1327:                             setBrightnessMode(newBM);
+1328:                             setBrightnessLevel(data.brightness_level || 0);
+1329:                             setBrightnessDistance(data.brightness_distance || 0.0);
+1330:                             // Log brightness changes on integer level change
+1331:                             if (newBM && data.brightness_level !== prevBrightnessLevelRef.current) {
+1332:                                 if (data.brightness_level !== undefined) {
+1333:                                     const timeString = new Date().toLocaleTimeString();
+1334:                                     eventIdCounterRef.current += 1;
+1335:                                     const brightnessEvent = {
+1336:                                         id: `${Date.now()}-${eventIdCounterRef.current}`,
+1337:                                         timestamp: timeString,
+1338:                                         gesture: 'Brightness',
+1339:                                         confidence: 1.0,
+1340:                                         action: `[BRIGHTNESS] ${data.brightness_level}% (Distance: ${(data.brightness_distance || 0).toFixed(1)}px)`
+1341:                                     };
+1342:                                     setEvents(prev => [brightnessEvent, ...prev].slice(0, 50));
+1343:                                     prevBrightnessLevelRef.current = data.brightness_level;
+1344:                                 }
+1345:                             } else if (!newBM) {
+1346:                                 prevBrightnessLevelRef.current = -1;
+1347:                             }
+1348: 
+1349:                             // Phase 3.5 — Drag & Drop
+1350:                             const newDS = data.drag_status || 'IDLE';
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

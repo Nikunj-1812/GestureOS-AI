@@ -1,0 +1,56 @@
+Created At: 2026-06-11T10:09:20Z
+Completed At: 2026-06-11T10:09:20Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 1639
+Total Bytes: 106428
+Showing lines 801 to 1600
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+801:                         setShowHud(data.show_hud);
+802:                         
+803:                         setVirtualMouseEnabled(data.virtual_mouse_enabled);
+804:                         setVirtualMouseSensitivity(data.virtual_mouse_sensitivity);
+805:                         setVirtualMouseDeadZone(data.virtual_mouse_dead_zone);
+806:                         setVirtualMouseSmoothing(data.virtual_mouse_smoothing);
+807:                         if (data.virtual_mouse_click_threshold !== undefined) {
+808:                             setVirtualMouseClickThreshold(data.virtual_mouse_click_threshold);
+809:                         }
+810:                         if (data.virtual_mouse_right_click_threshold !== undefined) {
+811:                             setVirtualMouseRightClickThreshold(data.virtual_mouse_right_click_threshold);
+812:                         }
+813:                         if (data.virtual_mouse_scroll_sensitivity !== undefined) {
+814:                             setVirtualMouseScrollSensitivity(data.virtual_mouse_scroll_sensitivity);
+815:                         }
+816:                         if (data.virtual_mouse_scroll_dead_zone !== undefined) {
+817:                             setVirtualMouseScrollDeadZone(data.virtual_mouse_scroll_dead_zone);
+818:                         }
+819:                         if (data.virtual_mouse_scroll_smoothing !== undefined) {
+820:                             setVirtualMouseScrollSmoothing(data.virtual_mouse_scroll_smoothing);
+821:                         }
+822:                     })
+823:                    
+<truncated 45283 bytes>
+                                                      )}
+1367:                                                     </div>
+1368:                                                 </div>
+1369:                                             </div>
+1370: 
+1371:                                             {/* Right: Telemetry & Controls Panel (1 Column) */}
+1372:                                             <div className="flex flex-col gap-6">
+1373:                                                 {/* Telemetry Dashboard Card */}
+1374:                                                 <div className="glass-card rounded-2xl p-5 flex flex-col justify-between">
+1375:                                                     <div>
+1376:                                                         <h3 className="text-sm font-bold uppercase tracking-wider text-gray-400 flex items-center gap-2">
+1377:                                                             <ActivityIcon className="w-4 h-4 text-accent-blue" />
+1378:                                                             Telemetry Dashboard
+1379:                                                         </h3>
+1380:                                                         <p className="text-xs text-gray-500 mt-1 mb-4">Real-time coordinates and performance.</p>
+1381:                                                     </div>
+1382: 
+1383:                                                     <div className="space-y-4">
+1384:                                                         <div className="flex justify-between items-center text-sm border-b border-glass-border pb-2">
+1385:                                                             <span className="text-gray-400">Cursor Coordinates</span>
+1386:                                                             <span className="font-mono font-bold text-white">
+1387:                          
+<truncated 21394 bytes>
+
+NOTE: The output was truncated because it was too long. Use a more targeted query or a smaller range to get the information you need.

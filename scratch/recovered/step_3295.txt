@@ -1,0 +1,49 @@
+Created At: 2026-06-12T10:40:59Z
+Completed At: 2026-06-12T10:40:59Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 4033
+Total Bytes: 278199
+Showing lines 1300 to 1340
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1300:                     alert('Error saving drawing.');
+1301:                 });
+1302:             };
+1303: 
+1304:             useEffect(() => {
+1305:                 if (activeMenu === 'drawing') {
+1306:                     setTimeout(() => {
+1307:                         redrawCanvas(undoStack);
+1308:                     }, 50);
+1309:                 }
+1310:             }, [activeMenu]);
+1311: 
+1312:             const getCurrentWordJS = (text) => {
+1313:                 if (!text) return "";
+1314:                 const match = text.match(/[\w'-]+$/);
+1315:                 return match ? match[0] : "";
+1316:             };
+1317:             const smoothXRef = useRef(null);
+1318:             const smoothYRef = useRef(null);
+1319:             const candidateKeyRef = useRef(null);
+1320:             const candidateStartTimeRef = useRef(null);
+1321:             const lastHoverDetectTimeRef = useRef(null);
+1322:             const hoveredKeyRef = useRef('None');
+1323:             const pinchActiveRef = useRef(false);
+1324: 
+1325: 
+1326:             // Switches State
+1327:             const [showLandmarks, setShowLandmarks] = useState(true);
+1328:             const [showConnections, setShowConnections] = useState(true);
+1329:             const [showBoundingBox, setShowBoundingBox] = useState(true);
+1330:             const [showFingerStates, setShowFingerStates] = useState(true);
+1331:             const [showDistanceMeter, setShowDistanceMeter] = useState(true);
+1332:             const [showDebugPanel, setShowDebugPanel] = useState(true);
+1333:             const [showHud, setShowHud] = useState(true);
+1334: 
+1335:             const prevGestureRef = useRef('None');
+1336:             const socketRef = useRef(null);
+1337:             const eventIdCounterRef = useRef(0);
+1338: 
+1339:             // Connect to the WebSocket backend
+1340:             useEffect(() => {
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

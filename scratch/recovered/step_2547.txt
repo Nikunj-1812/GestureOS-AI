@@ -1,0 +1,59 @@
+Created At: 2026-06-12T09:42:02Z
+Completed At: 2026-06-12T09:42:02Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 2763
+Total Bytes: 190961
+Showing lines 1430 to 1480
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1430:                     setTypedText(prev => prev + '    ');
+1431:                     autoReleaseShift();
+1432:                 } else if (key === 'Enter') {
+1433:                     setTypedText(prev => prev + String.fromCharCode(10));
+1434:                     autoReleaseShift();
+1435:                 } else {
+1436:                     const isUpper = isCapsLockActive || isShiftActive;
+1437:                     const char = isUpper ? key.toUpperCase() : key.toLowerCase();
+1438:                     setTypedText(prev => prev + char);
+1439:                     autoReleaseShift();
+1440:                 }
+1441:             };
+1442: 
+1443:             const autoReleaseShift = () => {
+1444:                 setIsShiftActive(false);
+1445:             };
+1446: 
+1447:             return (
+1448:                 <div className="flex h-screen bg-[#080710] font-sans antialiased text-gray-200 overflow-hidden">
+1449:                     
+1450:                     {/* Left Sidebar */}
+1451:                     <aside className="w-72 glass-panel border-r border-glass-border flex flex-col justify-between h-full z-10">
+1452:                         <div>
+1453:                             {/* Logo section - centered, minimal empty space */}
+1454:                             <div className="flex items-center gap-3 px-6 py-6 border-b border-glass-border justify-center">
+1455:                                 <div className="p-2.5 bg-blue-500/10 rounded-xl border border-blue-500/20 text-accent-blue">
+1456:                                     <HandIcon className="w-6 h-6 stroke-[2]" />
+1457:                                 </div>
+1458:                                 <div>
+1459:                                     <h1 className="text-lg font-bold tracking-wider bg-gradient-to-r from-white via-gray-200 to-gray-400 bg-clip-text text-transparent">
+1460:                                         GestureOS
+1461:                                     </h1>
+1462:                                     <p className="text-[10px] text-gray-500 uppercase tracking-widest font-semibold">Intelligence Edition</p>
+1463:                                 </div>
+1464:                             </div>
+1465: 
+1466:                             {/* Navigation */}
+1467:                             <nav className="px-4 py-6 space-y-2">
+1468:                                 {[
+1469:                                     { id: 'dashboard', name: 'Dashboard', icon: LayersIcon },
+1470:                                     { id: 'mouse', name: 'Virtual Mouse', icon: MousePointerIcon },
+1471:                                     { id: 'keyboard', name: 'Virtual Keyboard', icon: KeyboardIcon },
+1472:                                     { id: 'shortcuts', name: 'Gestures Map', icon: SlidersIcon },
+1473:                                     { id: 'analytics', name: 'Real-time Metrics', icon: TrendingUpIcon },
+1474:                                     { id: 'settings', name: 'System Settings', icon: SettingsIcon }
+1475:                                 ].map((item) => {
+1476:                                     const Icon = item.icon;
+1477:                                     const isActive = activeMenu === item.id;
+1478:                                     return (
+1479:                                         <button
+1480:                                             key={item.id}
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

@@ -1,0 +1,24 @@
+Created At: 2026-06-12T10:53:52Z
+Completed At: 2026-06-12T10:53:53Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 4035
+Total Bytes: 278290
+Showing lines 1060 to 1075
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1060: 
+1061:             const [redoStack, setRedoStack] = useState([]);
+1062:             const [streamFps, setStreamFps] = useState(0.0);
+1063: 
+1064:             // Refs for drawing state machine
+1065:             const currentStrokeRef = useRef(null);
+1066:             const lastPointRef = useRef(null);
+1067:             const isDrawingStateRef = useRef(false);
+1068:             const webSmoothXRef = useRef(null);
+1069:             const webSmoothYRef = useRef(null);
+1070:             const activeMenuRef = useRef('dashboard');
+1071: 
+1072:             // Responsive & white board states
+1073:             const [fullScreenMode, setFullScreenMode] = useState(false);
+1074:             
+1075:             const [backgroundMode, _setBackgroundMode] = useState('camera'); // 'camera' | 'whiteboard'
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

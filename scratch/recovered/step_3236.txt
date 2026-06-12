@@ -1,0 +1,29 @@
+Created At: 2026-06-12T10:29:30Z
+Completed At: 2026-06-12T10:29:30Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 3499
+Total Bytes: 240461
+Showing lines 990 to 1010
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+990: 
+991:             useEffect(() => {
+992:                 activeMenuRef.current = activeMenu;
+993:             }, [activeMenu]);
+994: 
+995:             const redrawCanvas = (strokes) => {
+996:                 const canvas = document.getElementById('drawing-canvas');
+997:                 if (!canvas) return;
+998:                 const ctx = canvas.getContext('2d');
+999:                 ctx.clearRect(0, 0, canvas.width, canvas.height);
+1000:                 
+1001:                 strokes.forEach(stroke => {
+1002:                     if (stroke.points.length < 1) return;
+1003:                     ctx.beginPath();
+1004:                     ctx.strokeStyle = stroke.color;
+1005:                     ctx.lineWidth = stroke.size;
+1006:                     ctx.lineCap = 'round';
+1007:                     ctx.lineJoin = 'round';
+1008:                     
+1009:                     if (stroke.points.length === 1) {
+1010:                         const pt = stroke.points[0];
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

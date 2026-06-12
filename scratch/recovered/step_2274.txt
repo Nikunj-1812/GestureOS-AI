@@ -1,0 +1,28 @@
+Created At: 2026-06-12T09:19:57Z
+Completed At: 2026-06-12T09:19:57Z
+File Path: `file:///C:/Users/nikun/.gemini/antigravity/brain/f71acb1b-ab5a-4de9-85a5-1a298f3c313a/task.md`
+Total Lines: 20
+Total Bytes: 1384
+Showing lines 1 to 20
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1: # Phase 4.4 Tasks — Real System Typing
+2: 
+3: - [ ] Implement system typing in `dashboard/pages/virtual_keyboard_page.py`:
+4:   - [ ] Add `self.system_typing_active` state in `__init__` (default to `False`).
+5:   - [ ] Add `System Typing (OS)` switch UI row at Row 7.
+6:   - [ ] Move text header frame to Row 8 and text box to Row 9. Update grid row weight configuration.
+7:   - [ ] Implement key translation and `pyautogui` injection logic inside `_on_key_press`.
+8:   - [ ] Add switch callback `_on_system_typing_changed`.
+9: - [ ] Implement system typing in the Web Dashboard (`web_backend.py`):
+10:   - [ ] Import `pyautogui` at the top of the file.
+11:   - [ ] Create `/api/keyboard/type` POST API endpoint in FastAPI to receive and execute keystrokes.
+12:   - [ ] Add `systemTypingEnabled` state in React (default `false`).
+13:   - [ ] Add `System Typing (OS)` checkbox toggle UI row in the React virtual keyboard telemetry panel.
+14:   - [ ] Update `handleWebKeyPress` to send a POST fetch request to `/api/keyboard/type` when `systemTypingEnabled` is `true`.
+15: - [ ] Verification and testing:
+16:   - [ ] Update `tests/test_virtual_keyboard_hover.py` with mock `pyautogui` assertions to verify OS key press emission.
+17:   - [ ] Run automated tests and ensure they pass.
+18:   - [ ] Manually verify real system typing in Notepad, browser, and other inputs using both desktop and web dashboards.
+19:   - [ ] Generate a PASS/FAIL report.
+20: 
+The above content shows the entire, complete file contents of the requested file.

@@ -1,0 +1,66 @@
+Created At: 2026-06-12T11:08:53Z
+Completed At: 2026-06-12T11:08:53Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 4470
+Total Bytes: 312907
+Showing lines 168 to 226
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+168: @app.get("/api/settings")
+169: def api_get_settings():
+170:     state = settings_manager.state
+171:     return {
+172:         "show_landmarks": state.show_landmarks,
+173:         "show_connections": state.show_connections,
+174:         "show_bounding_box": state.show_bounding_box,
+175:         "show_finger_states": state.show_finger_states,
+176:         "show_distance_meter": state.show_distance_meter,
+177:         "show_debug_panel": state.show_debug_panel,
+178:         "show_hud": state.show_hud,
+179:         "virtual_mouse_enabled": state.virtual_mouse_enabled,
+180:         "virtual_mouse_sensitivity": state.virtual_mouse_sensitivity,
+181:         "virtual_mouse_dead_zone": state.virtual_mouse_dead_zone,
+182:         "virtual_mouse_smoothing": state.virtual_mouse_smoothing,
+183:         "virtual_mouse_click_threshold": getattr(state, 'virtual_mouse_click_threshold', 0.05),
+184:         "virtual_mouse_right_click_threshold": getattr(state, 'virtual_mouse_right_click_threshold', 0.05),
+185:         "virtual_mouse_scroll_sensitivity": getattr(state, 'virtual_mouse_scroll_sensitivity', 5.0),
+186:         "virtual_mouse_scroll_dead_zone": getattr(state, 'virtual_mouse_scroll_dead_zone', 0.04),
+187:         "virtual_mouse_scroll_smoothing": getattr(state, 'virtual_mouse_scroll_smoothing', 0.25),
+188:         "virtual_mouse_volume_min_distance_px": getattr(state, 'virtual_mouse_volume_min_distance_px', 30.0),
+189:         "virtual_mouse_volume_max_distance_px": getattr(state, 'virtual_mouse_volume_max_distance_px', 250.0),
+190:         "virtual_mouse_volume_smoo
+<truncated 368 bytes>
+r(state, 'virtual_mouse_brightness_smoothing', 0.15),
+194:         "virtual_mouse_drag_threshold_ms": getattr(state, 'virtual_mouse_drag_threshold_ms', 200.0),
+195:         "keyboard_sound_enabled": getattr(state, 'keyboard_sound_enabled', True),
+196:         "keyboard_system_typing_enabled": getattr(state, 'keyboard_system_typing_enabled', False),
+197:         "keyboard_autocomplete_enabled": getattr(state, 'keyboard_autocomplete_enabled', True),
+198:     }
+199: 
+200: 
+201: @app.post("/api/settings/update")
+202: def api_update_settings(updates: dict):
+203:     params = {}
+204:     bool_keys = [
+205:         "show_landmarks", "show_connections", "show_bounding_box",
+206:         "show_finger_states", "show_distance_meter", "show_debug_panel",
+207:         "show_hud", "virtual_mouse_enabled",
+208:         "keyboard_sound_enabled", "keyboard_system_typing_enabled", "keyboard_autocomplete_enabled"
+209:     ]
+210:     float_keys = [
+211:         "virtual_mouse_sensitivity", "virtual_mouse_dead_zone", "virtual_mouse_smoothing",
+212:         "virtual_mouse_click_threshold", "virtual_mouse_right_click_threshold",
+213:         "virtual_mouse_scroll_sensitivity", "virtual_mouse_scroll_dead_zone", "virtual_mouse_scroll_smoothing",
+214:         "virtual_mouse_volume_min_distance_px", "virtual_mouse_volume_max_distance_px", "virtual_mouse_volume_smoothing",
+215:         "virtual_mouse_brightness_min_distance_px", "virtual_mouse_brightness_max_distance_px", "virtual_mouse_brightness_smoothing",
+216:         "virtual_mouse_drag_threshold_ms"
+217:     ]
+218: 
+219:     for key in bool_keys:
+220:         if key in updates:
+221:             params[key] = bool(updates[key])
+222:     for key in float_keys:
+223:         if key in updates:
+224:             params[key] = float(updates[key])
+225:     
+226:     changed = settings_manager.update(**params)
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

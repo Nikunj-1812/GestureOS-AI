@@ -1,0 +1,48 @@
+Created At: 2026-06-11T12:58:52Z
+Completed At: 2026-06-11T12:58:52Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 1987
+Total Bytes: 135200
+Showing lines 1680 to 1730
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1680:                                                             </span>
+1681:                                                         </div>
+1682:                                                         <div className="flex justify-between items-center text-sm border-b border-glass-border pb-2">
+1683:                                                             <span className="text-gray-400">Current Volume Level</span>
+1684:                                                             <span className="font-mono font-bold text-purple-400">
+1685:                                                                 {volumeLevel}%
+1686:                                                             </span>
+1687:                                                         </div>
+1688:                                                         <div className="flex justify-between items-center text-sm border-b border-glass-border pb-2">
+1689:                                                             <span className="text-gray-400">Hand Distance</span>
+1690:                                                             <span className="font-mono font-bold text-white">
+1691:                                                                 {volumeMode ? `${volumeDistance.toFixed(1)} px` : '-- px'}
+1692:                                                             </span>
+1693:                                                         </div>
+1694: 
+1695:                                                         {/* Phase 3.5 Brightness Section */}
+1696:                                       
+<truncated 1475 bytes>
+{brightnessLevel}%
+1710:                                                             </span>
+1711:                                                         </div>
+1712:                                                         <div className="flex justify-between items-center text-sm">
+1713:                                                             <span className="text-gray-400">Hand Distance</span>
+1714:                                                             <span className="font-mono font-bold text-white">
+1715:                                                                 {brightnessMode ? `${brightnessDistance.toFixed(1)} px` : '-- px'}
+1716:                                                             </span>
+1717:                                                         </div>
+1718:                                                     </div>
+1719:                                                 </div>
+1720: 
+1721:                                                 {/* Tracking Settings Card */}
+1722:                                                 <div className="glass-card rounded-2xl p-5">
+1723:                                                     <h3 className="text-sm font-bold uppercase tracking-wider text-gray-400 flex items-center gap-2">
+1724:                                                         <SlidersIcon className="w-4 h-4 text-accent-purple" />
+1725:                                                         Tracking Settings
+1726:                                                     </h3>
+1727:                                                     <p className="text-xs text-gray-500 mt-1 mb-4">Configure virtual mouse parameters.</p>
+1728: 
+1729:                                                     <div className="space-y-5">
+1730:                                                         {/* Enable Toggle Switch */}
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

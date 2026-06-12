@@ -1,0 +1,39 @@
+Created At: 2026-06-12T04:52:55Z
+Completed At: 2026-06-12T04:52:55Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 2092
+Total Bytes: 142927
+Showing lines 1540 to 1570
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1540:                                 ) : activeMenu === 'mouse' ? (
+1541:                                     <>
+1542:                                         {/* Hero Header Section */}
+1543:                                         <div className="glass-panel rounded-3xl p-6 flex flex-col md:flex-row md:items-center justify-between border border-glass-border relative overflow-hidden">
+1544:                                             <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 opacity-20" />
+1545:                                             <div>
+1546:                                                 <h2 className="text-2xl font-bold tracking-wide text-white">Virtual Mouse Controls</h2>
+1547:                                                 <p className="text-xs text-gray-400 mt-1 max-w-xl">
+1548:                                                     Control your system cursor in real-time using your index finger. Calibrate tracking properties below.
+1549:                                                 </p>
+1550:                                             </div>
+1551:                                             <div className="mt-4 md:mt-0">
+1552:                                                 <span className={`px-4 py-2 rounded-full text-xs font-semibold border ${
+1553:                                                     virtualMouseEnabled 
+1554:                                                         ? 'bg-emerald-500/10 border-emerald-500/20 text-accent-green' 
+1555:                                                         : 'bg-zinc-500/10 border-zinc-500/20 text-gray-400'
+1556:                                                 }`}>
+1557:                                                     {virtualMouseEnabled ? 'Active' : 'Inactive'}
+1558:                                                 </span>
+1559:                                             </div>
+1560:                                         </div>
+1561: 
+1562:                                         {/* Two-Column Main Content Layout */}
+1563:                                         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+1564:                                             {/* Left: Camera Feed Preview (2 Columns) */}
+1565:                                             <div className="lg:col-span-2 flex flex-col gap-4">
+1566:                                                 <div className="glass-card rounded-2xl p-4 flex flex-col h-[480px] justify-between relative group overflow-hidden">
+1567:                                                     <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 opacity-20" />
+1568:                                                     
+1569:                                                     <div className="flex items-center justify-between pb-3 border-b border-glass-border">
+1570:                                                         <div className="flex items-center gap-2 text-sm">
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

@@ -1,0 +1,47 @@
+Created At: 2026-06-12T10:06:12Z
+Completed At: 2026-06-12T10:06:12Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 3040
+Total Bytes: 208293
+Showing lines 451 to 489
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+451:             delta = max(now - last_fps_tick, 1e-6)
+452:             instant_fps = 1.0 / delta
+453:             fps_smooth = instant_fps if fps_smooth == 0 else (fps_smooth * 0.85 + instant_fps * 0.15)
+454:             last_fps_tick = now
+455:             
+456:             primary_hand = detected_hands[0] if detected_hands else None
+457:             index_tip_x = float(round(primary_hand.landmarks[8][0], 4)) if (primary_hand and len(primary_hand.landmarks) > 8) else None
+458:             index_tip_y = float(round(primary_hand.landmarks[8][1], 4)) if (primary_hand and len(primary_hand.landmarks) > 8) else None
+459: 
+460:             # Compute live pinch distance for virtual keyboard: Middle Finger (12) and Thumb (4)
+461:             live_pinch_dist = 0.0
+462:             if primary_hand and len(primary_hand.landmarks) > 12:
+463:                 mx, my, mz = primary_hand.landmarks[12]
+464:                 tx, ty, tz = primary_hand.landmarks[4]
+465:                 live_pinch_dist = math.sqrt((mx - tx)**2 + (my - ty)**2 + (mz - tz)**2)
+466: 
+467:             # Send live telemetry + frame over WebSocket
+468:             payload = {
+469:                 "fps": float(round(fps_smooth, 1)),
+470:                 "hands": len(detected_hands),
+471:                 "index_tip_x": index_tip_x,
+472:                 "index_tip_y": index_tip_y,
+473:                 "gesture": gesture_label,
+474:                 "confidence": float(round(gesture_confidence, 3)),
+475:                 "camera_status": "Connected",
+476:                 "frame": f"data:image/jpeg;base64,{frame_b64}",
+477:                 "cursor_x": cursor_x,
+478:                 "cursor_y": cursor_y,
+479:                 "tracking_state": tracking_state,
+480:                 "pinch_distance": vm_result.get("pinch_distance", float(round(live_pinch_dist, 4))) if vm_result else float(round(live_pinch_dist, 4)),
+481:                 "click_status": vm_result.get("click_status", "OPEN") if vm_result else "OPEN",
+482:                 "click_counter": vm_result.get("click_counter", 0) if vm_result else 0,
+483:                 "current_action": vm_result.get("current_action", "None") if vm_result else "None",
+484:                 # Phase 3.3 — Right Click telemetry
+485:                 "right_click_status": vm_result.get("right_click_status", "OPEN") if vm_result else "OPEN",
+486:                 "right_click_counter": vm_result.get("right_click_counter", 0) if vm_result else 0,
+487:                 "right_pinch_distance": vm_result.get("right_pinch_distance", 0.0) if vm_result else 0.0,
+488:                 # Phase 3.4 — Scroll telemetry
+489:                 "scroll_mode": vm_result.get("scroll_mode", False) if vm_result else False,
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

@@ -1,0 +1,57 @@
+Created At: 2026-06-11T12:58:41Z
+Completed At: 2026-06-11T12:58:41Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 1987
+Total Bytes: 135200
+Showing lines 770 to 850
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+770:                             setRightClickStatus(newRC);
+771:                             setRightClickCounter(data.right_click_counter || 0);
+772:                             setRightPinchDistance(data.right_pinch_distance || 0.0);
+773:                             // Log right-click event on transition into RIGHT_CLICK
+774:                             if (newRC === 'RIGHT_CLICK' && prevRC !== 'RIGHT_CLICK') {
+775:                                 const timeString = new Date().toLocaleTimeString();
+776:                                 eventIdCounterRef.current += 1;
+777:                                 const rcEvent = {
+778:                                     id: `${Date.now()}-${eventIdCounterRef.current}`,
+779:                                     timestamp: timeString,
+780:                                     gesture: 'Right Click',
+781:                                     confidence: 1.0,
+782:                                     action: `Right Click triggered | gesture=thumb_middle_pinch | dist=${(data.right_pinch_distance || 0).toFixed(4)}`
+783:                                 };
+784:                                 setEvents(prev => [rcEvent, ...prev].slice(0, 50));
+785:                             }
+786:                             prevRightClickStatusRef.current = newRC;
+787:                             // Phase 3.4 — Scroll
+788:                             const prevSM = prevScrollModeRef.current;
+789:                             const newSM = data.scroll_mode || false;
+790:                             setScrollMode(newSM);
+791:                     
+<truncated 2402 bytes>
+f (data.volume_level !== undefined) {
+826:                                     const timeString = new Date().toLocaleTimeString();
+827:                                     eventIdCounterRef.current += 1;
+828:                                     const volumeEvent = {
+829:                                         id: `${Date.now()}-${eventIdCounterRef.current}`,
+830:                                         timestamp: timeString,
+831:                                         gesture: 'Volume',
+832:                                         confidence: 1.0,
+833:                                         action: `[VOLUME] ${data.volume_level}% (Distance: ${(data.volume_distance || 0).toFixed(1)}px)`
+834:                                     };
+835:                                     setEvents(prev => [volumeEvent, ...prev].slice(0, 50));
+836:                                     prevVolumeLevelRef.current = data.volume_level;
+837:                                 }
+838:                             } else if (!newVM) {
+839:                                 prevVolumeLevelRef.current = -1;
+840:                             }
+841: 
+842:                             // Phase 3.5 — Brightness
+843:                             const newBM = data.brightness_mode || false;
+844:                             setBrightnessMode(newBM);
+845:                             setBrightnessLevel(data.brightness_level || 0);
+846:                             setBrightnessDistance(data.brightness_distance || 0.0);
+847:                             // Log brightness changes on integer level change
+848:                             if (newBM && data.brightness_level !== prevBrightnessLevelRef.current) {
+849:                                 if (data.brightness_level !== undefined) {
+850:                                     const timeString = new Date().toLocaleTimeString();
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

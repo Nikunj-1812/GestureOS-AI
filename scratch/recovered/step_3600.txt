@@ -1,0 +1,34 @@
+Created At: 2026-06-12T11:01:03Z
+Completed At: 2026-06-12T11:01:03Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 4256
+Total Bytes: 294748
+Showing lines 475 to 500
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+475:             instant_fps = 1.0 / delta
+476:             fps_smooth = instant_fps if fps_smooth == 0 else (fps_smooth * 0.85 + instant_fps * 0.15)
+477:             last_fps_tick = now
+478:             
+479:             primary_hand = detected_hands[0] if detected_hands else None
+480:             index_tip_x = float(round(primary_hand.landmarks[8][0], 4)) if (primary_hand and len(primary_hand.landmarks) > 8) else None
+481:             index_tip_y = float(round(primary_hand.landmarks[8][1], 4)) if (primary_hand and len(primary_hand.landmarks) > 8) else None
+482: 
+483:             # Compute live pinch distance for virtual keyboard: Middle Finger (12) and Thumb (4)
+484:             live_pinch_dist = 0.0
+485:             if primary_hand and len(primary_hand.landmarks) > 12:
+486:                 mx, my, mz = primary_hand.landmarks[12]
+487:                 tx, ty, tz = primary_hand.landmarks[4]
+488:                 live_pinch_dist = math.sqrt((mx - tx)**2 + (my - ty)**2 + (mz - tz)**2)
+489: 
+490:             # Compute live index-thumb pinch distance for Air Drawing
+491:             index_pinch_dist = 0.0
+492:             if primary_hand and len(primary_hand.landmarks) > 8:
+493:                 ix_3d, iy_3d, iz_3d = primary_hand.landmarks[8]
+494:                 tx_3d, ty_3d, tz_3d = primary_hand.landmarks[4]
+495:                 index_pinch_dist = math.sqrt((ix_3d - tx_3d)**2 + (iy_3d - ty_3d)**2 + (iz_3d - tz_3d)**2)
+496: 
+497:             # Send live telemetry + frame over WebSocket
+498:             payload = {
+499:                 "fps": float(round(fps_smooth, 1)),
+500:                 "hands": len(detected_hands),
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

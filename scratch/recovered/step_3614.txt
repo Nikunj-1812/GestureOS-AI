@@ -1,0 +1,29 @@
+Created At: 2026-06-12T11:01:26Z
+Completed At: 2026-06-12T11:01:26Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 4256
+Total Bytes: 294748
+Showing lines 4020 to 4040
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+4020:                                                                         {drawingStatus !== 'Idle' && lastPointRef.current ? `${Math.round(lastPointRef.current.x)}, ${Math.round(lastPointRef.current.y)}` : '-- , --'}
+4021:                                                                     </span>
+4022:                                                                 </div>
+4023:                                                                 <div className="flex justify-between items-center py-2 border-b border-white/5">
+4024:                                                                     <span className="text-xs text-gray-400">Pinch Distance</span>
+4025:                                                                     <span id="telemetry-pinch-distance" className="text-sm font-bold text-white font-mono">{pinchDistance.toFixed(4)}</span>
+4026:                                                                 </div>
+4027:                                                                 <div className="flex justify-between items-center py-2 border-b border-white/5">
+4028:                                                                     <span className="text-xs text-gray-400">Pinch Confidence</span>
+4029:                                                                     <span id="telemetry-pinch-confidence" className="text-sm font-bold text-white font-mono">
+4030:                                                                         --%
+4031:                                                                     </span>
+4032:                                                                 </div>
+4033:                                                                 <div className="flex justify-between items-center py-2 border-b border-white/5">
+4034:                                                                     <span className="text-xs text-gray-400">Pinch State</span>
+4035:                                                                     <span id="telemetry-pinch-state" className="text-sm font-bold text-gray-450">
+4036:                                                                         Idle
+4037:                                                                     </span>
+4038:                                                                 </div>
+4039:                                                                 <div className="flex justify-between items-center py-2 border-b border-white/5">
+4040:                                                                     <span className="text-xs text-gray-400">Pinch / Release Frames</span>
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

@@ -1,0 +1,49 @@
+Created At: 2026-06-12T10:50:47Z
+Completed At: 2026-06-12T10:50:47Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 4034
+Total Bytes: 278198
+Showing lines 1640 to 1680
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1640:                                         gesture: data.gesture,
+1641:                                         confidence: data.confidence,
+1642:                                         action: `Triggered mapped shortcut for [${data.gesture}]`
+1643:                                     };
+1644:                                     setEvents(prev => [newEvent, ...prev].slice(0, 50));
+1645:                                 }
+1646:                                 prevGestureRef.current = data.gesture;
+1647:                             }
+1648: 
+1649:                             // Phase 5.1 — Air Drawing Canvas
+1650:                             if (activeMenuRef.current === 'drawing') {
+1651:                                 setStreamFps(data.fps || 0.0);
+1652:                                 const isHandDetected = data.hands > 0;
+1653:                                 
+1654:                                 // Reset One Euro filter state when hand enters/exits frame to avoid jumps
+1655:                                 if (isHandDetected && !wasHandDetectedRef.current) {
+1656:                                     filterXRef.current.reset();
+1657:                                     filterYRef.current.reset();
+1658:                                     hoverTrailRef.current = [];
+1659:                                 }
+1660:                                 wasHandDetectedRef.current = isHandDetected;
+1661: 
+1662:                                 if (isHandDetected && data.index_tip_x !== undefined && data.index_tip_x !== null) {
+1663:                                     const rawX = data.index_tip_x;
+1664:                                     const rawY = data.index_tip_y;
+1665:                                     
+1666:                                     // Resolve coordinate mapping based on mode
+1667:                                     let mappedX = 0;
+1668:                                     let mappedY = 0;
+1669:                                     
+1670:                                     const curCanvasWidth = canvasWidthRef.current;
+1671:                                     const curCanvasHeight = canvasHeightRef.current;
+1672:                                     
+1673:                                     if (backgroundModeRef.current === 'camera') {
+1674:                                         const scale = Math.max(curCanvasWidth / 640.0, curCanvasHeight / 360.0);
+1675:                                         const wScaled = 640.0 * scale;
+1676:                                         const hScaled = 360.0 * scale;
+1677:                                         const dx = (curCanvasWidth - wScaled) / 2.0;
+1678:                                         const dy = (curCanvasHeight - hScaled) / 2.0;
+1679:                                         mappedX = rawX * wScaled + dx;
+1680:                                         mappedY = rawY * hScaled + dy;
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

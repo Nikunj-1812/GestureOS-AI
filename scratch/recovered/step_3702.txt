@@ -1,0 +1,48 @@
+Created At: 2026-06-12T11:09:25Z
+Completed At: 2026-06-12T11:09:25Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 4482
+Total Bytes: 313447
+Showing lines 3800 to 3865
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+3800:                                                     <button 
+3801:                                                         data-key="Backspace"
+3802:                                                         onMouseEnter={() => setHoveredKey('Backspace')}
+3803:                                                         onMouseLeave={() => setHoveredKey('None')}
+3804:                                                         onClick={() => handleWebKeyPress('Backspace')}
+3805:                                                         className={`w-28 h-12 rounded-lg text-xs font-bold transition-all duration-100 ${
+3806:                                                             pressedKey === 'Backspace' 
+3807:                                                                 ? 'bg-amber-500 text-black scale-95' 
+3808:                                                                 : hoveredKey === 'Backspace'
+3809:                                                                     ? 'bg-blue-600/40 text-white border border-blue-500/80 shadow-md shadow-blue-500/20'
+3810:                                                                     : 'bg-zinc-900 hover:bg-zinc-800 text-gray-300 border border-zinc-750'
+3811:                                                         }`}
+3812:                                                     >
+3813:                                                         Backspace
+3814:                                                     </button>
+3815:                                                 </div>
+3816: 
+3817:                         
+<truncated 2740 bytes>
+ ${
+3846:                                                                 pressedKey === emoji
+3847:                                                                     ? 'bg-amber-500 text-black scale-95'
+3848:                                                                     : hoveredKey === emoji
+3849:                                                                         ? 'bg-blue-600/40 text-white border border-blue-500/80 shadow-md shadow-blue-500/20'
+3850:                                                                         : 'bg-zinc-850 hover:bg-zinc-700 active:scale-95 border border-zinc-750'
+3851:                                                             }`}
+3852:                                                         >
+3853:                                                             {emoji}
+3854:                                                         </button>
+3855:                                                     ))}
+3856:                                                 </div>
+3857:                                             </div>
+3858:                                         </div>
+3859:                                     </>
+3860:                                 ) : activeMenu === 'drawing' ? (
+3861:                                         <>
+3862:                                             {/* Hero Header Section - Hidden in fullscreen mode */}
+3863:                                             {!fullScreenMode && (
+3864:                                                 <div className="glass-panel rounded-3xl p-6 flex flex-col md:flex-row md:items-center justify-between border border-glass-border relative overflow-hidden">
+3865:                                                     <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 opacity-20" />
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

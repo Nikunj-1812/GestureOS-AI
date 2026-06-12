@@ -1,0 +1,52 @@
+Created At: 2026-06-12T05:07:19Z
+Completed At: 2026-06-12T05:07:19Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 2592
+Total Bytes: 179512
+Showing lines 2470 to 2550
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+2470:                                                                 {label}
+2471:                                                             </button>
+2472:                                                         );
+2473:                                                     })}
+2474:                                                     <button 
+2475:                                                         onMouseEnter={() => setHoveredKey('Enter')}
+2476:                                                         onMouseLeave={() => setHoveredKey('None')}
+2477:                                                         onClick={() => handleWebKeyPress('Enter')}
+2478:                                                         className={`w-20 h-12 rounded-lg text-xs font-bold transition-all duration-100 ${
+2479:                                                             pressedKey === 'Enter' ? 'bg-amber-500 text-black scale-95' : 'bg-zinc-900 hover:bg-zinc-800 text-gray-300 border border-zinc-750'
+2480:                                                         }`}
+2481:                                                     >
+2482:                                                         Enter
+2483:                                                     </button>
+2484:                                                 </div>
+2485: 
+2486:                                                 {/* Row 4 */}
+2487:                                                 <div className="flex gap-1.5 w-full justify-between">
+2488:                                                     <button 
+2489:    
+<truncated 3955 bytes>
+  Backspace
+2529:                                                     </button>
+2530:                                                 </div>
+2531: 
+2532:                                                 {/* Row 5 */}
+2533:                                                 <div className="flex gap-1.5 w-full justify-between">
+2534:                                                     <button 
+2535:                                                         onMouseEnter={() => setHoveredKey('Space')}
+2536:                                                         onMouseLeave={() => setHoveredKey('None')}
+2537:                                                         onClick={() => handleWebKeyPress('Space')}
+2538:                                                         className={`w-full h-12 rounded-lg text-sm font-semibold transition-all duration-100 ${
+2539:                                                             pressedKey === 'Space' ? 'bg-amber-500 text-black scale-95' : 'bg-zinc-905 hover:bg-zinc-800 text-gray-300 border border-zinc-750 active:scale-95'
+2540:                                                         }`}
+2541:                                                     >
+2542:                                                         Space
+2543:                                                     </button>
+2544:                                                 </div>
+2545:                                             </div>
+2546:                                         </div>
+2547:                                     </>
+2548:                                 ) : (
+2549:                                     <div className="glass-card rounded-2xl p-8 text-center text-gray-400">
+2550:                                         <p>This page is currently under construction. Please use the Dashboard or Virtual Mouse navigation links.</p>
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

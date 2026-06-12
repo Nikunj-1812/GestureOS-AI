@@ -1,0 +1,92 @@
+Created At: 2026-06-11T10:09:18Z
+Completed At: 2026-06-11T10:09:18Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 1639
+Total Bytes: 106428
+Showing lines 1 to 800
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1: import os
+2: import sys
+3: 
+4: # Suppress third-party logging / console spam (MediaPipe, TensorFlow, OpenCV)
+5: os.environ['GLOG_minloglevel'] = '2'          # Suppress MediaPipe info logs
+6: os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'       # Suppress TensorFlow info/warning logs
+7: os.environ['OPENCV_LOG_LEVEL'] = 'ERROR'       # Suppress OpenCV info/warning logs
+8: os.environ['OPENCV_FFMPEG_LOGLEVEL'] = '-8'    # Suppress OpenCV FFMPEG logs
+9: 
+10: import base64
+11: import cv2
+12: import json
+13: import asyncio
+14: from fastapi import FastAPI, WebSocket, WebSocketDisconnect
+15: from fastapi.middleware.cors import CORSMiddleware
+16: from fastapi.responses import HTMLResponse
+17: import uvicorn
+18: import time
+19: from pathlib import Path
+20: 
+21: from config.settings_manager import SettingsManager
+22: from modules.camera import CameraStream
+23: from modules.hand_detector import HandDetector
+24: from modules.gesture_engine import GestureEngine
+25: from modules.action_dispatcher import ActionDispatcher
+26: from loguru import logger
+27: 
+28: app = FastAPI(title="GestureOS AI Web Backend")
+29: 
+30: # Enable CORS
+31: app.add_middleware(
+32:     CORSMiddleware,
+33:     allow_origins=["*"],
+34:     allow_credentials=True,
+35:     allow_methods=["*"],
+36:     allow_headers=["*"],
+37: )
+38: 
+39: # Shared system states
+40: settings_manager = SettingsManager()
+41: config = settings_manager.build_app_config("config/settings.yaml")
+42: 
+43: # Configure logger level from settings
+44: logger.remove()
+45: logger.add(sys.stderr, level=config.log_level)
+46: 
+47: camera_stream = No
+<truncated 39520 bytes>
+ data.gesture,
+766:                                         confidence: data.confidence,
+767:                                         action: `Triggered mapped shortcut for [${data.gesture}]`
+768:                                     };
+769:                                     setEvents(prev => [newEvent, ...prev].slice(0, 50));
+770:                                 }
+771:                                 prevGestureRef.current = data.gesture;
+772:                             }
+773:                         } catch (err) {
+774:                             console.error('Error decoding WebSocket JSON payload:', err);
+775:                         }
+776:                     };
+777: 
+778:                     ws.onclose = () => {
+779:                         setSocketStatus('disconnected');
+780:                         console.log('WebSocket connection lost, retrying in 3 seconds...');
+781:                         setTimeout(connectWS, 3000);
+782:                     };
+783: 
+784:                     ws.onerror = (error) => {
+785:                         console.error('WebSocket encountered an error:', error);
+786:                     };
+787:                 };
+788: 
+789:                 connectWS();
+790: 
+791:                 // Fetch initial switches configuration from backend
+792:                 fetch('/api/settings')
+793:                     .then(res => res.json())
+794:                     .then(data => {
+795:                         setShowLandmarks(data.show_landmarks);
+796:                         setShowConnections(data.show_connections);
+797:                         setShowBoundingBox(data.show_bounding_box);
+798:                         setShowFingerStates(data.show_finger_states);
+799:                         setShowDistanceMeter(data.show_distance_meter);
+800:                         setShowDebugPanel(data.show_debug_panel);
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

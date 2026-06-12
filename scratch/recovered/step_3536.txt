@@ -1,0 +1,80 @@
+Created At: 2026-06-12T10:59:03Z
+Completed At: 2026-06-12T10:59:03Z
+File Path: `file:///C:/Users/nikun/.gemini/antigravity/brain/f71acb1b-ab5a-4de9-85a5-1a298f3c313a/implementation_plan.md`
+Total Lines: 88
+Total Bytes: 4190
+Showing lines 1 to 88
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1: # Implementation Plan — Phase 5.3: Gesture Controls
+2: 
+3: This plan outlines the technical design for implementing gesture-driven whiteboard controls in GestureOS, allowing users to draw, pause, clear, and access menus using hand shapes instead of mechanical inputs.
+4: 
+5: ---
+6: 
+7: ## User Review Required
+8: 
+9: > [!IMPORTANT]
+10: > **Gesture Mapping:**
+11: > - **Index Finger UP** (`draw`): Triggers active drawing.
+12: > - **Index + Middle UP** (`pause`): Pauses drawing, transitions to hover tracking.
+13: > - **Closed Fist** (`clear`): Clears the canvas (debounced to execute exactly once per fist gesture).
+14: > - **Open Palm** (`menu`): Shows the floating Tool Menu overlay.
+15: > 
+16: > **Mode Indicators:**
+17: > - We will render a floating glassmorphic **HUD Mode Pill** at the top-center of the canvas. It will glow and display the active gesture and status (e.g., `Draw Mode`, `Paused`, `Clearing...`, `Menu Open`).
+18: 
+19: ---
+20: 
+21: ## Proposed Changes
+22: 
+23: We will modify `web_backend.py` to add backend classification and React frontend logic.
+24: 
+25: ### 1. Web Backend (Python)
+26: 
+27: #### [MODIFY] [web_backend.py](file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py)
+28: - **Landmark Finger State Calculator:**
+29:   - Write a helper method inside the WebSocket loop to evaluate finger extension logic on the raw landmark coordinates.
+30:   - Detect standard finger UP/DOWN positions:
+31:     - **Open Palm:** Index, Middle, Ring, and Pinky are all UP.
+32:     - **Closed Fist:** Index, Middle, Ring
+<truncated 1008 bytes>
+draw'`):** Treat as active drawing condition. Smooth coordinate inputs and draw continuous Bézier strokes.
+51:   - **Pause State (`'pause'`):** Treat as hover tracking. Smooth coordinate inputs and render the fading hover trail, but do not draw lines.
+52:   - **Clear State (`'clear'`):** Trigger a one-time canvas clear (`handleWebClear()`) on initial transition into the state to avoid repeated clearing.
+53:   - **Menu State (`'menu'`):** Open the Tool Menu card.
+54:   
+55: - **HUD Mode Pill Overlay:**
+56:   - Add a floating pill overlay at the top-center of the canvas workspace, styled with backdrop-blur, a border, and a glowing shadow colored by state:
+57:     - **Draw:** Green glow (`#a6da95`), label: `"✏️ Draw Mode"`
+58:     - **Pause:** Yellow glow (`#eed49f`), label: `"⏸️ Paused"`
+59:     - **Clear:** Red glow (`#ed8796`), label: `"🗑️ Clearing..."`
+60:     - **Menu:** Blue glow (`#8aadf4`), label: `"✋ Menu Open"`
+61:     - **No Hand / Hover:** Gray, label: `"📷 Tracking"`
+62:   
+63: - **Floating Tool Menu overlay:**
+64:   - Create a glassmorphic floating **Tool Menu** overlay on the canvas that displays when `activeGesture === 'menu'`.
+65:   - The menu shows quick brush settings (sizes and color circles) and a visual gesture guide cheat-sheet.
+66: 
+67: ---
+68: 
+69: ## Verification Plan
+70: 
+71: ### Automated Tests
+72: - Run full pytest test suite:
+73:   ```bash
+74:   .venv\Scripts\pytest.exe
+75:   ```
+76: 
+77: ### Manual Verification
+78: - Deploy backend:
+79:   ```bash
+80:   .venv\Scripts\python.exe web_backend.py
+81:   ```
+82: - Navigate to Air Drawing canvas and test the gestures:
+83:   - Raise index finger and move hand -> verify smooth drawing.
+84:   - Raise index and middle fingers -> verify drawing pauses while tracking continues.
+85:   - Make a closed fist -> verify canvas clears once.
+86:   - Open palm -> verify tool menu pops up.
+87:   - Observe HUD mode pill updating color and text dynamically.
+88: 
+The above content shows the entire, complete file contents of the requested file.

@@ -1,0 +1,29 @@
+Created At: 2026-06-12T10:06:30Z
+Completed At: 2026-06-12T10:06:30Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 3040
+Total Bytes: 208293
+Showing lines 2560 to 2580
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+2560:                                                             />
+2561:                                                         </div>
+2562:                                                     </div>
+2563:                                                 </div>
+2564:                                             </div>
+2565:                                         </div>
+2566:                                     </>
+2567:                                 ) : activeMenu === 'keyboard' ? (
+2568:                                     <>
+2569:                                         {/* Hero Header Section */}
+2570:                                         <div className="glass-panel rounded-3xl p-6 flex flex-col md:flex-row md:items-center justify-between border border-glass-border relative overflow-hidden">
+2571:                                             <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 opacity-20" />
+2572:                                             <div>
+2573:                                                 <h2 className="text-2xl font-bold tracking-wide text-white">Virtual Keyboard Controls</h2>
+2574:                                                 <p className="text-xs text-gray-400 mt-1 max-w-xl">
+2575:                                                     Type text using standard mouse clicks or finger-pinch gestures. Customize your layouts and monitor live inputs.
+2576:                                                 </p>
+2577:                                             </div>
+2578:                                             <div className="mt-4 md:mt-0">
+2579:                                                 <span className="px-4 py-2 rounded-full text-xs font-semibold border bg-emerald-500/10 border-emerald-500/20 text-accent-green">
+2580:                                                     Interactive
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

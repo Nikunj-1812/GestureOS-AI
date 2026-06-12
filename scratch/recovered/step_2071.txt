@@ -1,0 +1,49 @@
+Created At: 2026-06-12T05:19:06Z
+Completed At: 2026-06-12T05:19:06Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 2630
+Total Bytes: 183310
+Showing lines 380 to 420
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+380:             fps_smooth = instant_fps if fps_smooth == 0 else (fps_smooth * 0.85 + instant_fps * 0.15)
+381:             last_fps_tick = now
+382:             
+383:             primary_hand = detected_hands[0] if detected_hands else None
+384:             index_tip_x = float(round(primary_hand.landmarks[8][0], 4)) if (primary_hand and len(primary_hand.landmarks) > 8) else None
+385:             index_tip_y = float(round(primary_hand.landmarks[8][1], 4)) if (primary_hand and len(primary_hand.landmarks) > 8) else None
+386: 
+387:             # Send live telemetry + frame over WebSocket
+388:             payload = {
+389:                 "fps": float(round(fps_smooth, 1)),
+390:                 "hands": len(detected_hands),
+391:                 "index_tip_x": index_tip_x,
+392:                 "index_tip_y": index_tip_y,
+393:                 "gesture": gesture_label,
+394:                 "confidence": float(round(gesture_confidence, 3)),
+395:                 "camera_status": "Connected",
+396:                 "frame": f"data:image/jpeg;base64,{frame_b64}",
+397:                 "cursor_x": cursor_x,
+398:                 "cursor_y": cursor_y,
+399:                 "tracking_state": tracking_state,
+400:                 "pinch_distance": vm_result.get("pinch_distance", 0.0) if vm_result else 0.0,
+401:                 "click_status": vm_result.get("click_status", "OPEN") if vm_result else "OPEN",
+402:                 "click_counter": vm_result.get("click_counter", 0) if vm_result else 0,
+403:                 "current_action": vm_result.get("current_action", "None") if vm_result else "None",
+404:                 # Phase 3.3 — Right Click telemetry
+405:                 "right_click_status": vm_result.get("right_click_status", "OPEN") if vm_result else "OPEN",
+406:                 "right_click_counter": vm_result.get("right_click_counter", 0) if vm_result else 0,
+407:                 "right_pinch_distance": vm_result.get("right_pinch_distance", 0.0) if vm_result else 0.0,
+408:                 # Phase 3.4 — Scroll telemetry
+409:                 "scroll_mode": vm_result.get("scroll_mode", False) if vm_result else False,
+410:                 "scroll_direction": vm_result.get("scroll_direction", "NONE") if vm_result else "NONE",
+411:                 "scroll_speed": vm_result.get("scroll_speed", 0.0) if vm_result else 0.0,
+412:                 "scroll_counter": vm_result.get("scroll_counter", 0) if vm_result else 0,
+413:                 # Phase 3.4 — Volume telemetry
+414:                 "volume_mode": vm_result.get("volume_mode", False) if vm_result else False,
+415:                 "volume_level": vm_result.get("volume_level", 0) if vm_result else 0,
+416:                 "volume_distance": vm_result.get("volume_distance", 0.0) if vm_result else 0.0,
+417:                 # Phase 3.5 — Mode Manager & Brightness telemetry
+418:                 "active_mode": vm_result.get("active_mode", "CURSOR") if vm_result else "CURSOR",
+419:                 "brightness_mode": vm_result.get("brightness_mode", False) if vm_result else False,
+420:                 "brightness_level": vm_result.get("brightness_level", 0) if vm_result else 0,
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

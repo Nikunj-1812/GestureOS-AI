@@ -1,0 +1,36 @@
+Created At: 2026-06-12T04:55:52Z
+Completed At: 2026-06-12T04:55:52Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 2148
+Total Bytes: 145799
+Showing lines 2121 to 2148
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+2121:                                             </div>
+2122:                                         </div>
+2123:                                     </>
+2124:                                 ) : (
+2125:                                     <div className="glass-card rounded-2xl p-8 text-center text-gray-400">
+2126:                                         <p>This page is currently under construction. Please use the Dashboard or Virtual Mouse navigation links.</p>
+2127:                                     </div>
+2128:                                 )}
+2129:                             </div>
+2130:                         </div>
+2131:                     </main>
+2132:                 </div>
+2133:             );
+2134:         }
+2135: 
+2136:         const root = ReactDOM.createRoot(document.getElementById('root'));
+2137:         root.render(<App />);
+2138:     </script>
+2139: </body>
+2140: </html>"""
+2141: 
+2142: @app.get("/", response_class=HTMLResponse)
+2143: async def get_dashboard():
+2144:     return HTML_CONTENT
+2145: 
+2146: if __name__ == "__main__":
+2147:     uvicorn.run("web_backend:app", host="127.0.0.1", port=8000, log_level="info")
+2148: 
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

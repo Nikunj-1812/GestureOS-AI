@@ -1,0 +1,61 @@
+Created At: 2026-06-11T13:00:26Z
+Completed At: 2026-06-11T13:00:26Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 2071
+Total Bytes: 141023
+Showing lines 1980 to 2071
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1980:                                                         {/* Brightness Min Distance Slider */}
+1981:                                                         <div className="space-y-2">
+1982:                                                             <div className="flex justify-between text-xs">
+1983:                                                                 <span className="text-gray-400">Brightness Min Distance</span>
+1984:                                                                 <span className="text-white font-mono">{virtualMouseBrightnessMinDistancePx.toFixed(0)} px</span>
+1985:                                                             </div>
+1986:                                                             <input 
+1987:                                                                 type="range" 
+1988:                                                                 min="10" 
+1989:                                                                 max="100" 
+1990:                                                                 step="5"
+1991:                                                                 value={virtualMouseBrightnessMinDistancePx} 
+1992:                                                                 onChange={(e) => {
+1993:                                                                     const val = parseFloat(e.target.value);
+1994:                                                                     setVirtualMouseBrightnessMinDistancePx(val);
+1995:                                                                     
+<truncated 3922 bytes>
+                    setVirtualMouseBrightnessSmoothing(val);
+2037:                                                                     updateSetting('virtual_mouse_brightness_smoothing', val);
+2038:                                                                 }}
+2039:                                                                 className="w-full h-1.5 bg-zinc-700 rounded-lg appearance-none cursor-pointer accent-blue-500" 
+2040:                                                             />
+2041:                                                         </div>
+2042:                                                     </div>
+2043:                                                 </div>
+2044:                                             </div>
+2045:                                         </div>
+2046:                                     </>
+2047:                                 ) : (
+2048:                                     <div className="glass-card rounded-2xl p-8 text-center text-gray-400">
+2049:                                         <p>This page is currently under construction. Please use the Dashboard or Virtual Mouse navigation links.</p>
+2050:                                     </div>
+2051:                                 )}
+2052:                             </div>
+2053:                         </div>
+2054:                     </main>
+2055:                 </div>
+2056:             );
+2057:         }
+2058: 
+2059:         const root = ReactDOM.createRoot(document.getElementById('root'));
+2060:         root.render(<App />);
+2061:     </script>
+2062: </body>
+2063: </html>"""
+2064: 
+2065: @app.get("/", response_class=HTMLResponse)
+2066: async def get_dashboard():
+2067:     return HTML_CONTENT
+2068: 
+2069: if __name__ == "__main__":
+2070:     uvicorn.run("web_backend:app", host="127.0.0.1", port=8000, log_level="info")
+2071: 
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

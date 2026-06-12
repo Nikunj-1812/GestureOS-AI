@@ -1,0 +1,82 @@
+Created At: 2026-06-11T12:58:34Z
+Completed At: 2026-06-11T12:58:35Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 1987
+Total Bytes: 135200
+Showing lines 1 to 800
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1: import os
+2: import sys
+3: 
+4: # Suppress third-party logging / console spam (MediaPipe, TensorFlow, OpenCV)
+5: os.environ['GLOG_minloglevel'] = '2'          # Suppress MediaPipe info logs
+6: os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'       # Suppress TensorFlow info/warning logs
+7: os.environ['OPENCV_LOG_LEVEL'] = 'ERROR'       # Suppress OpenCV info/warning logs
+8: os.environ['OPENCV_FFMPEG_LOGLEVEL'] = '-8'    # Suppress OpenCV FFMPEG logs
+9: 
+10: import base64
+11: import cv2
+12: import json
+13: import asyncio
+14: from fastapi import FastAPI, WebSocket, WebSocketDisconnect
+15: from fastapi.middleware.cors import CORSMiddleware
+16: from fastapi.responses import HTMLResponse
+17: import uvicorn
+18: import time
+19: from pathlib import Path
+20: 
+21: from config.settings_manager import SettingsManager
+22: from modules.camera import CameraStream
+23: from modules.hand_detector import HandDetector
+24: from modules.gesture_engine import GestureEngine
+25: from modules.action_dispatcher import ActionDispatcher
+26: from loguru import logger
+27: 
+28: app = FastAPI(title="GestureOS AI Web Backend")
+29: 
+30: # Enable CORS
+31: app.add_middleware(
+32:     CORSMiddleware,
+33:     allow_origins=["*"],
+34:     allow_credentials=True,
+35:     allow_methods=["*"],
+36:     allow_headers=["*"],
+37: )
+38: 
+39: # Shared system states
+40: settings_manager = SettingsManager()
+41: config = settings_manager.build_app_config("config/settings.yaml")
+42: 
+43: # Configure logger level from settings
+44: logger.remove()
+45: logger.add(sys.stderr, level=config.log_level)
+46: 
+47: camera_stream = No
+<truncated 40714 bytes>
+                 const timeString = new Date().toLocaleTimeString();
+776:                                 eventIdCounterRef.current += 1;
+777:                                 const rcEvent = {
+778:                                     id: `${Date.now()}-${eventIdCounterRef.current}`,
+779:                                     timestamp: timeString,
+780:                                     gesture: 'Right Click',
+781:                                     confidence: 1.0,
+782:                                     action: `Right Click triggered | gesture=thumb_middle_pinch | dist=${(data.right_pinch_distance || 0).toFixed(4)}`
+783:                                 };
+784:                                 setEvents(prev => [rcEvent, ...prev].slice(0, 50));
+785:                             }
+786:                             prevRightClickStatusRef.current = newRC;
+787:                             // Phase 3.4 — Scroll
+788:                             const prevSM = prevScrollModeRef.current;
+789:                             const newSM = data.scroll_mode || false;
+790:                             setScrollMode(newSM);
+791:                             setScrollDirection(data.scroll_direction || 'NONE');
+792:                             setScrollSpeed(data.scroll_speed || 0.0);
+793:                             setScrollCounter(data.scroll_counter || 0);
+794:                             // Log scroll start/stop transitions
+795:                             if (newSM && !prevSM) {
+796:                                 const timeString = new Date().toLocaleTimeString();
+797:                                 eventIdCounterRef.current += 1;
+798:                                 setEvents(prev => [{
+799:                                     id: `${Date.now()}-${eventIdCounterRef.current}`,
+800:                                     timestamp: timeString,
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

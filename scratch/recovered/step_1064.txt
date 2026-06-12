@@ -1,0 +1,39 @@
+Created At: 2026-06-11T10:59:33Z
+Completed At: 2026-06-11T10:59:33Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 1192
+Total Bytes: 69773
+Showing lines 1130 to 1175
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1130:                         </header>
+1131: 
+1132:                         <div className="flex-1 overflow-y-auto p-8 scrollbar-thin">
+1133:                             <div className="max-w-6xl mx-auto space-y-6">
+1134:                                 {activeMenu === 'dashboard' ? (
+1135:                                     <>
+1136:                                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-5">
+1137:                                             {[ { icon: ActivityIcon, color: 'blue', label: 'Stream FPS', val: fps.toFixed(1) }, { icon: HandIcon, color: 'indigo', label: 'Hands', val: hands }, { icon: CpuIcon, color: 'red', label: 'CPU Usage', val: `${cpuUsage.toFixed(0)}%` }, { icon: SlidersIcon, color: 'emerald', label: 'RAM Usage', val: `${ramUsage.toFixed(0)}%` }, { icon: MousePointerIcon, color: 'blue', label: 'Active Mode', val: activeMode }, { icon: FileTextIcon, color: 'amber', label: 'Session Time', val: formatSessionTime(sessionTime) } ].map((c, i) => (
+1138:                                                 <div key={i} className="glass-card p-5 rounded-2xl flex items-center gap-4 relative">
+1139:                                                     <div className={`p-3 rounded-xl border border-${c.color}-500/20 bg-${c.color}-500/10 text-${c.color}-400`}><c.icon className="w-6 h-6" /></div>
+1140:                                                     <div><p className="text-xs font-bold uppercase tracking-wider text-gray-400">{c.label}</p><p className="text-2xl font-bold text-white mt-1 font-mono
+<truncated 2020 bytes>
+pace-y-3"><button onClick={handleStartCamera} className="w-full py-3 bg-blue-600 rounded-xl text-white font-semibold">Launch Camera</button><button onClick={handleStopCamera} className="w-full py-3 bg-white/5 rounded-xl">Disconnect</button></div></div>
+1158:                                         </div>
+1159:                                     </div>
+1160:                                 ) : activeMenu === 'logs' ? (
+1161:                                     <div className="glass-card rounded-2xl p-6 h-[520px] flex flex-col">
+1162:                                         <div className="flex justify-between items-center border-b border-glass-border pb-4">
+1163:                                             <span className="font-bold text-gray-200">System Logs</span>
+1164:                                             <div className="flex gap-2"><button onClick={downloadCSV} className="px-3 py-1.5 bg-blue-500/10 text-xs rounded-xl">Export CSV</button><button onClick={clearEvents} className="px-3 py-1.5 bg-red-500/10 text-xs rounded-xl">Clear</button></div>
+1165:                                         </div>
+1166:                                         <div className="flex-1 overflow-y-auto mt-4 font-mono text-xs">{events.map(e => <div key={e.id} className="mb-2">[{e.timestamp}] <span className="text-blue-400">{e.gesture}</span>: {e.action}</div>)}</div>
+1167:                                     </div>
+1168:                                 ) : (
+1169:                                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+1170:                                         {/* Simplified settings view */}
+1171:                                     </div>
+1172:                                 )}
+1173:                             </div>
+1174:                         </div>
+1175:                     </main>
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

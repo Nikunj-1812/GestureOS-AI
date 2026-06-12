@@ -1,0 +1,43 @@
+Created At: 2026-06-11T10:28:33Z
+Completed At: 2026-06-11T10:28:33Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 1924
+Total Bytes: 129492
+Showing lines 1836 to 1870
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1836:                                                                 <span className="text-gray-400">Volume Min Distance</span>
+1837:                                                                 <span className="text-white font-mono">{virtualMouseVolumeMinDistancePx.toFixed(0)} px</span>
+1838:                                                             </div>
+1839:                                                             <input 
+1840:                                                                 type="range" 
+1841:                                                                 min="10" 
+1842:                                                                 max="100" 
+1843:                                                                 step="5"
+1844:                                                                 value={virtualMouseVolumeMinDistancePx} 
+1845:                                                                 onChange={(e) => {
+1846:                                                                     const val = parseFloat(e.target.value);
+1847:                                                                     setVirtualMouseVolumeMinDistancePx(val);
+1848:                                                                     updateSetting('virtual_mouse_volume_min_distance_px', val);
+1849:                                                                 }}
+1850:                                                                 className="w-full h-1.5 bg-zinc-700 rounded-lg appearance-none cursor-pointer accent-blue-500" 
+1851:                                                             />
+1852:                                                         </div>
+1853: 
+1854:                                                         {/* Volume Max Distance Slider */}
+1855:                                                         <div className="space-y-2">
+1856:                                                             <div className="flex justify-between text-xs">
+1857:                                                                 <span className="text-gray-400">Volume Max Distance</span>
+1858:                                                                 <span className="text-white font-mono">{virtualMouseVolumeMaxDistancePx.toFixed(0)} px</span>
+1859:                                                             </div>
+1860:                                                             <input 
+1861:                                                                 type="range" 
+1862:                                                                 min="150" 
+1863:                                                                 max="400" 
+1864:                                                                 step="10"
+1865:                                                                 value={virtualMouseVolumeMaxDistancePx} 
+1866:                                                                 onChange={(e) => {
+1867:                                                                     const val = parseFloat(e.target.value);
+1868:                                                                     setVirtualMouseVolumeMaxDistancePx(val);
+1869:                                                                     updateSetting('virtual_mouse_volume_max_distance_px', val);
+1870:                                                                 }}
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

@@ -1,0 +1,111 @@
+Created At: 2026-06-12T10:39:42Z
+Completed At: 2026-06-12T10:39:42Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/scratch/check_jsx.py`
+Total Lines: 107
+Total Bytes: 3332
+Showing lines 1 to 107
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1: import re
+2: 
+3: with open("web_backend.py", "r", encoding="utf-8") as f:
+4:     content = f.read()
+5: 
+6: # Extract script content
+7: start_marker = '<script type="text/babel">'
+8: end_marker = '</script>'
+9: 
+10: start_idx = content.find(start_marker)
+11: if start_idx == -1:
+12:     print("Could not find start marker")
+13:     exit(1)
+14: start_idx += len(start_marker)
+15: 
+16: end_idx = content.find(end_marker, start_idx)
+17: if end_idx == -1:
+18:     print("Could not find end marker")
+19:     exit(1)
+20: 
+21: js_code = content[start_idx:end_idx]
+22: 
+23: # Strip strings and comments from js_code for accurate bracket matching
+24: # We will do a character-by-character scan to construct a version with only non-string, non-comment characters.
+25: clean_chars = []
+26: in_string = None  # None, "'", '"', '`'
+27: escape = False
+28: in_line_comment = False
+29: in_block_comment = False
+30: 
+31: # For error reporting, keep matching lists of (char, line, col, original_line)
+32: for line_num, line in enumerate(js_code.split('\n'), 1):
+33:     i = 0
+34:     while i < len(line):
+35:         char = line[i]
+36:         
+37:         if in_line_comment:
+38:             # Line comment ends at newline, which happens outside this loop
+39:             i += 1
+40:             continue
+41:         if in_block_comment:
+42:             if char == '*' and i + 1 < len(line) and line[i+1] == '/':
+43:                 in_block_comment = False
+44:                 i += 2
+45:             else:
+46:                 i += 1
+47:             continue
+48:             
+49:         if in_string:
+50
+<truncated 206 bytes>
+56:             i += 1
+57:             continue
+58:             
+59:         # Check comments
+60:         if char == '/' and i + 1 < len(line):
+61:             if line[i+1] == '/':
+62:                 in_line_comment = True
+63:                 i += 2
+64:                 continue
+65:             elif line[i+1] == '*':
+66:                 in_block_comment = True
+67:                 i += 2
+68:                 continue
+69:                 
+70:         # Check string starts
+71:         if char in ("'", '"', '`'):
+72:             in_string = char
+73:             i += 1
+74:             continue
+75:             
+76:         # Normal character
+77:         clean_chars.append((char, line_num, i, line))
+78:         i += 1
+79:     # Line comment ends at newline
+80:     in_line_comment = False
+81: 
+82: stack = []
+83: mapping = {')': '(', '}': '{', ']': '['}
+84: 
+85: for char, line_num, char_idx, line in clean_chars:
+86:     if char in '({[':
+87:         stack.append((char, line_num, char_idx, line))
+88:     elif char in ')}]':
+89:         if not stack:
+90:             print(f"Unmatched closing char '{char}' at line {line_num}:{char_idx}")
+91:             print(f"Line content: {line.strip()}")
+92:             exit(1)
+93:         top_char, top_line, top_char_idx, top_line_content = stack.pop()
+94:         if top_char != mapping[char]:
+95:             print(f"Mismatch: opened '{top_char}' at line {top_line}:{top_char_idx} but closed '{char}' at line {line_num}:{char_idx}")
+96:             print(f"Opening line: {top_line_content.strip()}")
+97:             print(f"Closing line: {line.strip()}")
+98:             exit(1)
+99: 
+100: if stack:
+101:     print(f"Unclosed braces/brackets left: {len(stack)}")
+102:     for char, line_num, char_idx, line in stack[-5:]:
+103:         print(f"Opened '{char}' at line {line_num}:{char_idx}")
+104:         print(f"Line: {line.strip()}")
+105: else:
+106:     print("All brackets/braces/parentheses match perfectly!")
+107: 
+The above content shows the entire, complete file contents of the requested file.

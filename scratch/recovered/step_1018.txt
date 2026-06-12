@@ -1,0 +1,48 @@
+Created At: 2026-06-11T10:57:47Z
+Completed At: 2026-06-11T10:57:48Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 1192
+Total Bytes: 69773
+Showing lines 441 to 480
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+441:                 # Phase 3.3 — Right Click telemetry
+442:                 "right_click_status": vm_result.get("right_click_status", "OPEN") if vm_result else "OPEN",
+443:                 "right_click_counter": vm_result.get("right_click_counter", 0) if vm_result else 0,
+444:                 "right_pinch_distance": vm_result.get("right_pinch_distance", 0.0) if vm_result else 0.0,
+445:                 # Phase 3.4 — Scroll telemetry
+446:                 "scroll_mode": vm_result.get("scroll_mode", False) if vm_result else False,
+447:                 "scroll_direction": vm_result.get("scroll_direction", "NONE") if vm_result else "NONE",
+448:                 "scroll_speed": vm_result.get("scroll_speed", 0.0) if vm_result else 0.0,
+449:                 "scroll_counter": vm_result.get("scroll_counter", 0) if vm_result else 0,
+450:                 # Phase 3.4 — Volume telemetry
+451:                 "volume_mode": vm_result.get("volume_mode", False) if vm_result else False,
+452:                 "volume_level": vm_result.get("volume_level", 0) if vm_result else 0,
+453:                 "volume_distance": vm_result.get("volume_distance", 0.0) if vm_result else 0.0,
+454:                 # Phase 3.5 — Mode Manager & Brightness telemetry
+455:                 "active_mode": vm_result.get("active_mode", "CURSOR") if vm_result else "CURSOR",
+456:                 "brightness_mode": vm_result.get("brightness_mode", False) if vm_result else False,
+457:                 "brightness_level": vm_result.get("brightness_level", 0) if vm_result else 0,
+458:                 "brightness_distance": vm_result.get("brightness_distance", 0.0) if vm_result else 0.0,
+459:                 # Phase 3.6 — Drag & Drop telemetry
+460:                 "drag_status": vm_result.get("drag_status", "INACTIVE") if vm_result else "INACTIVE",
+461:                 "drag_counter": vm_result.get("drag_counter", 0) if vm_result else 0,
+462:                 "drag_duration": vm_result.get("drag_duration", 0.0) if vm_result else 0.0,
+463:                 # Resource metrics
+464:                 "cpu_usage": float(cpu_usage),
+465:                 "ram_usage": float(ram_usage),
+466:             }
+467:             
+468:             t_send_start = time.perf_counter()
+469:             await websocket.send_json(payload)
+470:             t_send = time.perf_counter() - t_send_start
+471:             
+472:             t_total = time.perf_counter() - t0
+473:             
+474:             # Maintain roughly target frame rate
+475:             elapsed = time.perf_counter() - loop_start
+476:             interval = max(0.001, 1.0 / max(config.camera_fps, 1) - elapsed)
+477:             await asyncio.sleep(interval)
+478:             
+479:     except WebSocketDisconnect:
+480:         logger.info("WebSocket client disconnected")
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

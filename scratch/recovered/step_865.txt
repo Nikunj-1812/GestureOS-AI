@@ -1,0 +1,61 @@
+Created At: 2026-06-11T10:49:05Z
+Completed At: 2026-06-11T10:49:05Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 2012
+Total Bytes: 136143
+Showing lines 380 to 430
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+380:             t_enc_start = time.perf_counter()
+381:             _, buffer = cv2.imencode('.jpg', frame)
+382:             frame_b64 = base64.b64encode(buffer).decode('utf-8')
+383:             t_encode = time.perf_counter() - t_enc_start
+384:             
+385:             # FPS Calculation
+386:             now = time.perf_counter()
+387:             delta = max(now - last_fps_tick, 1e-6)
+388:             instant_fps = 1.0 / delta
+389:             fps_smooth = instant_fps if fps_smooth == 0 else (fps_smooth * 0.85 + instant_fps * 0.15)
+390:             last_fps_tick = now
+391:             
+392:             # Send live telemetry + frame over WebSocket
+393:             payload = {
+394:                 "fps": float(round(fps_smooth, 1)),
+395:                 "hands": len(detected_hands),
+396:                 "gesture": gesture_label,
+397:                 "confidence": float(round(gesture_confidence, 3)),
+398:                 "camera_status": "Connected",
+399:                 "frame": f"data:image/jpeg;base64,{frame_b64}",
+400:                 "cursor_x": cursor_x,
+401:                 "cursor_y": cursor_y,
+402:                 "tracking_state": tracking_state,
+403:                 "pinch_distance": vm_result.get("pinch_distance", 0.0) if vm_result else 0.0,
+404:                 "click_status": vm_result.get("click_status", "OPEN") if vm_result else "OPEN",
+405:                 "click_counter": vm_result.get("click_counter", 0) if vm_result else 0,
+406:                 "current_action": vm_result.get("current_action", "None") if vm_result else "None",
+407:           
+<truncated 13 bytes>
+ 3.3 — Right Click telemetry
+408:                 "right_click_status": vm_result.get("right_click_status", "OPEN") if vm_result else "OPEN",
+409:                 "right_click_counter": vm_result.get("right_click_counter", 0) if vm_result else 0,
+410:                 "right_pinch_distance": vm_result.get("right_pinch_distance", 0.0) if vm_result else 0.0,
+411:                 # Phase 3.4 — Scroll telemetry
+412:                 "scroll_mode": vm_result.get("scroll_mode", False) if vm_result else False,
+413:                 "scroll_direction": vm_result.get("scroll_direction", "NONE") if vm_result else "NONE",
+414:                 "scroll_speed": vm_result.get("scroll_speed", 0.0) if vm_result else 0.0,
+415:                 "scroll_counter": vm_result.get("scroll_counter", 0) if vm_result else 0,
+416:                 # Phase 3.4 — Volume telemetry
+417:                 "volume_mode": vm_result.get("volume_mode", False) if vm_result else False,
+418:                 "volume_level": vm_result.get("volume_level", 0) if vm_result else 0,
+419:                 "volume_distance": vm_result.get("volume_distance", 0.0) if vm_result else 0.0,
+420:                 # Phase 3.5 — Mode Manager & Brightness telemetry
+421:                 "active_mode": vm_result.get("active_mode", "CURSOR") if vm_result else "CURSOR",
+422:                 "brightness_mode": vm_result.get("brightness_mode", False) if vm_result else False,
+423:                 "brightness_level": vm_result.get("brightness_level", 0) if vm_result else 0,
+424:                 "brightness_distance": vm_result.get("brightness_distance", 0.0) if vm_result else 0.0,
+425:             }
+426:             
+427:             t_send_start = time.perf_counter()
+428:             await websocket.send_json(payload)
+429:             t_send = time.perf_counter() - t_send_start
+430:             
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

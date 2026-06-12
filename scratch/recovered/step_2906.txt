@@ -1,0 +1,59 @@
+Created At: 2026-06-12T10:06:10Z
+Completed At: 2026-06-12T10:06:10Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 3040
+Total Bytes: 208293
+Showing lines 400 to 450
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+400:                     gesture_label, gesture_confidence = gesture_engine.predict(primary_hand)
+401:                     if gesture_label != "unknown":
+402:                         action_dispatcher.dispatch(gesture_label, virtual_mouse_active=virtual_mouse.enabled)
+403:                 else:
+404:                     gesture_label = "No Model"
+405:             else:
+406:                 gesture_engine.reset()
+407:             t_predict = time.perf_counter() - t_pred_start
+408: 
+409:             # Log only on gesture change
+410:             if gesture_label != last_gesture:
+411:                 logger.info(f"Gesture changed: '{last_gesture}' -> '{gesture_label}'")
+412:                 last_gesture = gesture_label
+413: 
+414:             # Run Virtual Mouse coordinate mapping & pointer movement
+415:             vm_result = None
+416:             if virtual_mouse.enabled:
+417:                 if detected_hands:
+418:                     vm_result = virtual_mouse.process_hand(detected_hands[0], frame_w=w, frame_h=h)
+419:                 else:
+420:                     vm_result = virtual_mouse.process_hand(None, frame_w=w, frame_h=h)
+421:             else:
+422:                 virtual_mouse.reset()
+423: 
+424:             cursor_x = vm_result["cursor_x"] if vm_result else 0
+425:             cursor_y = vm_result["cursor_y"] if vm_result else 0
+426:             tracking_state = vm_result["tracking_state"] if vm_result else "Disabled"
+427:                 
+428:             # Render active Phase 1 overlays on the frame
+429:             t_vis_start = time.perf_counter()
+430:             from modules.visualizer import draw_visuals
+431:             frame = draw_visuals(
+432:                 frame=frame,
+433:                 detected_hands=detected_hands,
+434:                 mp_results=mp_results,
+435:                 config=config,
+436:                 fps=fps_smooth,
+437:                 gesture=gesture_label,
+438:                 confidence=gesture_confidence,
+439:                 click_state=vm_result
+440:             )
+441:             t_visuals = time.perf_counter() - t_vis_start
+442:                 
+443:             # Compress to JPEG and base64 encode with optimized quality (80)
+444:             t_enc_start = time.perf_counter()
+445:             _, buffer = cv2.imencode('.jpg', frame, [int(cv2.IMWRITE_JPEG_QUALITY), 80])
+446:             frame_b64 = base64.b64encode(buffer).decode('utf-8')
+447:             t_encode = time.perf_counter() - t_enc_start
+448:             
+449:             # FPS Calculation
+450:             now = time.perf_counter()
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

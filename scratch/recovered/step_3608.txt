@@ -1,0 +1,57 @@
+Created At: 2026-06-12T11:01:14Z
+Completed At: 2026-06-12T11:01:14Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 4256
+Total Bytes: 294748
+Showing lines 1720 to 1860
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1720:                                     
+1721:                                     const rawPinchDist = data.index_pinch_distance !== undefined ? data.index_pinch_distance : (data.pinch_distance || 0.0);
+1722:                                     
+1723:                                     // Smooth pinch distance
+1724:                                     if (smoothedPinchDistRef.current === 0.0) {
+1725:                                         smoothedPinchDistRef.current = rawPinchDist;
+1726:                                     } else {
+1727:                                         const alpha = 0.4;
+1728:                                         smoothedPinchDistRef.current = (smoothedPinchDistRef.current * (1 - alpha)) + (rawPinchDist * alpha);
+1729:                                     }
+1730:                                     const ipDist = smoothedPinchDistRef.current;
+1731:                                     setPinchDistance(ipDist);
+1732:                                     
+1733:                                     // Hysteresis logic
+1734:                                     let framePinchTriggered = false;
+1735:                                     if (drawingPinchActiveRef.current) {
+1736:                                         // Release threshold: 0.055
+1737:                                         framePinchTriggered = ipDist <= 0.055;
+1738:                                     } else {
+1739:                                         // Start threshold: 0.040
+1740:                                         framePinchTriggered = ipDist < 0.040;
+1741: 
+<truncated 7252 bytes>
+                          
+1836:                                     // Get current status for UI
+1837:                                     const currentStatus = inGracePeriodRef.current 
+1838:                                         ? 'Grace Period' 
+1839:                                         : drawingPinchActiveRef.current 
+1840:                                             ? 'Drawing' 
+1841:                                             : 'Hovering';
+1842:                                             
+1843:                                     // Telemetry updates in sidebar
+1844:                                     const statusEl = document.getElementById('telemetry-drawing-status');
+1845:                                     if (statusEl) {
+1846:                                         statusEl.textContent = currentStatus;
+1847:                                         statusEl.className = `text-sm font-bold ${
+1848:                                             currentStatus === 'Drawing' 
+1849:                                                 ? 'text-accent-green' 
+1850:                                                 : currentStatus === 'Grace Period' 
+1851:                                                     ? 'text-amber-500 animate-pulse' 
+1852:                                                     : 'text-accent-yellow'
+1853:                                         }`;
+1854:                                     }
+1855:                                     
+1856:                                     const coordsEl = document.getElementById('telemetry-pointer-coords');
+1857:                                     if (coordsEl) {
+1858:                                         coordsEl.textContent = `${Math.round(smoothedX)}, ${Math.round(smoothedY)}`;
+1859:                                     }
+1860:                                     
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

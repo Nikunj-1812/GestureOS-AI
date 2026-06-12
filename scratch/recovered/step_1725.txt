@@ -1,0 +1,52 @@
+Created At: 2026-06-12T04:58:45Z
+Completed At: 2026-06-12T04:58:46Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 2413
+Total Bytes: 169480
+Showing lines 1470 to 2200
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1470:                                                                 </p>
+1471:                                                             </div>
+1472:                                                         )}
+1473:                                                     </div>
+1474:                                                 </div>
+1475:                                             </div>
+1476: 
+1477:                                             {/* Action & Log Cards (1 Column) */}
+1478:                                             <div className="flex flex-col gap-6">
+1479:                                                 {/* Quick Actions Panel */}
+1480:                                                 <div className="glass-card rounded-2xl p-5 flex flex-col justify-between">
+1481:                                                     <div>
+1482:                                                         <h3 className="text-sm font-bold uppercase tracking-wider text-gray-400 flex items-center gap-2">
+1483:                                                             <SlidersIcon className="w-4 h-4 text-accent-purple" />
+1484:                                                             Quick Actions
+1485:                                                         </h3>
+1486:                                                         <p className="text-xs text-gray-500 mt-1 mb-4">Immediate system state triggers.</p>
+1487:                                                     </div>
+1488:                                                     
+1489:                             
+<truncated 45283 bytes>
+                      <span className="text-white font-mono">{virtualMouseSmoothing.toFixed(2)}</span>
+1937:                                                             </div>
+1938:                                                             <input 
+1939:                                                                 type="range" 
+1940:                                                                 min="0.05" 
+1941:                                                                 max="0.50" 
+1942:                                                                 step="0.02"
+1943:                                                                 value={virtualMouseSmoothing} 
+1944:                                                                 onChange={(e) => {
+1945:                                                                     const val = parseFloat(e.target.value);
+1946:                                                                     setVirtualMouseSmoothing(val);
+1947:                                                                     updateSetting('virtual_mouse_smoothing', val);
+1948:                                                                 }}
+1949:                                                                 className="w-full h-1.5 bg-zinc-700 rounded-lg appearance-none cursor-pointer accent-blue-500" 
+1950:                                                             />
+1951:                                                         </div>
+1952: 
+1953:                                                         {/* Click Threshold Slider */}
+1954:                                                         <div className="space-y-2">
+1955:                                                             <div className="flex justify-between text-xs">
+1956:                                                                 <span className="text-gray-40
+<truncated 23802 bytes>
+
+NOTE: The output was truncated because it was too long. Use a more targeted query or a smaller range to get the information you need.

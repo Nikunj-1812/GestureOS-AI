@@ -1,0 +1,59 @@
+Created At: 2026-06-11T10:59:42Z
+Completed At: 2026-06-11T10:59:42Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 1192
+Total Bytes: 69773
+Showing lines 1050 to 1100
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1050: 
+1051:             const logSystemEvent = (msg, category = 'System') => {
+1052:                 const timeString = new Date().toLocaleTimeString();
+1053:                 eventIdCounterRef.current += 1;
+1054:                 const newEvent = { id: `${Date.now()}-${eventIdCounterRef.current}`, timestamp: timeString, gesture: category, confidence: 1.0, action: msg };
+1055:                 setEvents(prev => [newEvent, ...prev].slice(0, 200));
+1056:             };
+1057: 
+1058:             const handleStartCamera = async () => {
+1059:                 setIsCameraLoading(true);
+1060:                 try {
+1061:                     const res = await fetch('/api/camera/start', { method: 'POST' });
+1062:                     if ((await res.json()).status === 'success') { setCameraStatus('Connected'); logSystemEvent("Camera stream started."); }
+1063:                 } catch (err) { console.error(err); } finally { setIsCameraLoading(false); }
+1064:             };
+1065: 
+1066:             const handleStopCamera = async () => {
+1067:                 setIsCameraLoading(true);
+1068:                 try {
+1069:                     await fetch('/api/camera/stop', { method: 'POST' });
+1070:                     setCameraStatus('Disconnected'); setFrame(null);
+1071:                 } catch (err) { console.error(err); } finally { setIsCameraLoading(false); }
+1072:             };
+1073: 
+1074:             const handleResetTracking = async () => {
+1075:                 setIsResetting(true);
+1076:                 try { await fetch('/api/camera/reset', { method: 'POST' }); } finally { setTimeout(() => setIsResetting(false), 800); }
+1077:             };
+1078: 
+1079:             const updateSetting = async (key, val) => {
+1080:                 try { await fetch('/api/settings/update', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ [key]: val }) }); } catch (err) { console.error(err); }
+1081:             };
+1082: 
+1083:             const clearEvents = () => { setEvents([]); logSystemEvent("Event log console cleared."); };
+1084:             const downloadCSV = () => {
+1085:                 const csvContent = ['Timestamp,Category,Details', ...events.map(e => `${e.timestamp},${e.gesture},"${e.action.replace(/"/g, '""')}"`)].join('\n');
+1086:                 const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+1087:                 const url = URL.createObjectURL(blob);
+1088:                 const link = document.createElement("a");
+1089:                 link.setAttribute("href", url); link.setAttribute("download", `gestureos_log_${Date.now()}.csv`);
+1090:                 document.body.appendChild(link); link.click(); document.body.removeChild(link);
+1091:             };
+1092: 
+1093:             const formatSessionTime = (seconds) => {
+1094:                 const h = Math.floor(seconds / 3600).toString().padStart(2, '0');
+1095:                 const m = Math.floor((seconds % 3600) / 60).toString().padStart(2, '0');
+1096:                 const s = (seconds % 60).toString().padStart(2, '0');
+1097:                 return `${h}:${m}:${s}`;
+1098:             };
+1099: 
+1100:             return (
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

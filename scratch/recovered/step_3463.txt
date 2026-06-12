@@ -1,0 +1,49 @@
+Created At: 2026-06-12T10:52:53Z
+Completed At: 2026-06-12T10:52:53Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 4035
+Total Bytes: 278290
+Showing lines 940 to 980
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+940:             
+941:             const [socketStatus, setSocketStatus] = useState('disconnected');
+942:             const [events, setEvents] = useState([]);
+943:             const [activeMenu, setActiveMenu] = useState('dashboard');
+944:             const [isResetting, setIsResetting] = useState(false);
+945:             const [isCameraLoading, setIsCameraLoading] = useState(false);
+946: 
+947:             // Virtual Mouse States
+948:             const [virtualMouseEnabled, setVirtualMouseEnabled] = useState(false);
+949:             const [virtualMouseSensitivity, setVirtualMouseSensitivity] = useState(1.5);
+950:             const [virtualMouseDeadZone, setVirtualMouseDeadZone] = useState(0.15);
+951:             const [virtualMouseSmoothing, setVirtualMouseSmoothing] = useState(0.20);
+952:             const [virtualMouseClickThreshold, setVirtualMouseClickThreshold] = useState(0.05);
+953:             const [virtualMouseRightClickThreshold, setVirtualMouseRightClickThreshold] = useState(0.05);
+954:             
+955:             const [cursorX, setCursorX] = useState(0);
+956:             const [cursorY, setCursorY] = useState(0);
+957:             const [trackingState, setTrackingState] = useState('Disabled');
+958:             const [pinchDistance, setPinchDistance] = useState(0.0);
+959:             const [clickStatus, setClickStatus] = useState('OPEN');
+960:             const [clickCounter, setClickCounter] = useState(0);
+961:             const [currentAction, setCurrentAction] = useState('None');
+962:             // Phase 3.3 — Right Click
+963:             const [rightClickStatus, setRightClickStatus] = useState('OPEN');
+964:             const [rightClickCounter, setRightClickCounter] = useState(0);
+965:             const [rightPinchDistance, setRightPinchDistance] = useState(0.0);
+966:             const prevRightClickStatusRef = useRef('OPEN');
+967:             // Phase 3.4 — Scroll Control
+968:             const [scrollMode, setScrollMode] = useState(false);
+969:             const [scrollDirection, setScrollDirection] = useState('NONE');
+970:             const [scrollSpeed, setScrollSpeed] = useState(0.0);
+971:             const [scrollCounter, setScrollCounter] = useState(0);
+972:             const [virtualMouseScrollSensitivity, setVirtualMouseScrollSensitivity] = useState(5.0);
+973:             const [virtualMouseScrollDeadZone, setVirtualMouseScrollDeadZone] = useState(0.04);
+974:             const [virtualMouseScrollSmoothing, setVirtualMouseScrollSmoothing] = useState(0.25);
+975:             const prevScrollModeRef = useRef(false);
+976:             // Phase 3.4 — Volume Control
+977:             const [volumeMode, setVolumeMode] = useState(false);
+978:             const [volumeLevel, setVolumeLevel] = useState(0);
+979:             const [volumeDistance, setVolumeDistance] = useState(0.0);
+980:             const [virtualMouseVolumeMinDistancePx, setVirtualMouseVolumeMinDistancePx] = useState(30.0);
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

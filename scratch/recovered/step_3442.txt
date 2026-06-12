@@ -1,0 +1,66 @@
+Created At: 2026-06-12T10:51:21Z
+Completed At: 2026-06-12T10:51:22Z
+File Path: `file:///C:/Users/nikun/.gemini/antigravity/brain/f71acb1b-ab5a-4de9-85a5-1a298f3c313a/implementation_plan.md`
+Total Lines: 57
+Total Bytes: 3519
+Showing lines 1 to 57
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1: # Implementation Plan — Air Drawing UX & Performance Upgrade
+2: 
+3: This plan proposes a complete upgrade to the Air Drawing module in GestureOS to deliver a professional-grade, responsive, full-screen whiteboard and camera-overlay drawing experience.
+4: 
+5: ## Proposed Changes
+6: 
+7: We will modify [web_backend.py](file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py) to incorporate major front-end improvements in the inline HTML/React template.
+8: 
+9: ### 1. Advanced Jitter Filtering & Responsive Coordinate Mapping
+10: - **One Euro Filter**: Replace the basic constant EMA smoothing with a dynamic first-order low-pass filter (One Euro Filter). This adapts the filter cutoff frequency based on movement velocity—offering high smoothing when stationary (eliminating micro-shakes) and low latency when moving fast.
+11: - **Dynamic Resize Observer**: Canvas resolution will automatically monitor its container size. Instead of a hardcoded $640 \times 360$ viewport, the canvas will scale dynamically to match screen boundaries.
+12: - **Coordinate Transformation**: Hand landmarks from the MediaPipe stream (`index_tip_x` and `index_tip_y` in range `[0, 1]`) will be mapped to the actual client canvas resolution, correcting for horizontal mirroring.
+13: 
+14: ### 2. Full-Screen白板 & Overlay Rendering Modes
+15: - **Layout Toggles**:
+16:   - **Full Screen Mode**: Collapses the main sidebar and page headers, giving the drawing canvas 100% of the viewport. Controls will fade into a floating canvas menu bar (similar to Figma/
+<truncated 213 bytes>
+ard in the corner.
+18:   - **Camera Overlay Mode**: Spans the camera feed full-screen. The canvas coordinate mapping dynamically recalculates offsets based on `object-cover` scaling to align the cursor exactly with the user's hand landmarks.
+19: 
+20: ### 3. Draw & Hover Visual Feedback
+21: - **Fading Hover Trail**: Draws a soft, glowing, fading trail (gradient opacity) showing the hand movement path during hover state to preview lines.
+22: - **Bézier Interpolation**: Uses quadratic curves (`ctx.quadraticCurveTo`) instead of straight line segments (`lineTo`) to draw lines in real-time and during history redraws. This eliminates polyline corners during fast movements.
+23: - **Cursor Telemetry Pill**: Draws a floating tooltip adjacent to the custom circle cursor that displays current brush settings (color badge, size px) and tracking confidence.
+24: 
+25: ---
+26: 
+27: ## Proposed Layout Architecture
+28: 
+29: ```mermaid
+30: graph TD
+31:     A[GestureOS Workspace] --> B[Default View]
+32:     A --> C[Full Screen Workspace]
+33:     
+34:     B --> D[Left Navigation + Canvas + Right Sidebar]
+35:     C --> E[100% Canvas Area + Floating Whiteboard Tool Dock]
+36:     
+37:     E --> F[Whiteboard Mode: Camera Feed in corner PiP]
+38:     E --> G[Camera Mode: Full-screen camera stream background]
+39: ```
+40: 
+41: ---
+42: 
+43: ## Verification Plan
+44: 
+45: ### Automated Tests
+46: - Run existing test suites to ensure model operations, undo/redo states, and canvas coordinate translations work as expected.
+47:   ```bash
+48:   .venv\Scripts\pytest tests/test_air_drawing.py
+49:   ```
+50: 
+51: ### Manual Verification
+52: - Deploy backend and load the page on different screen resolutions to verify:
+53:   1. Responsive resizing of canvas container.
+54:   2. Perfect alignment of fingertip cursor and camera stream under cover sizing.
+55:   3. Direction alignment (moving hand right moves cursor right).
+56:   4. Stroke smoothness when drawing fast curves.
+57: 
+The above content shows the entire, complete file contents of the requested file.

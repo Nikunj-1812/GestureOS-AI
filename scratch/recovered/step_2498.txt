@@ -1,0 +1,19 @@
+Created At: 2026-06-12T09:40:23Z
+Completed At: 2026-06-12T09:40:23Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 2751
+Total Bytes: 190582
+Showing lines 20 to 30
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+20: import time
+21: from pathlib import Path
+22: 
+23: from config.settings_manager import SettingsManager
+24: from modules.camera import CameraStream
+25: from modules.hand_detector import HandDetector
+26: from modules.gesture_engine import GestureEngine
+27: from modules.action_dispatcher import ActionDispatcher
+28: from loguru import logger
+29: 
+30: app = FastAPI(title="GestureOS AI Web Backend")
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

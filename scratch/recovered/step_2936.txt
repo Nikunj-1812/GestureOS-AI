@@ -1,0 +1,29 @@
+Created At: 2026-06-12T10:07:15Z
+Completed At: 2026-06-12T10:07:15Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 3040
+Total Bytes: 208293
+Showing lines 945 to 965
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+945:             const [showDebugPanel, setShowDebugPanel] = useState(true);
+946:             const [showHud, setShowHud] = useState(true);
+947: 
+948:             const prevGestureRef = useRef('None');
+949:             const socketRef = useRef(null);
+950:             const eventIdCounterRef = useRef(0);
+951: 
+952:             // Connect to the WebSocket backend
+953:             useEffect(() => {
+954:                 const connectWS = () => {
+955:                     setSocketStatus('connecting');
+956:                     const wsProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+957:                     const wsUrl = `${wsProtocol}//${window.location.host}/ws`;
+958:                     console.log(`Connecting to WebSocket: ${wsUrl}`);
+959:                     
+960:                     const ws = new WebSocket(wsUrl);
+961:                     socketRef.current = ws;
+962: 
+963:                     ws.onopen = () => {
+964:                         setSocketStatus('connected');
+965:                         console.log('WebSocket connection established');
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

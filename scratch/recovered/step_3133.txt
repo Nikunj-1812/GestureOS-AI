@@ -1,0 +1,59 @@
+Created At: 2026-06-12T10:21:04Z
+Completed At: 2026-06-12T10:21:04Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 3488
+Total Bytes: 240174
+Showing lines 1900 to 1950
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1900:                         const wClean = completedWords[i].replace(/[^a-zA-Z0-9]/g, '');
+1901:                         if (wClean && !recent.includes(wClean)) {
+1902:                             recent.push(wClean);
+1903:                             if (recent.length >= 5) break;
+1904:                         }
+1905:                     }
+1906:                     setRecentWords(recent);
+1907:                 } else {
+1908:                     setRecentWords([]);
+1909:                 }
+1910:             }, [typedText, autocompleteEnabled]);
+1911: 
+1912:             return (
+1913:                 <div className="flex h-screen bg-[#080710] font-sans antialiased text-gray-200 overflow-hidden">
+1914:                     
+1915:                     {/* Left Sidebar */}
+1916:                     <aside className="w-72 glass-panel border-r border-glass-border flex flex-col justify-between h-full z-10">
+1917:                         <div>
+1918:                             {/* Logo section - centered, minimal empty space */}
+1919:                             <div className="flex items-center gap-3 px-6 py-6 border-b border-glass-border justify-center">
+1920:                                 <div className="p-2.5 bg-blue-500/10 rounded-xl border border-blue-500/20 text-accent-blue">
+1921:                                     <HandIcon className="w-6 h-6 stroke-[2]" />
+1922:                                 </div>
+1923:                                 <div>
+1924:                                     <h1 className="text-lg font-bold tracking-wider bg-gradient-to-r from-whi
+<truncated 122 bytes>
+                                    </h1>
+1927:                                     <p className="text-[10px] text-gray-500 uppercase tracking-widest font-semibold">Intelligence Edition</p>
+1928:                                 </div>
+1929:                             </div>
+1930: 
+1931:                             {/* Navigation */}
+1932:                             <nav className="px-4 py-6 space-y-2">
+1933:                                 {[
+1934:                                     { id: 'dashboard', name: 'Dashboard', icon: LayersIcon },
+1935:                                     { id: 'mouse', name: 'Virtual Mouse', icon: MousePointerIcon },
+1936:                                     { id: 'keyboard', name: 'Virtual Keyboard', icon: KeyboardIcon },
+1937:                                     { id: 'drawing', name: 'Air Drawing', icon: PencilIcon },
+1938:                                     { id: 'shortcuts', name: 'Gestures Map', icon: SlidersIcon },
+1939:                                     { id: 'analytics', name: 'Real-time Metrics', icon: TrendingUpIcon },
+1940:                                     { id: 'settings', name: 'System Settings', icon: SettingsIcon }
+1941:                                 ].map((item) => {
+1942:                                     const Icon = item.icon;
+1943:                                     const isActive = activeMenu === item.id;
+1944:                                     return (
+1945:                                         <button
+1946:                                             key={item.id}
+1947:                                             onClick={() => {
+1948:                                                 setActiveMenu(item.id);
+1949:                                                 logSystemEvent(`Navigated to page: ${item.name}`);
+1950:                                             }}
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

@@ -1,17 +1,5 @@
-"""
-GestureOS AI — Sidebar Navigation Component
-=============================================
-A professional left sidebar with:
-    • Brand header at the top
-    • Grouped navigation items with section labels
-    • Active item highlight and hover state
-    • Responsive width adaptation
-    • Exit action anchored at the bottom
-"""
-
 from __future__ import annotations
 import customtkinter as ctk
-from dashboard.shell.navigation import NAV_PAGES
 from dashboard.theme import COLORS, FONTS, SIZES
 
 
@@ -120,6 +108,7 @@ class SidebarNav(ctk.CTkFrame):
         current_section = None
         self._scroll_frame = scroll_frame
 
+        from dashboard.shell.navigation import NAV_PAGES
         for page in NAV_PAGES:
             # ── Section header ─────────────────────────────────────
             if page["section"] != current_section:
@@ -270,6 +259,7 @@ class SidebarNav(ctk.CTkFrame):
         self._compact_mode = compact
         self.configure(width=180 if compact else SIZES["sidebar_w"])
 
+        from dashboard.shell.navigation import NAV_PAGES
         for page in NAV_PAGES:
             btn = self._nav_buttons.get(page["key"])
             if not btn:

@@ -1,0 +1,24 @@
+Created At: 2026-06-12T05:09:26Z
+Completed At: 2026-06-12T05:09:26Z
+File Path: `file:///C:/Users/nikun/.gemini/antigravity/brain/f71acb1b-ab5a-4de9-85a5-1a298f3c313a/task.md`
+Total Lines: 16
+Total Bytes: 1127
+Showing lines 1 to 16
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1: # Phase 4.2 Tasks — Key Hover Detection
+2: 
+3: - [x] Update `dashboard/shell/window.py` to pass `detected_hands` in `set_camera_frame` route.
+4: - [x] Implement hover detection logic in `dashboard/pages/virtual_keyboard_page.py`:
+5:   - [x] Add coordinate smoothing using moving average / low-pass filter.
+6:   - [x] Map normalized finger coordinate (Landmark 8) to screen/window coordinates and target keys.
+7:   - [x] Implement hover delay (150ms) and debounce grace period (100ms) to prevent flickering.
+8:   - [x] Highlight hovered keys and update telemetry fields (Hovered Key, Hover Duration).
+9: - [x] Implement hover detection logic in the Web Dashboard (`web_backend.py`):
+10:   - [x] Transmit `index_tip_x` and `index_tip_y` in the WebSocket payload.
+11:   - [x] Add "Hover Duration" telemetry to web virtual keyboard layout.
+12:   - [x] Implement viewport coordinate mapping, element detection, hover delay, and debounce logic in React.
+13: - [x] Verification and testing:
+14:   - [x] Create automated unit tests in `tests/test_virtual_keyboard_hover.py`.
+15:   - [x] Manually verify key hover, highlight, delay, and duration on both desktop and web dashboards.
+16: 
+The above content shows the entire, complete file contents of the requested file.

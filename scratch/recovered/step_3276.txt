@@ -1,0 +1,52 @@
+Created At: 2026-06-12T10:38:52Z
+Completed At: 2026-06-12T10:38:52Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 3501
+Total Bytes: 240552
+Showing lines 650 to 693
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+650:     <script src="/static/babel.min.js"></script>
+651: 
+652:     <style>
+653:         body {
+654:             background-color: #080710;
+655:             color: #e2e8f0;
+656:             font-family: 'Outfit', 'Inter', sans-serif;
+657:         }
+658:         .glass-panel {
+659:             background: rgba(255, 255, 255, 0.03);
+660:             backdrop-filter: blur(16px);
+661:             -webkit-backdrop-filter: blur(16px);
+662:             border: 1px solid rgba(255, 255, 255, 0.06);
+663:         }
+664:         .glass-card {
+665:             background: rgba(255, 255, 255, 0.04);
+666:             backdrop-filter: blur(12px);
+667:             -webkit-backdrop-filter: blur(12px);
+668:             border: 1px solid rgba(255, 255, 255, 0.08);
+669:             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+670:         }
+671:         .glass-card:hover {
+672:             background: rgba(255, 255, 255, 0.06);
+673:             border-color: rgba(59, 130, 246, 0.3);
+674:             box-shadow: 0 10px 30px -10px rgba(59, 130, 246, 0.15);
+675:         }
+676:         .scrollbar-thin::-webkit-scrollbar {
+677:             width: 6px;
+678:             height: 6px;
+679:         }
+680:         .scrollbar-thin::-webkit-scrollbar-track {
+681:             background: transparent;
+682:         }
+683:         .scrollbar-thin::-webkit-scrollbar-thumb {
+684:             background: rgba(255, 255, 255, 0.1);
+685:             border-radius: 9999px;
+686:         }
+687:         .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+688:             background: rgba(255, 255, 255, 0.25);
+689:         }
+690:     </style>
+691: </head>
+692: <body class="bg-[#080710] text-gray-200 overflow-hidden">
+693:     <div id="root"></div>
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

@@ -1,0 +1,24 @@
+Created At: 2026-06-12T10:15:43Z
+Completed At: 2026-06-12T10:15:43Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 3492
+Total Bytes: 240200
+Showing lines 975 to 990
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+975:                 webBrushColorRef.current = val;
+976:             };
+977: 
+978:             const [webBrushColorName, setWebBrushColorName] = useState('Mauve');
+979:             const [undoStack, setUndoStack] = useState([]);
+980:             const [redoStack, setRedoStack] = useState([]);
+981:             const [pinchDistance, setPinchDistance] = useState(0.0);
+982:             const [streamFps, setStreamFps] = useState(0.0);
+983: 
+984:             // Refs for drawing state machine
+985:             const currentStrokeRef = useRef(null);
+986:             const lastPointRef = useRef(null);
+987:             const isDrawingStateRef = useRef(false);
+988:             const webSmoothXRef = useRef(null);
+989:             const webSmoothYRef = useRef(null);
+990:             const activeMenuRef = useRef('dashboard');
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

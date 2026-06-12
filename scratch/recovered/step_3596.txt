@@ -1,0 +1,62 @@
+Created At: 2026-06-12T11:00:52Z
+Completed At: 2026-06-12T11:00:52Z
+File Path: `file:///C:/Users/nikun/.gemini/antigravity/brain/f71acb1b-ab5a-4de9-85a5-1a298f3c313a/scratch/check_jsx.py`
+Total Lines: 54
+Total Bytes: 2076
+Showing lines 1 to 54
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1: import re
+2: 
+3: def main():
+4:     path = r"c:\Users\nikun\OneDrive\Desktop\GestureOS-AI-main\web_backend.py"
+5:     with open(path, "r", encoding="utf-8") as f:
+6:         content = f.read()
+7: 
+8:     # Find the HTML_CONTENT variable value or script tag contents
+9:     match = re.search(r'<script type="text/babel">(.*?)</script>', content, re.DOTALL)
+10:     if not match:
+11:         print("Could not find script tag in HTML_CONTENT!")
+12:         return
+13: 
+14:     script_content = match.group(1)
+15:     print("Found script content of length:", len(script_content))
+16: 
+17:     # Basic parenthesis/bracket matching check
+18:     brackets = {
+19:         '(': 0, ')': 0,
+20:         '{': 0, '}': 0,
+21:         '[': 0, ']': 0,
+22:         '<': 0, '>': 0
+23:     }
+24:     
+25:     # We won't do simple char checking for < and > because of JS comparisons,
+26:     # but we can check matching curly braces, square brackets, and parentheses.
+27:     stack = []
+28:     lines = script_content.split('\n')
+29:     for idx, line in enumerate(lines, 1):
+30:         for c_idx, char in enumerate(line, 1):
+31:             if char in '({[':
+32:                 stack.append((char, idx, c_idx, line))
+33:             elif char in ')}]':
+34:                 if not stack:
+35:                     print(f"Extra closing character '{char}' at line {idx}:{c_idx}: {line.strip()}")
+36:                     continue
+37:                 last_char, l_idx, lc_idx, l_line = stack.pop()
+38:                 if (char == ')' and last_char != '(') or \
+39:                    (char == '}' and last_char != '{') or \
+40:                    (char == ']' and last_char != '['):
+41:                     print(f"Mismatched pair: opened '{last_char}' at line {l_idx}:{lc_idx} but closed '{char}' at line {idx}:{c_idx}")
+42:                     print(f"Open line: {l_line.strip()}")
+43:                     print(f"Close line: {line.strip()}")
+44: 
+45:     if stack:
+46:         print(f"Unclosed braces/brackets left on stack: {len(stack)}")
+47:         for item in stack[:5]:
+48:             print(f"Unclosed '{item[0]}' from line {item[1]}:{item[2]}: {item[3].strip()}")
+49:     else:
+50:         print("Brace/bracket matching checks passed!")
+51: 
+52: if __name__ == "__main__":
+53:     main()
+54: 
+The above content shows the entire, complete file contents of the requested file.

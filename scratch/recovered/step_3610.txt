@@ -1,0 +1,24 @@
+Created At: 2026-06-12T11:01:19Z
+Completed At: 2026-06-12T11:01:19Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 4256
+Total Bytes: 294748
+Showing lines 1945 to 1960
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1945:                                         }
+1946:                                     }
+1947:                                 } else {
+1948:                                     // Hand not detected or too low confidence
+1949:                                     consecutivePinchFramesRef.current = 0;
+1950:                                     consecutiveReleaseFramesRef.current += 1;
+1951:                                     
+1952:                                     // If drawing, enter grace period
+1953:                                     if (isDrawingStateRef.current) {
+1954:                                         if (!inGracePeriodRef.current) {
+1955:                                             inGracePeriodRef.current = true;
+1956:                                             setDrawingStatus('Grace Period');
+1957:                                             
+1958:                                             // Update status in DOM
+1959:                                             const statusEl = document.getElementById('telemetry-drawing-status');
+1960:                                             if (statusEl) {
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

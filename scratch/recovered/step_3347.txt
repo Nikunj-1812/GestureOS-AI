@@ -1,0 +1,43 @@
+Created At: 2026-06-12T10:42:26Z
+Completed At: 2026-06-12T10:42:26Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 4033
+Total Bytes: 278212
+Showing lines 3130 to 3170
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+3130:                                             </div>
+3131:                                         </div>
+3132: 
+3133:                                         {/* Two-Column Main Content Layout */}
+3134:                                         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+3135:                                             {/* Left: Camera Feed Preview (2 Columns) */}
+3136:                                             <div className="lg:col-span-2 flex flex-col gap-4">
+3137:                                                 <div className="glass-card rounded-2xl p-4 flex flex-col h-[400px] justify-between relative group overflow-hidden">
+3138:                                                     <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 opacity-20" />
+3139:                                                     
+3140:                                                     <div className="flex items-center justify-between pb-3 border-b border-glass-border">
+3141:                                                         <div className="flex items-center gap-2 text-sm">
+3142:                                                             <CameraIcon className="w-4 h-4 text-accent-blue" />
+3143:                                                             <span className="font-semibold text-white">Live Camera Stream</span>
+3144:                                                         </div>
+3145:                                                         <div className="flex items-center gap-
+<truncated 849 bytes>
+der-glass-border relative">
+3154:                                                         {cameraStatus === 'Connected' && hasFrameState ? (
+3155:                                                             <img 
+3156:                                                                 id="keyboard-camera-preview"
+3157:                                                                 alt="Camera Feed" 
+3158:                                                                 className="w-full h-full object-contain rounded-xl"
+3159:                                                             />
+3160:                                                         ) : (
+3161:                                                             <div className="flex flex-col items-center justify-center p-8 text-center max-w-sm">
+3162:                                                                 <div className="w-16 h-16 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-gray-500 mb-4 animate-pulse">
+3163:                                                                     <VideoOffIcon className="w-8 h-8" />
+3164:                                                                 </div>
+3165:                                                                 <h4 className="text-white font-medium mb-1">Camera Stream Inactive</h4>
+3166:                                                                 <p className="text-xs text-gray-400 leading-relaxed">
+3167:                                                                     To analyze hand geometry and process keyboard inputs, please launch the camera from the Dashboard.
+3168:                                                                 </p>
+3169:                                                             </div>
+3170:                                                         )}
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

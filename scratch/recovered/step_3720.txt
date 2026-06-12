@@ -1,0 +1,54 @@
+Created At: 2026-06-12T11:10:07Z
+Completed At: 2026-06-12T11:10:08Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 4482
+Total Bytes: 313447
+Showing lines 1950 to 1995
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1950:                                                 : currentStatus === 'Grace Period' 
+1951:                                                     ? 'text-amber-500 animate-pulse' 
+1952:                                                     : 'text-accent-yellow'
+1953:                                         }`;
+1954:                                     }
+1955:                                     
+1956:                                     const coordsEl = document.getElementById('telemetry-pointer-coords');
+1957:                                     if (coordsEl) {
+1958:                                         coordsEl.textContent = `${Math.round(smoothedX)}, ${Math.round(smoothedY)}`;
+1959:                                     }
+1960:                                     
+1961:                                     const pinchDistEl = document.getElementById('telemetry-pinch-distance');
+1962:                                     if (pinchDistEl) {
+1963:                                         pinchDistEl.textContent = `${ipDist.toFixed(4)} (raw: ${rawPinchDist.toFixed(4)})`;
+1964:                                     }
+1965:                                     
+1966:                                     const confEl = document.getElementById('telemetry-pinch-confidence');
+1967:                                     if (confEl) {
+1968:                                         confEl.textContent = `${Math.round(handScore * 100)}%`;
+1969:                                     }
+1970:                                     
+1971:                                     const pinchFram
+<truncated 157 bytes>
+          pinchFramesEl.textContent = consecutivePinchFramesRef.current;
+1974:                                     }
+1975:                                     
+1976:                                     const releaseFramesEl = document.getElementById('telemetry-release-frames');
+1977:                                     if (releaseFramesEl) {
+1978:                                         releaseFramesEl.textContent = consecutiveReleaseFramesRef.current;
+1979:                                     }
+1980:                                     
+1981:                                     const stateEl = document.getElementById('telemetry-pinch-state');
+1982:                                     if (stateEl) {
+1983:                                         stateEl.textContent = inGracePeriodRef.current 
+1984:                                             ? 'Grace Period' 
+1985:                                             : activeGestureRef.current.toUpperCase();
+1986:                                         stateEl.className = `text-sm font-bold ${
+1987:                                             inGracePeriodRef.current 
+1988:                                                 ? 'text-amber-500' 
+1989:                                                 : activeGestureRef.current === 'draw' 
+1990:                                                     ? 'text-accent-green' 
+1991:                                                     : activeGestureRef.current === 'pause'
+1992:                                                         ? 'text-accent-yellow'
+1993:                                                         : activeGestureRef.current === 'clear'
+1994:                                                             ? 'text-accent-red animate-pulse'
+1995:                                                             : activeGestureRef.current === 'menu'
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

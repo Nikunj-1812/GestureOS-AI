@@ -1,0 +1,46 @@
+Created At: 2026-06-11T10:28:26Z
+Completed At: 2026-06-11T10:28:26Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 1900
+Total Bytes: 127178
+Showing lines 1660 to 1700
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1660:                                                             <span className="font-mono font-bold text-white">
+1661:                                                                 {scrollSpeed.toFixed(2)}
+1662:                                                             </span>
+1663:                                                         </div>
+1664:                                                         <div className="flex justify-between items-center text-sm border-b border-glass-border pb-2">
+1665:                                                             <span className="text-gray-400">Scroll Counter</span>
+1666:                                                             <span className="font-mono font-bold text-teal-400">
+1667:                                                                 {scrollCounter}
+1668:                                                             </span>
+1669:                                                         </div>
+1670: 
+1671:                                                         {/* Phase 3.4 Volume Section */}
+1672:                                                         <div className="text-[10px] uppercase tracking-widest text-gray-600 font-semibold pt-1">Volume Control (Thumb + Pinky Up)</div>
+1673: 
+1674:                                                         <div className="flex justify-between items-center text-sm border-b border-glass-border pb-2">
+1675:                                                             <span className="text-gray-400">Volume Mode Status</span>
+1676:                         
+<truncated 513 bytes>
+     </div>
+1682:                                                         <div className="flex justify-between items-center text-sm border-b border-glass-border pb-2">
+1683:                                                             <span className="text-gray-400">Current Volume Level</span>
+1684:                                                             <span className="font-mono font-bold text-purple-400">
+1685:                                                                 {volumeLevel}%
+1686:                                                             </span>
+1687:                                                         </div>
+1688:                                                         <div className="flex justify-between items-center text-sm">
+1689:                                                             <span className="text-gray-400">Hand Distance</span>
+1690:                                                             <span className="font-mono font-bold text-white">
+1691:                                                                 {volumeMode ? `${volumeDistance.toFixed(1)} px` : '-- px'}
+1692:                                                             </span>
+1693:                                                         </div>
+1694:                                                     </div>
+1695:                                                 </div>
+1696: 
+1697:                                                 {/* Tracking Settings Card */}
+1698:                                                 <div className="glass-card rounded-2xl p-5">
+1699:                                                     <h3 className="text-sm font-bold uppercase tracking-wider text-gray-400 flex items-center gap-2">
+1700:                                                         <SlidersIcon className="w-4 h-4 text-accent-purple" />
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

@@ -1,0 +1,48 @@
+Created At: 2026-06-12T11:09:03Z
+Completed At: 2026-06-12T11:09:03Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 4482
+Total Bytes: 313447
+Showing lines 2161 to 2200
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+2161:                         if (data.virtual_mouse_scroll_dead_zone !== undefined) {
+2162:                             setVirtualMouseScrollDeadZone(data.virtual_mouse_scroll_dead_zone);
+2163:                         }
+2164:                         if (data.virtual_mouse_scroll_smoothing !== undefined) {
+2165:                             setVirtualMouseScrollSmoothing(data.virtual_mouse_scroll_smoothing);
+2166:                         }
+2167:                         if (data.virtual_mouse_volume_min_distance_px !== undefined) {
+2168:                             setVirtualMouseVolumeMinDistancePx(data.virtual_mouse_volume_min_distance_px);
+2169:                         }
+2170:                         if (data.virtual_mouse_volume_max_distance_px !== undefined) {
+2171:                             setVirtualMouseVolumeMaxDistancePx(data.virtual_mouse_volume_max_distance_px);
+2172:                         }
+2173:                         if (data.virtual_mouse_volume_smoothing !== undefined) {
+2174:                             setVirtualMouseVolumeSmoothing(data.virtual_mouse_volume_smoothing);
+2175:                         }
+2176:                         if (data.virtual_mouse_brightness_min_distance_px !== undefined) {
+2177:                             setVirtualMouseBrightnessMinDistancePx(data.virtual_mouse_brightness_min_distance_px);
+2178:                         }
+2179:                         if (data.virtual_mouse_brightness_max_distance_px !== undefined) {
+2180:                             setVirtualMouseBrightnessMaxDistancePx(data.virtual_mouse_brightness_max_distance_px);
+2181:                         }
+2182:                         if (data.virtual_mouse_brightness_smoothing !== undefined) {
+2183:                             setVirtualMouseBrightnessSmoothing(data.virtual_mouse_brightness_smoothing);
+2184:                         }
+2185:                         if (data.virtual_mouse_drag_threshold_ms !== undefined) {
+2186:                             setVirtualMouseDragThresholdMs(data.virtual_mouse_drag_threshold_ms);
+2187:                         }
+2188:                         if (data.keyboard_sound_enabled !== undefined) {
+2189:                             setEnableKeyboardSound(data.keyboard_sound_enabled);
+2190:                         }
+2191:                         if (data.keyboard_system_typing_enabled !== undefined) {
+2192:                             setSystemTypingEnabled(data.keyboard_system_typing_enabled);
+2193:                         }
+2194:                         if (data.keyboard_autocomplete_enabled !== undefined) {
+2195:                             setAutocompleteEnabled(data.keyboard_autocomplete_enabled);
+2196:                         }
+2197:                     })
+2198: 
+2199:                     .catch(err => console.error('Error loading config settings:', err));
+2200: 
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

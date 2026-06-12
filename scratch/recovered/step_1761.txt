@@ -1,0 +1,39 @@
+Created At: 2026-06-12T05:00:59Z
+Completed At: 2026-06-12T05:00:59Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 2425
+Total Bytes: 170769
+Showing lines 230 to 260
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+230:         if hasattr(config, 'virtual_mouse_volume_min_distance_px') and virtual_mouse._volume_controller:
+231:             virtual_mouse._volume_controller.min_distance = config.virtual_mouse_volume_min_distance_px
+232:         if hasattr(config, 'virtual_mouse_volume_max_distance_px') and virtual_mouse._volume_controller:
+233:             virtual_mouse._volume_controller.max_distance = config.virtual_mouse_volume_max_distance_px
+234:         if hasattr(config, 'virtual_mouse_volume_smoothing') and virtual_mouse._volume_controller:
+235:             virtual_mouse._volume_controller.smoothing = config.virtual_mouse_volume_smoothing
+236:         if hasattr(config, 'virtual_mouse_brightness_min_distance_px') and virtual_mouse._brightness_controller:
+237:             virtual_mouse._brightness_controller.min_distance = config.virtual_mouse_brightness_min_distance_px
+238:         if hasattr(config, 'virtual_mouse_brightness_max_distance_px') and virtual_mouse._brightness_controller:
+239:             virtual_mouse._brightness_controller.max_distance = config.virtual_mouse_brightness_max_distance_px
+240:         if hasattr(config, 'virtual_mouse_brightness_smoothing') and virtual_mouse._brightness_controller:
+241:             virtual_mouse._brightness_controller.smoothing = config.virtual_mouse_brightness_smoothing
+242:         if hasattr(config, 'virtual_mouse_drag_threshold_ms'):
+243:             virtual_mouse.drag_threshold_ms = config.virtual_mouse_drag_threshold_ms
+244:     return {"status": "success"}
+245: 
+246: 
+247: @app.websocket("/ws")
+248: async def websocket_endpoint(websocket: WebSocket):
+249:     await websocket.accept()
+250:     logger.info("WebSocket client connected")
+251:     
+252:     last_fps_tick = time.perf_counter()
+253:     fps_smooth = 0.0
+254:     last_frame_id = -1
+255:     last_gesture = "unknown"
+256:     
+257:     try:
+258:         while True:
+259:             # Capture frame & run pipeline if running
+260:             if not camera_running or camera_stream is None:
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

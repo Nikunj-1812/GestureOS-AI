@@ -1,0 +1,45 @@
+Created At: 2026-06-11T10:49:33Z
+Completed At: 2026-06-11T10:49:33Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 2053
+Total Bytes: 138910
+Showing lines 1340 to 1400
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1340:                                                 }`}>
+1341:                                                     <MousePointerIcon className="w-6 h-6" />
+1342:                                                 </div>
+1343:                                                 <div>
+1344:                                                     <p className="text-xs font-semibold uppercase tracking-wider text-gray-400">Active Mode</p>
+1345:                                                     <p className="text-2xl font-bold text-white mt-1 tracking-tight">
+1346:                                                         {activeMode}
+1347:                                                     </p>
+1348:                                                 </div>
+1349:                                             </div>
+1350: 
+1351:                                             {/* Volume Card */}
+1352:                                             <div className="glass-card p-5 rounded-2xl flex items-center gap-4 relative overflow-hidden group">
+1353:                                                 <div className={`p-3 rounded-xl border transition-colors ${
+1354:                                                     volumeMode ? 'bg-purple-500/10 border-purple-500/20 text-purple-400 animate-pulse' : 'bg-zinc-500/10 border-zinc-500/20 text-gray-400'
+1355:                                                 }`}>
+1356:                                                     <Volume2Icon className="w-6 h-6" />
+1357:                                                 </div>
+1358:                         
+<truncated 2242 bytes>
+                       
+1385:                                             {/* Camera Feed Preview (2 Columns) */}
+1386:                                             <div className="lg:col-span-2 flex flex-col gap-4">
+1387:                                                 <div className="glass-card rounded-2xl p-4 flex flex-col h-[480px] justify-between relative group overflow-hidden">
+1388:                                                     <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 opacity-20" />
+1389:                                                     
+1390:                                                     <div className="flex items-center justify-between pb-3 border-b border-glass-border">
+1391:                                                         <div className="flex items-center gap-2 text-sm">
+1392:                                                             <CameraIcon className="w-4 h-4 text-accent-blue" />
+1393:                                                             <span className="font-semibold text-gray-200">Device Stream Input</span>
+1394:                                                         </div>
+1395:                                                         <div className="flex items-center gap-1.5 text-xs text-gray-400">
+1396:                                                             <span className={`w-1.5 h-1.5 rounded-full ${
+1397:                                                                 cameraStatus === 'Connected' ? 'bg-accent-green animate-ping' : 'bg-red-400'
+1398:                                                             }`} />
+1399:                                                             {cameraStatus === 'Connected' ? 'Streaming live' : 'Offline'}
+1400:                                                         </div>
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

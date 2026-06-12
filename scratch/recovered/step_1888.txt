@@ -1,0 +1,34 @@
+Created At: 2026-06-12T05:06:30Z
+Completed At: 2026-06-12T05:06:30Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 2516
+Total Bytes: 174805
+Showing lines 800 to 825
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+800:             const [virtualMouseVolumeMinDistancePx, setVirtualMouseVolumeMinDistancePx] = useState(30.0);
+801:             const [virtualMouseVolumeMaxDistancePx, setVirtualMouseVolumeMaxDistancePx] = useState(250.0);
+802:             const [virtualMouseVolumeSmoothing, setVirtualMouseVolumeSmoothing] = useState(0.15);
+803:             const prevVolumeLevelRef = useRef(-1);
+804: 
+805:             // Phase 3.5 — Mode Manager & Brightness Control
+806:             const [activeMode, setActiveMode] = useState('CURSOR');
+807:             const [brightnessMode, setBrightnessMode] = useState(false);
+808:             const [brightnessLevel, setBrightnessLevel] = useState(0);
+809:             const [brightnessDistance, setBrightnessDistance] = useState(0.0);
+810:             const [virtualMouseBrightnessMinDistancePx, setVirtualMouseBrightnessMinDistancePx] = useState(30.0);
+811:             const [virtualMouseBrightnessMaxDistancePx, setVirtualMouseBrightnessMaxDistancePx] = useState(250.0);
+812:             const [virtualMouseBrightnessSmoothing, setVirtualMouseBrightnessSmoothing] = useState(0.15);
+813:             const prevBrightnessLevelRef = useRef(-1);
+814:             const prevActiveModeRef = useRef('CURSOR');
+815:             
+816:             // Phase 3.5 — Drag & Drop Control
+817:             const [dragStatus, setDragStatus] = useState('IDLE');
+818:             const [dragDuration, setDragDuration] = useState(0.0);
+819:             const [dragCounter, setDragCounter] = useState(0);
+820:             const [virtualMouseDragThresholdMs, setVirtualMouseDragThresholdMs] = useState(200.0);
+821:             const prevDragStatusRef = useRef('IDLE');
+822: 
+823:             // Virtual Keyboard UI States
+824:             const [hoveredKey, setHoveredKey] = useState('None');
+825:             const [lastPressedKey, setLastPressedKey] = useState('None');
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

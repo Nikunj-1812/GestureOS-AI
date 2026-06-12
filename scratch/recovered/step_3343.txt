@@ -1,0 +1,46 @@
+Created At: 2026-06-12T10:42:18Z
+Completed At: 2026-06-12T10:42:18Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 4033
+Total Bytes: 278212
+Showing lines 3750 to 3810
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+3750:                                                             </div>
+3751: 
+3752:                                                             <span className="w-px h-6 bg-glass-border" />
+3753: 
+3754:                                                             {/* Action Buttons */}
+3755:                                                             <div className="flex gap-1.5">
+3756:                                                                 <button 
+3757:                                                                     onClick={handleWebUndo}
+3758:                                                                     disabled={undoStack.length === 0}
+3759:                                                                     className={`p-1.5 rounded-lg border transition-all text-xs ${
+3760:                                                                         undoStack.length === 0 ? 'text-zinc-600 border-zinc-900/10 cursor-not-allowed' : 'text-white border-zinc-700 bg-zinc-800 hover:bg-zinc-700 active:scale-95'
+3761:                                                                     }`}
+3762:                                                                     title="Undo"
+3763:                                                                 >
+3764:                                                                     ↶
+3765:                                                                 </button>
+3766:                                                                 <button 
+3767:                                                                    
+<truncated 2620 bytes>
+                                                         </button>
+3793:                                                             </div>
+3794:                                                         </div>
+3795:                                                     )}
+3796:                                                 </div>
+3797: 
+3798:                                                 {/* Right Column: Telemetry & Controls Panel - Hidden in fullscreen mode */}
+3799:                                                 {!fullScreenMode && (
+3800:                                                     <div className="space-y-6">
+3801:                                                         {/* Telemetry Card */}
+3802:                                                         <div className="glass-panel rounded-3xl p-6 border border-glass-border">
+3803:                                                             <h3 className="text-lg font-bold text-white mb-4">Drawing Telemetry</h3>
+3804:                                                             <div className="space-y-3">
+3805:                                                                 <div className="flex justify-between items-center py-2 border-b border-white/5">
+3806:                                                                     <span className="text-xs text-gray-400">Drawing Status</span>
+3807:                                                                     <span className={`text-sm font-bold ${drawingStatus === 'Drawing' ? 'text-accent-green' : drawingStatus === 'Hovering' ? 'text-accent-yellow' : 'text-gray-450'}`}>
+3808:                                                                         {drawingStatus}
+3809:                                                                     </span>
+3810:                                                                 </div>
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

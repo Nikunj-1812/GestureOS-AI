@@ -1,0 +1,100 @@
+Created At: 2026-06-12T10:39:39Z
+Completed At: 2026-06-12T10:39:39Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/scratch/check_jsx_tags.py`
+Total Lines: 172
+Total Bytes: 6341
+Showing lines 1 to 172
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1: import re
+2: import sys
+3: 
+4: def analyze():
+5:     with open("web_backend.py", "r", encoding="utf-8") as f:
+6:         content = f.read()
+7: 
+8:     start_marker = '<script type="text/babel">'
+9:     end_marker = '</script>'
+10:     
+11:     start_idx = content.find(start_marker)
+12:     if start_idx == -1:
+13:         print("Start marker not found")
+14:         sys.exit(1)
+15:     
+16:     # Since end marker might be missing currently, we scan till HTMLResponse definition or file end
+17:     end_idx = content.find(end_marker, start_idx)
+18:     if end_idx == -1:
+19:         print("End marker not found, parsing until HTMLResponse route or end of HTML string")
+20:         end_idx = content.find('</html>"""', start_idx)
+21:         if end_idx == -1:
+22:             print("Could not find end of HTML string either!")
+23:             sys.exit(1)
+24:             
+25:     js_code = content[start_idx + len(start_marker):end_idx]
+26:     
+27:     # Basic tokenization of tags: find all <something> and </something>
+28:     # Be careful of JavaScript comparisons (e.g. i < 10) and self-closing tags
+29:     # Let's remove comments and strings first for safety
+30:     clean_code = []
+31:     in_string = None
+32:     escape = False
+33:     in_line_comment = False
+34:     in_block_comment = False
+35:     
+36:     lines = js_code.split('\n')
+37:     for line_num, line in enumerate(lines, 1):
+38:         i = 0
+39:         while i < len(line):
+40:             char = line[i]
+41:             if in_line_comment:
+42:                 i += 1
+43:                 continue
+44:    
+<truncated 3545 bytes>
+                              name = m.group(1)
+127:                                 
+128:                         if name:
+129:                             tags_found.append({
+130:                                 'name': name,
+131:                                 'is_closing': is_closing,
+132:                                 'is_self_closing': is_self_closing,
+133:                                 'line_num': line_num,
+134:                                 'line': line,
+135:                                 'tag_str': tag_str
+136:                             })
+137:                         i = j + 1
+138:                         continue
+139:         i += 1
+140:         
+141:     # Stack verification
+142:     stack = []
+143:     for tag in tags_found:
+144:         if tag['is_self_closing']:
+145:             continue
+146:         if tag['is_closing']:
+147:             if not stack:
+148:                 print(f"Unmatched closing tag: </{tag['name']}> at line {tag['line_num']}")
+149:                 print(f"Line: {tag['line'].strip()}")
+150:                 return False
+151:             top = stack.pop()
+152:             if top['name'] != tag['name']:
+153:                 print(f"Mismatch: opened <{top['name']}> at line {top['line_num']} but closed </{tag['name']}> at line {tag['line_num']}")
+154:                 print(f"Opened: {top['line'].strip()}")
+155:                 print(f"Closed: {tag['line'].strip()}")
+156:                 return False
+157:         else:
+158:             stack.append(tag)
+159:             
+160:     if stack:
+161:         print(f"Unclosed tags left: {len(stack)}")
+162:         for tag in stack[-10:]:
+163:             print(f"Opened <{tag['name']}> at line {tag['line_num']}")
+164:             print(f"Line: {tag['line'].strip()}")
+165:         return False
+166:         
+167:     print("Success: All JSX tags are perfectly matched!")
+168:     return True
+169: 
+170: if __name__ == "__main__":
+171:     analyze()
+172: 
+The above content shows the entire, complete file contents of the requested file.

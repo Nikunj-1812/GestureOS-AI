@@ -1,0 +1,49 @@
+Created At: 2026-06-12T10:07:53Z
+Completed At: 2026-06-12T10:07:53Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 3194
+Total Bytes: 215157
+Showing lines 1125 to 1165
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1125:                             setFps(data.fps);
+1126:                             setHands(data.hands);
+1127:                             setGesture(data.gesture);
+1128:                             setConfidence(data.confidence);
+1129:                             setCameraStatus(data.camera_status);
+1130:                             if (data.frame) {
+1131:                                 if (!hasFrameRef.current) {
+1132:                                     hasFrameRef.current = true;
+1133:                                     setHasFrameState(true);
+1134:                                 }
+1135:                                 requestAnimationFrame(() => {
+1136:                                     const imgD = document.getElementById('dashboard-camera-preview');
+1137:                                     if (imgD) imgD.src = data.frame;
+1138:                                     const imgM = document.getElementById('mouse-camera-preview');
+1139:                                     if (imgM) imgM.src = data.frame;
+1140:                                     const imgK = document.getElementById('keyboard-camera-preview');
+1141:                                     if (imgK) imgK.src = data.frame;
+1142:                                 });
+1143:                             } else {
+1144:                                 if (hasFrameRef.current) {
+1145:                                     hasFrameRef.current = false;
+1146:                                     setHasFrameState(false);
+1147:                                 }
+1148:                             }
+1149:                             setCursorX(data.cursor_x || 0);
+1150:                             setCursorY(data.cursor_y || 0);
+1151:                             setTrackingState(data.tracking_state || 'Disabled');
+1152:                             setPinchDistance(data.pinch_distance || 0.0);
+1153:                             setClickStatus(data.click_status || 'OPEN');
+1154:                             setClickCounter(data.click_counter || 0);
+1155:                             setCurrentAction(data.current_action || 'None');
+1156: 
+1157:                             // Key Hover Detection for Web Keyboard
+1158:                             let detectedKey = null;
+1159:                             const wsNow = Date.now();
+1160: 
+1161:                             if (data.index_tip_x !== undefined && data.index_tip_y !== undefined && data.index_tip_x !== null && data.index_tip_y !== null) {
+1162:                                 const rawX = data.index_tip_x;
+1163:                                 const rawY = data.index_tip_y;
+1164:                                 const xMirrored = 1.0 - rawX; // Mirror horizontal to match screen direction
+1165: 
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

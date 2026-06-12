@@ -1,0 +1,24 @@
+Created At: 2026-06-12T11:01:11Z
+Completed At: 2026-06-12T11:01:12Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 4256
+Total Bytes: 294748
+Showing lines 1115 to 1130
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1115:             const canvasHeightRef = useRef(360);
+1116:             const setCanvasHeight = (val) => {
+1117:                 _setCanvasHeight(val);
+1118:                 canvasHeightRef.current = val;
+1119:             };
+1120: 
+1121:             // Hand detection state ref
+1122:             const wasHandDetectedRef = useRef(false);
+1123: 
+1124:             // One Euro Filters for X and Y coordinates
+1125:             const filterXRef = useRef(new OneEuroFilter(0.8, 0.03));
+1126:             const filterYRef = useRef(new OneEuroFilter(0.8, 0.03));
+1127: 
+1128:             const updateFilterParams = (level) => {
+1129:                 let minCutoff = 0.8;
+1130:                 let beta = 0.03;
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

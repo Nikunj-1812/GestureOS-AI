@@ -1,0 +1,49 @@
+Created At: 2026-06-12T10:41:53Z
+Completed At: 2026-06-12T10:41:53Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 4033
+Total Bytes: 278212
+Showing lines 3965 to 4005
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+3965:                                                                 <button 
+3966:                                                                     onClick={handleWebClear}
+3967:                                                                     className="py-2 px-3 rounded-xl font-semibold text-xs bg-red-500/20 hover:bg-red-500/30 border border-red-500/30 text-red-200 active:scale-95 transition-all"
+3968:                                                                 >
+3969:                                                                     🗑 Clear
+3970:                                                                 </button>
+3971:                                                                 <button 
+3972:                                                                     onClick={handleWebSave}
+3973:                                                                     disabled={undoStack.length === 0}
+3974:                                                                     className={`py-2 px-3 rounded-xl font-semibold text-xs border transition-all ${
+3975:                                                                         undoStack.length === 0
+3976:                                                                             ? 'bg-zinc-850/40 border-zinc-900/10 text-zinc-650 cursor-not-allowed'
+3977:                                                                             : 'bg-blue-600/20 hover:bg-blue-600/30 border-blue-500/30 text-blue-200 active:scale-95'
+3978:                                                                     }`}
+3979:                                                                 >
+3980:                                                                     💾 Save PNG
+3981:                                                                 </button>
+3982:                                                             </div>
+3983:                                                         </div>
+3984:                                                     </div>
+3985:                                                 )}
+3986:                                             </div>
+3987:                                         </>                            </div>
+3988:                                         </>
+3989:                                     ) : (
+3990:                                         <div className="glass-card rounded-2xl p-8 text-center text-gray-400">
+3991:                                             <p>This page is currently under construction. Please use the Dashboard or Virtual Mouse navigation links.</p>
+3992:                                         </div>
+3993:                                     )}
+3994:                                 </div>
+3995:                             </div>
+3996:                         </main>
+3997:                     </div>
+3998:                 );
+3999:             }
+4000: 
+4001:             const root = ReactDOM.createRoot(document.getElementById('root'));
+4002:             root.render(<App />);
+4003:         </script>
+4004:     </body>
+4005: </html>"""
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

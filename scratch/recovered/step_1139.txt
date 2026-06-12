@@ -1,0 +1,68 @@
+Created At: 2026-06-11T11:19:53Z
+Completed At: 2026-06-11T11:19:53Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 1347
+Total Bytes: 88491
+Showing lines 153 to 220
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+153: @app.get("/api/settings")
+154: def api_get_settings():
+155:     state = settings_manager.state
+156:     return {
+157:         "show_landmarks": state.show_landmarks,
+158:         "show_connections": state.show_connections,
+159:         "show_bounding_box": state.show_bounding_box,
+160:         "show_finger_states": state.show_finger_states,
+161:         "show_distance_meter": state.show_distance_meter,
+162:         "show_debug_panel": state.show_debug_panel,
+163:         "show_hud": state.show_hud,
+164:         "virtual_mouse_enabled": state.virtual_mouse_enabled,
+165:         "virtual_mouse_sensitivity": state.virtual_mouse_sensitivity,
+166:         "virtual_mouse_dead_zone": state.virtual_mouse_dead_zone,
+167:         "virtual_mouse_smoothing": state.virtual_mouse_smoothing,
+168:         "virtual_mouse_click_threshold": getattr(state, 'virtual_mouse_click_threshold', 0.05),
+169:         "virtual_mouse_right_click_threshold": getattr(state, 'virtual_mouse_right_click_threshold', 0.05),
+170:         "virtual_mouse_scroll_sensitivity": getattr(state, 'virtual_mouse_scroll_sensitivity', 5.0),
+171:         "virtual_mouse_scroll_dead_zone": getattr(state, 'virtual_mouse_scroll_dead_zone', 0.04),
+172:         "virtual_mouse_scroll_smoothing": getattr(state, 'virtual_mouse_scroll_smoothing', 0.25),
+173:         "virtual_mouse_volume_min_distance_px": getattr(state, 'virtual_mouse_volume_min_distance_px', 30.0),
+174:         "virtual_mouse_volume_max_distance_px": getattr(state, 'virtual_mouse_volume_max_distance_px', 250.0),
+175:         "virtual_mouse_volume_smoot
+<truncated 609 bytes>
+tions", "show_bounding_box",
+186:         "show_finger_states", "show_distance_meter", "show_debug_panel",
+187:         "show_hud", "virtual_mouse_enabled",
+188:         # Phase 3.6 Settings
+189:         "mode_cursor_enabled", "mode_click_enabled", "mode_scroll_enabled",
+190:         "mode_volume_enabled", "mode_brightness_enabled", "mode_drag_enabled",
+191:         "cursor_acceleration_enabled", "show_overlays", "show_event_logs",
+192:         "enable_sounds", "enable_telemetry"
+193:     ]
+194:     float_keys = [
+195:         "virtual_mouse_sensitivity", "virtual_mouse_dead_zone", "virtual_mouse_smoothing",
+196:         "virtual_mouse_click_threshold", "virtual_mouse_right_click_threshold",
+197:         "virtual_mouse_scroll_sensitivity", "virtual_mouse_scroll_dead_zone", "virtual_mouse_scroll_smoothing",
+198:         "virtual_mouse_volume_min_distance_px", "virtual_mouse_volume_max_distance_px", "virtual_mouse_volume_smoothing",
+199:         "virtual_mouse_brightness_min_distance_px", "virtual_mouse_brightness_max_distance_px", "virtual_mouse_brightness_smoothing",
+200:         # Phase 3.6 Settings
+201:         "drag_hold_threshold_ms", "click_cooldown_ms", "volume_cooldown_ms", "brightness_cooldown_ms"
+202:     ]
+203:     int_keys = [
+204:         "camera_index", "fps_limit"
+205:     ]
+206:     for key in bool_keys:
+207:         if key in updates:
+208:             params[key] = bool(updates[key])
+209:     for key in float_keys:
+210:         if key in updates:
+211:             params[key] = float(updates[key])
+212:     for key in int_keys:
+213:         if key in updates:
+214:             params[key] = int(updates[key])
+215:     
+216:     changed = settings_manager.update(**params)
+217:     if changed:
+218:         settings_manager.save()
+219:         settings_manager.apply_to_config(config)
+220:         # Apply to live instance
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

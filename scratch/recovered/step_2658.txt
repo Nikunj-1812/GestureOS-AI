@@ -1,0 +1,24 @@
+Created At: 2026-06-12T09:51:35Z
+Completed At: 2026-06-12T09:51:35Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 3013
+Total Bytes: 206760
+Showing lines 45 to 60
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+45: 
+46: # Configure logger level from settings
+47: logger.remove()
+48: logger.add(sys.stderr, level=config.log_level)
+49: 
+50: camera_stream = None
+51: hand_detector = HandDetector(
+52:     max_hands=1,
+53:     detection_confidence=0.5,
+54:     tracking_confidence=0.5
+55: )
+56: 
+57: model_path = str(Path(config.model_dir) / config.default_model)
+58: gesture_engine = GestureEngine(
+59:     model_path=model_path,
+60:     confidence_threshold=config.confidence_threshold,
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

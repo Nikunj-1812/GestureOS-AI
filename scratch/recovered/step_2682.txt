@@ -1,0 +1,24 @@
+Created At: 2026-06-12T09:52:24Z
+Completed At: 2026-06-12T09:52:24Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 3013
+Total Bytes: 206760
+Showing lines 500 to 515
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+500:             t_send_start = time.perf_counter()
+501:             await websocket.send_json(payload)
+502:             t_send = time.perf_counter() - t_send_start
+503:             
+504:             t_total = time.perf_counter() - t0
+505:             
+506:             # Maintain roughly target frame rate
+507:             elapsed = time.perf_counter() - loop_start
+508:             interval = max(0.001, 1.0 / max(config.camera_fps, 1) - elapsed)
+509:             await asyncio.sleep(interval)
+510:             
+511:     except WebSocketDisconnect:
+512:         logger.info("WebSocket client disconnected")
+513:     except Exception as e:
+514:         logger.error(f"Error in websocket loop: {e}")
+515: 
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

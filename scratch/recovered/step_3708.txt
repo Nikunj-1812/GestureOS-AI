@@ -1,0 +1,42 @@
+Created At: 2026-06-12T11:09:34Z
+Completed At: 2026-06-12T11:09:35Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 4482
+Total Bytes: 313447
+Showing lines 4200 to 4300
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+4200:                                                                     ↷
+4201:                                                                 </button>
+4202:                                                                 <button 
+4203:                                                                     onClick={handleWebClear}
+4204:                                                                     className="p-1.5 rounded-lg bg-red-500/20 hover:bg-red-500/30 border border-red-500/30 text-red-200 text-xs active:scale-95 transition-all"
+4205:                                                                     title="Clear Canvas"
+4206:                                                                 >
+4207:                                                                     🗑
+4208:                                                                 </button>
+4209:                                                                 <button 
+4210:                                                                     onClick={handleWebSave}
+4211:                                                                     disabled={undoStack.length === 0}
+4212:                                                                     className={`p-1.5 rounded-lg border transition-all text-xs ${
+4213:                                                                         undoStack.length === 0 ? 'text-zinc-650 border-zinc-900/10 cursor-not-allowed' : 'bg-blue-600/20 hover:bg-blue-600/30 border-blue-500/30 text-blue-200 active:scale-95'
+4214:                                       
+<truncated 8131 bytes>
+                                                                    {webBrushColorName}
+4284:                                                                     </span>
+4285:                                                                 </div>
+4286:                                                             </div>
+4287:                                                         </div>
+4288: 
+4289:                                                         {/* Settings Controls Card */}
+4290:                                                         <div className="glass-panel rounded-3xl p-6 border border-glass-border space-y-5">
+4291:                                                             <h3 className="text-lg font-bold text-white pb-3 border-b border-glass-border mb-0">Drawing Controls</h3>
+4292:                                                             
+4293:                                                             {/* View Configuration */}
+4294:                                                             <div className="space-y-3">
+4295:                                                                 <span className="text-xs text-gray-400 block font-semibold">View Options</span>
+4296:                                                                 <div className="flex gap-2">
+4297:                                                                     <button 
+4298:                                                                         onClick={() => setFullScreenMode(true)}
+4299:                                                                         className="flex-1 py-2 px-3 rounded-xl bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 text-white font-semibold text-xs active:scale-95 transition-all flex items-center justify-center gap-1.5"
+4300:                                                                     >
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

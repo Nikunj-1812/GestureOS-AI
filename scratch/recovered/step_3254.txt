@@ -1,0 +1,47 @@
+Created At: 2026-06-12T10:35:04Z
+Completed At: 2026-06-12T10:35:04Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 3501
+Total Bytes: 240552
+Showing lines 3270 to 3455
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+3270:                                                             }`}
+3271:                                                         >
+3272:                                                             {emoji}
+3273:                                                         </button>
+3274:                                                     ))}
+3275:                                                 </div>
+3276:                                             </div>
+3277:                                         </div>
+3278:                                     </>
+3279:                                     ) : activeMenu === 'drawing' ? (
+3280:                                         <>
+3281:                                             {/* Hero Header Section */}
+3282:                                             <div className="glass-panel rounded-3xl p-6 flex flex-col md:flex-row md:items-center justify-between border border-glass-border relative overflow-hidden">
+3283:                                                 <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 opacity-20" />
+3284:                                                 <div>
+3285:                                                     <h2 className="text-2xl font-bold tracking-wide text-white">Air Drawing Canvas</h2>
+3286:                                                     <p className="text-xs text-gray-400 mt-1 max-w-xl">
+3287:                                                         Draw in the air using finger pinch gestures. Customize brush size and co
+<truncated 14867 bytes>
+k={handleWebClear}
+3437:                                                                 className="py-2 px-3 rounded-xl font-semibold text-xs bg-red-500/20 hover:bg-red-500/30 border border-red-500/30 text-red-200 active:scale-95 transition-all"
+3438:                                                             >
+3439:                                                                 🗑 Clear
+3440:                                                             </button>
+3441:                                                             <button 
+3442:                                                                 onClick={handleWebSave}
+3443:                                                                 disabled={undoStack.length === 0}
+3444:                                                                 className={`py-2 px-3 rounded-xl font-semibold text-xs border transition-all ${
+3445:                                                                     undoStack.length === 0
+3446:                                                                         ? 'bg-zinc-850/40 border-zinc-900/10 text-zinc-650 cursor-not-allowed'
+3447:                                                                         : 'bg-blue-600/20 hover:bg-blue-600/30 border-blue-500/30 text-blue-200 active:scale-95'
+3448:                                                                 }`}
+3449:                                                             >
+3450:                                                                 💾 Save PNG
+3451:                                                             </button>
+3452:                                                         </div>
+3453:                                                     </div>
+3454:                                                 </div>
+3455:                                             </div>
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

@@ -1,0 +1,34 @@
+Created At: 2026-06-12T05:02:50Z
+Completed At: 2026-06-12T05:02:50Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 2503
+Total Bytes: 174035
+Showing lines 1170 to 1195
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1170:                     setHands(0);
+1171:                     setGesture('None');
+1172:                     setConfidence(0);
+1173:                     logSystemEvent("Camera stream stopped.");
+1174:                 } catch (err) {
+1175:                     console.error('Error stopping camera:', err);
+1176:                     logSystemEvent("Failed to stop camera.");
+1177:                 } finally {
+1178:                     setIsCameraLoading(false);
+1179:                 }
+1180:             };
+1181: 
+1182:             const handleResetTracking = async () => {
+1183:                 setIsResetting(true);
+1184:                 logSystemEvent("Reset tracking requested.");
+1185:                 try {
+1186:                     await fetch('/api/camera/reset', { method: 'POST' });
+1187:                     setEvents([]);
+1188:                     prevGestureRef.current = 'None';
+1189:                     logSystemEvent("Tracking reset complete.");
+1190:                 } catch (err) {
+1191:                     console.error('Error resetting tracking:', err);
+1192:                     logSystemEvent("Failed to reset tracking.");
+1193:                 } finally {
+1194:                     setTimeout(() => setIsResetting(false), 800);
+1195:                 }
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

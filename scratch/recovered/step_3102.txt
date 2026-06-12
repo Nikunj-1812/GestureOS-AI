@@ -1,0 +1,44 @@
+Created At: 2026-06-12T10:18:51Z
+Completed At: 2026-06-12T10:18:51Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 3495
+Total Bytes: 240348
+Showing lines 2020 to 2055
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+2020:                                     <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+2021:                                     Engine Online
+2022:                                 </div>
+2023: 
+2024:                                 <span className="w-px h-6 bg-glass-border hidden md:inline-block" />
+2025: 
+2026:                                 <button className="p-2.5 rounded-xl glass-card text-gray-400 hover:text-white relative group">
+2027:                                     <BellIcon className="w-5 h-5" />
+2028:                                     <span className="absolute top-1.5 right-1.5 w-2.5 h-2.5 bg-blue-500 rounded-full border-2 border-background" />
+2029:                                 </button>
+2030: 
+2031:                                 <button className="p-2.5 rounded-xl glass-card text-gray-400 hover:text-white group">
+2032:                                     <SettingsIcon className="w-5 h-5 transition-transform duration-300 group-hover:rotate-45" />
+2033:                                 </button>
+2034: 
+2035:                                 <div className="flex items-center gap-3 px-3 py-1.5 rounded-xl glass-card border border-glass-border text-left select-none">
+2036:                                     <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center text-white font-bold text-sm">
+2037:                                         <UserIcon className="w-4 h-4" />
+2038:                                     </div>
+2039:                                     <div className="hidden sm:block">
+2040:                                         <p className="text-xs font-semibold text-white">Operator</p>
+2041:                                         <p className="text-[10px] text-gray-400">Admin Role</p>
+2042:                                     </div>
+2043:                                 </div>
+2044: 
+2045:                                 <button 
+2046:                                     onClick={handleStopCamera}
+2047:                                     className="p-2.5 rounded-xl bg-red-500/10 hover:bg-red-500/20 border border-red-500/20 hover:border-red-500/30 text-red-400 hover:text-red-300 transition-all duration-300 group"
+2048:                                     title="Stop Engine"
+2049:                                 >
+2050:                                     <LogOutIcon className="w-5 h-5" />
+2051:                                 </button>
+2052:                             </div>
+2053:                         </header>
+2054: 
+2055:                         {/* Outer scrollable viewport */}
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

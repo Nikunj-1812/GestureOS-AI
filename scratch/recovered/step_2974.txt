@@ -1,0 +1,29 @@
+Created At: 2026-06-12T10:08:51Z
+Completed At: 2026-06-12T10:08:51Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 3196
+Total Bytes: 215338
+Showing lines 960 to 980
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+960:             const typingStartTimeRef = useRef(null);
+961: 
+962:             // Air Drawing UI States
+963:             const [drawingStatus, setDrawingStatus] = useState('Idle');
+964:             const [webBrushSize, setWebBrushSize] = useState(5);
+965:             const [webBrushColor, setWebBrushColor] = useState('#c6a0f6'); // Mauve
+966:             const [webBrushColorName, setWebBrushColorName] = useState('Mauve');
+967:             const [undoStack, setUndoStack] = useState([]);
+968:             const [redoStack, setRedoStack] = useState([]);
+969:             const [pinchDistance, setPinchDistance] = useState(0.0);
+970:             const [streamFps, setStreamFps] = useState(0.0);
+971: 
+972:             // Refs for drawing state machine
+973:             const currentStrokeRef = useRef(null);
+974:             const lastPointRef = useRef(null);
+975:             const isDrawingStateRef = useRef(false);
+976:             const webSmoothXRef = useRef(null);
+977:             const webSmoothYRef = useRef(null);
+978: 
+979:             const redrawCanvas = (strokes) => {
+980:                 const canvas = document.getElementById('drawing-canvas');
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

@@ -1,0 +1,60 @@
+Created At: 2026-06-11T09:19:59Z
+Completed At: 2026-06-11T09:19:59Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 1456
+Total Bytes: 91353
+Showing lines 800 to 1200
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+800:                         body: JSON.stringify({ [key]: val })
+801:                     });
+802:                 } catch (err) {
+803:                     console.error('Error updating switch setting:', err);
+804:                 }
+805:             };
+806: 
+807:             // Format confidence displays based on gesture states
+808:             const formatConfidence = () => {
+809:                 if (gesture === 'None' || gesture === 'unknown' || gesture === 'No Model' || hands === 0) {
+810:                     return '0%';
+811:                 }
+812:                 return `${(confidence * 100).toFixed(0)}%`;
+813:             };
+814: 
+815:             return (
+816:                 <div className="flex h-screen bg-[#080710] font-sans antialiased text-gray-200 overflow-hidden">
+817:                     
+818:                     {/* Left Sidebar */}
+819:                     <aside className="w-72 glass-panel border-r border-glass-border flex flex-col justify-between h-full z-10">
+820:                         <div>
+821:                             {/* Logo section - centered, minimal empty space */}
+822:                             <div className="flex items-center gap-3 px-6 py-6 border-b border-glass-border justify-center">
+823:                                 <div className="p-2.5 bg-blue-500/10 rounded-xl border border-blue-500/20 text-accent-blue">
+824:                                     <HandIcon className="w-6 h-6 stroke-[2]" />
+825:                                 </div>
+826:                                 <div>
+827:                                     <
+<truncated 32418 bytes>
+    ))}
+1179:                                                             </div>
+1180:                                                         )}
+1181:                                                     </div>
+1182:                                                 </div>
+1183:                                             </div>
+1184: 
+1185:                                         </div>
+1186:                                     </>
+1187:                                 ) : activeMenu === 'mouse' ? (
+1188:                                     <>
+1189:                                         {/* Hero Header Section */}
+1190:                                         <div className="glass-panel rounded-3xl p-6 flex flex-col md:flex-row md:items-center justify-between border border-glass-border relative overflow-hidden">
+1191:                                             <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 opacity-20" />
+1192:                                             <div>
+1193:                                                 <h2 className="text-2xl font-bold tracking-wide text-white">Virtual Mouse Controls</h2>
+1194:                                                 <p className="text-xs text-gray-400 mt-1 max-w-xl">
+1195:                                                     Control your system cursor in real-time using your index finger. Calibrate tracking properties below.
+1196:                                                 </p>
+1197:                                             </div>
+1198:                                             <div className="mt-4 md:mt-0">
+1199:                                                 <span className={`px-4 py-2 rounded-full text-xs font-semibold border ${
+1200:                                                     virtualMouseEnabled 
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

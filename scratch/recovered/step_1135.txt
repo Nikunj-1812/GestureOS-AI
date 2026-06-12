@@ -1,0 +1,33 @@
+Created At: 2026-06-11T11:19:41Z
+Completed At: 2026-06-11T11:19:41Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 1347
+Total Bytes: 88491
+Showing lines 801 to 825
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+801:                 ctx.fillStyle = grad;
+802:                 ctx.fill();
+803:             }, [dataPoints, color, maxVal]);
+804: 
+805:             return (
+806:                 <div className="glass-card p-5 rounded-2xl flex flex-col justify-between flex-1">
+807:                     <div className="flex justify-between items-center mb-3">
+808:                         <span className="text-xs font-bold text-gray-400 uppercase tracking-wider">{label}</span>
+809:                         <span className="text-base font-mono font-bold text-white">
+810:                             {dataPoints.length > 0 ? `${dataPoints[dataPoints.length - 1].toFixed(1)}${maxVal === 100 ? '%' : ' FPS'}` : '--'}
+811:                         </span>
+812:                     </div>
+813:                     <canvas ref={canvasRef} width="260" height="90" className="w-full h-[90px] bg-black/20 rounded-xl" />
+814:                 </div>
+815:             );
+816:         }
+817: 
+818:         function App() {
+819:             const [fps, setFps] = useState(0);
+820:             const [hands, setHands] = useState(0);
+821:             const [gesture, setGesture] = useState('None');
+822:             const [confidence, setConfidence] = useState(0);
+823:             const [cameraStatus, setCameraStatus] = useState('Disconnected');
+824:             const [frame, setFrame] = useState(null);
+825:             const [socketStatus, setSocketStatus] = useState('disconnected');
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

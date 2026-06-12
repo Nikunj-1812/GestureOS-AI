@@ -1,0 +1,24 @@
+Created At: 2026-06-12T09:52:21Z
+Completed At: 2026-06-12T09:52:22Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 3013
+Total Bytes: 206760
+Showing lines 430 to 445
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+430:                 confidence=gesture_confidence,
+431:                 click_state=vm_result
+432:             )
+433:             t_visuals = time.perf_counter() - t_vis_start
+434:                 
+435:             # Compress to JPEG and base64 encode
+436:             t_enc_start = time.perf_counter()
+437:             _, buffer = cv2.imencode('.jpg', frame)
+438:             frame_b64 = base64.b64encode(buffer).decode('utf-8')
+439:             t_encode = time.perf_counter() - t_enc_start
+440:             
+441:             # FPS Calculation
+442:             now = time.perf_counter()
+443:             delta = max(now - last_fps_tick, 1e-6)
+444:             instant_fps = 1.0 / delta
+445:             fps_smooth = instant_fps if fps_smooth == 0 else (fps_smooth * 0.85 + instant_fps * 0.15)
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

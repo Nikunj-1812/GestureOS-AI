@@ -1,0 +1,54 @@
+Created At: 2026-06-12T04:41:00Z
+Completed At: 2026-06-12T04:41:00Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 2092
+Total Bytes: 142927
+Showing lines 1140 to 1200
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1140:                     
+1141:                     {/* Left Sidebar */}
+1142:                     <aside className="w-72 glass-panel border-r border-glass-border flex flex-col justify-between h-full z-10">
+1143:                         <div>
+1144:                             {/* Logo section - centered, minimal empty space */}
+1145:                             <div className="flex items-center gap-3 px-6 py-6 border-b border-glass-border justify-center">
+1146:                                 <div className="p-2.5 bg-blue-500/10 rounded-xl border border-blue-500/20 text-accent-blue">
+1147:                                     <HandIcon className="w-6 h-6 stroke-[2]" />
+1148:                                 </div>
+1149:                                 <div>
+1150:                                     <h1 className="text-lg font-bold tracking-wider bg-gradient-to-r from-white via-gray-200 to-gray-400 bg-clip-text text-transparent">
+1151:                                         GestureOS
+1152:                                     </h1>
+1153:                                     <p className="text-[10px] text-gray-500 uppercase tracking-widest font-semibold">Intelligence Edition</p>
+1154:                                 </div>
+1155:                             </div>
+1156: 
+1157:                             {/* Navigation */}
+1158:                             <nav className="px-4 py-6 space-y-2">
+1159:                                 {[
+1160:                                     { id: 'dashboard', name: 'Dashboard', icon: LayersIcon },
+1161:                             
+<truncated 1459 bytes>
+                                                    : 'text-gray-400 hover:text-white hover:bg-white/5 border border-transparent'
+1179:                                             }`}
+1180:                                         >
+1181:                                             <div className="flex items-center gap-3.5">
+1182:                                                 <Icon className={`w-5 h-5 transition-transform duration-300 group-hover:scale-110 ${
+1183:                                                     isActive ? 'text-accent-blue' : 'text-gray-400 group-hover:text-white'
+1184:                                                 }`} />
+1185:                                                 <span className="text-sm tracking-wide">{item.name}</span>
+1186:                                             </div>
+1187:                                             <ChevronRightIcon className={`w-4 h-4 opacity-0 transition-all duration-300 -translate-x-2 ${
+1188:                                                 isActive ? 'opacity-100 translate-x-0 text-accent-blue' : 'group-hover:opacity-50 group-hover:translate-x-0'
+1189:                                             }`} />
+1190:                                         </button>
+1191:                                     );
+1192:                                 })}
+1193:                             </nav>
+1194:                         </div>
+1195: 
+1196:                         {/* Sidebar Footer status */}
+1197:                         <div className="p-4 border-t border-glass-border">
+1198:                             <div className="glass-card rounded-xl p-4 flex flex-col gap-3">
+1199:                                 <div className="flex items-center justify-between text-xs">
+1200:                                     <span className="text-gray-400 font-medium">Core Pipeline:</span>
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

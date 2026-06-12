@@ -1,0 +1,60 @@
+Created At: 2026-06-12T10:29:14Z
+Completed At: 2026-06-12T10:29:15Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 3499
+Total Bytes: 240461
+Showing lines 1470 to 1545
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1470:                                                 };
+1471:                                                 lastPointRef.current = { x: smoothedX, y: smoothedY };
+1472:                                             } else {
+1473:                                                 const prevPoint = lastPointRef.current;
+1474:                                                 if (prevPoint) {
+1475:                                                     ctx.beginPath();
+1476:                                                     ctx.moveTo(prevPoint.x, prevPoint.y);
+1477:                                                     ctx.lineTo(smoothedX, smoothedY);
+1478:                                                     ctx.strokeStyle = webBrushColorRef.current;
+1479:                                                     ctx.lineWidth = webBrushSizeRef.current;
+1480:                                                     ctx.lineCap = 'round';
+1481:                                                     ctx.lineJoin = 'round';
+1482:                                                     ctx.stroke();
+1483:                                                     
+1484:                                                     currentStrokeRef.current.points.push({ x: smoothedX, y: smoothedY });
+1485:                                                     lastPointRef.current = { x: smoothedX, y: smoothedY };
+1486:                                                 }
+1487:                                             }
+1488:                                         } else {
+1489:                              
+<truncated 2172 bytes>
+roundColor = 'transparent';
+1516:                                         }
+1517:                                     }
+1518:                                 } else {
+1519:                                     setDrawingStatus('Idle');
+1520:                                     webSmoothXRef.current = null;
+1521:                                     webSmoothYRef.current = null;
+1522:                                     if (isDrawingStateRef.current) {
+1523:                                         isDrawingStateRef.current = false;
+1524:                                         if (currentStrokeRef.current && currentStrokeRef.current.points.length > 0) {
+1525:                                             setUndoStack(prev => [...prev, currentStrokeRef.current]);
+1526:                                             setRedoStack([]);
+1527:                                         }
+1528:                                         currentStrokeRef.current = null;
+1529:                                         lastPointRef.current = null;
+1530:                                     }
+1531:                                     const cursorEl = document.getElementById('drawing-cursor');
+1532:                                     if (cursorEl) cursorEl.style.display = 'none';
+1533:                                 }
+1534:                             }
+1535:                         } catch (err) {
+1536:                             console.error('Error decoding WebSocket JSON payload:', err);
+1537:                         }
+1538:                     };
+1539: 
+1540:                     ws.onclose = () => {
+1541:                         setSocketStatus('disconnected');
+1542:                         console.log('WebSocket connection lost, retrying in 3 seconds...');
+1543:                         setTimeout(connectWS, 3000);
+1544:                     };
+1545: 
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

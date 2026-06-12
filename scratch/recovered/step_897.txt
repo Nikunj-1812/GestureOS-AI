@@ -1,0 +1,66 @@
+Created At: 2026-06-11T10:49:55Z
+Completed At: 2026-06-11T10:49:55Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 2053
+Total Bytes: 138910
+Showing lines 750 to 830
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+750:             const [pinchDistance, setPinchDistance] = useState(0.0);
+751:             const [clickStatus, setClickStatus] = useState('OPEN');
+752:             const [clickCounter, setClickCounter] = useState(0);
+753:             const [currentAction, setCurrentAction] = useState('None');
+754:             // Phase 3.3 — Right Click
+755:             const [rightClickStatus, setRightClickStatus] = useState('OPEN');
+756:             const [rightClickCounter, setRightClickCounter] = useState(0);
+757:             const [rightPinchDistance, setRightPinchDistance] = useState(0.0);
+758:             const prevRightClickStatusRef = useRef('OPEN');
+759:             // Phase 3.4 — Scroll Control
+760:             const [scrollMode, setScrollMode] = useState(false);
+761:             const [scrollDirection, setScrollDirection] = useState('NONE');
+762:             const [scrollSpeed, setScrollSpeed] = useState(0.0);
+763:             const [scrollCounter, setScrollCounter] = useState(0);
+764:             const [virtualMouseScrollSensitivity, setVirtualMouseScrollSensitivity] = useState(5.0);
+765:             const [virtualMouseScrollDeadZone, setVirtualMouseScrollDeadZone] = useState(0.04);
+766:             const [virtualMouseScrollSmoothing, setVirtualMouseScrollSmoothing] = useState(0.25);
+767:             const prevScrollModeRef = useRef(false);
+768:             // Phase 3.4 — Volume Control
+769:             const [volumeMode, setVolumeMode] = useState(false);
+770:             const [volumeLevel, setVolumeLevel] = useState(0);
+771:             const [volumeDistance, 
+<truncated 1852 bytes>
+796: 
+797:             const prevGestureRef = useRef('None');
+798:             const socketRef = useRef(null);
+799:             const eventIdCounterRef = useRef(0);
+800: 
+801:             // Connect to the WebSocket backend
+802:             useEffect(() => {
+803:                 const connectWS = () => {
+804:                     setSocketStatus('connecting');
+805:                     const wsProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+806:                     const wsUrl = `${wsProtocol}//${window.location.host}/ws`;
+807:                     console.log(`Connecting to WebSocket: ${wsUrl}`);
+808:                     
+809:                     const ws = new WebSocket(wsUrl);
+810:                     socketRef.current = ws;
+811: 
+812:                     ws.onopen = () => {
+813:                         setSocketStatus('connected');
+814:                         console.log('WebSocket connection established');
+815:                     };
+816: 
+817:                     ws.onmessage = (event) => {
+818:                         try {
+819:                             const data = JSON.parse(event.data);
+820:                             setFps(data.fps);
+821:                             setHands(data.hands);
+822:                             setGesture(data.gesture);
+823:                             setConfidence(data.confidence);
+824:                             setCameraStatus(data.camera_status);
+825:                             setFrame(data.frame);
+826:                             setCursorX(data.cursor_x || 0);
+827:                             setCursorY(data.cursor_y || 0);
+828:                             setTrackingState(data.tracking_state || 'Disabled');
+829:                             setPinchDistance(data.pinch_distance || 0.0);
+830:                             setClickStatus(data.click_status || 'OPEN');
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

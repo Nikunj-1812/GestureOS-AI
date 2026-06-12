@@ -1,0 +1,41 @@
+Created At: 2026-06-12T04:37:26Z
+Completed At: 2026-06-12T04:37:26Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 2092
+Total Bytes: 142927
+Showing lines 2060 to 2092
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+2060:                                                                 className="w-full h-1.5 bg-zinc-700 rounded-lg appearance-none cursor-pointer accent-blue-500" 
+2061:                                                             />
+2062:                                                         </div>
+2063:                                                     </div>
+2064:                                                 </div>
+2065:                                             </div>
+2066:                                         </div>
+2067:                                     </>
+2068:                                 ) : (
+2069:                                     <div className="glass-card rounded-2xl p-8 text-center text-gray-400">
+2070:                                         <p>This page is currently under construction. Please use the Dashboard or Virtual Mouse navigation links.</p>
+2071:                                     </div>
+2072:                                 )}
+2073:                             </div>
+2074:                         </div>
+2075:                     </main>
+2076:                 </div>
+2077:             );
+2078:         }
+2079: 
+2080:         const root = ReactDOM.createRoot(document.getElementById('root'));
+2081:         root.render(<App />);
+2082:     </script>
+2083: </body>
+2084: </html>"""
+2085: 
+2086: @app.get("/", response_class=HTMLResponse)
+2087: async def get_dashboard():
+2088:     return HTML_CONTENT
+2089: 
+2090: if __name__ == "__main__":
+2091:     uvicorn.run("web_backend:app", host="127.0.0.1", port=8000, log_level="info")
+2092: 
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.

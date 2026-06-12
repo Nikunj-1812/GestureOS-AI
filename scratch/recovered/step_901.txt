@@ -1,0 +1,69 @@
+Created At: 2026-06-11T10:50:02Z
+Completed At: 2026-06-11T10:50:02Z
+File Path: `file:///c:/Users/nikun/OneDrive/Desktop/GestureOS-AI-main/web_backend.py`
+Total Lines: 2053
+Total Bytes: 138910
+Showing lines 965 to 1045
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+965:                         } catch (err) {
+966:                             console.error('Error decoding WebSocket JSON payload:', err);
+967:                         }
+968:                     };
+969: 
+970:                     ws.onclose = () => {
+971:                         setSocketStatus('disconnected');
+972:                         console.log('WebSocket connection lost, retrying in 3 seconds...');
+973:                         setTimeout(connectWS, 3000);
+974:                     };
+975: 
+976:                     ws.onerror = (error) => {
+977:                         console.error('WebSocket encountered an error:', error);
+978:                     };
+979:                 };
+980: 
+981:                 connectWS();
+982: 
+983:                 // Fetch initial switches configuration from backend
+984:                 fetch('/api/settings')
+985:                     .then(res => res.json())
+986:                     .then(data => {
+987:                         setShowLandmarks(data.show_landmarks);
+988:                         setShowConnections(data.show_connections);
+989:                         setShowBoundingBox(data.show_bounding_box);
+990:                         setShowFingerStates(data.show_finger_states);
+991:                         setShowDistanceMeter(data.show_distance_meter);
+992:                         setShowDebugPanel(data.show_debug_panel);
+993:                         setShowHud(data.show_hud);
+994:                         
+995:                         setVirtualMouseEnabled(data.virtual_mouse_enabled);
+996:                         setVirtual
+<truncated 1677 bytes>
+18:                             setVirtualMouseVolumeMaxDistancePx(data.virtual_mouse_volume_max_distance_px);
+1019:                         }
+1020:                         if (data.virtual_mouse_volume_smoothing !== undefined) {
+1021:                             setVirtualMouseVolumeSmoothing(data.virtual_mouse_volume_smoothing);
+1022:                         }
+1023:                         if (data.virtual_mouse_brightness_min_distance_px !== undefined) {
+1024:                             setVirtualMouseBrightnessMinDistancePx(data.virtual_mouse_brightness_min_distance_px);
+1025:                         }
+1026:                         if (data.virtual_mouse_brightness_max_distance_px !== undefined) {
+1027:                             setVirtualMouseBrightnessMaxDistancePx(data.virtual_mouse_brightness_max_distance_px);
+1028:                         }
+1029:                         if (data.virtual_mouse_brightness_smoothing !== undefined) {
+1030:                             setVirtualMouseBrightnessSmoothing(data.virtual_mouse_brightness_smoothing);
+1031:                         }
+1032:                     })
+1033:                     .catch(err => console.error('Error loading config settings:', err));
+1034: 
+1035:                 // Escape key emergency stop listener
+1036:                 const handleEscape = (e) => {
+1037:                     if (e.key === 'Escape') {
+1038:                         setVirtualMouseEnabled(false);
+1039:                         updateSetting('virtual_mouse_enabled', false);
+1040:                         setRightClickStatus('OPEN');
+1041:                         setScrollMode(false);
+1042:                         setScrollDirection('NONE');
+1043:                         logSystemEvent('\u26a0 EMERGENCY STOP: Virtual mouse disabled via ESC key.');
+1044:                     }
+1045:                 };
+The above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.
